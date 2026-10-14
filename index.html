@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Pendaftaran Event HIMAPTIKA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa; /* Light clean background */
+        }
+        
+        /* Custom scrollbar for textareas */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8; 
+        }
+
+        /* Checkbox card styling hidden actual checkbox */
+        .workshop-checkbox:checked + div {
+            border-color: #4285F4;
+            background-color: #eff4fe;
+            box-shadow: 0 4px 6px -1px rgba(66, 133, 244, 0.1), 0 2px 4px -1px rgba(66, 133, 244, 0.06);
+        }
+        .workshop-checkbox:checked + div .check-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-8">
+
+    <main class="w-full max-w-3xl bg-white rounded-2xl shadow-xl overflow-hidden relative transition-all duration-300">
+        <!-- Google Colors Accent Bar -->
+        <div class="flex h-2 w-full">
+            <div class="w-1/4 bg-[#4285F4]"></div> <!-- Blue -->
+            <div class="w-1/4 bg-[#EA4335]"></div> <!-- Red -->
+            <div class="w-1/4 bg-[#FBBC05]"></div> <!-- Yellow -->
+            <div class="w-1/4 bg-[#34A853]"></div> <!-- Green -->
+        </div>
+
+        <div class="p-6 sm:p-10">
+            <!-- Header -->
+            <header class="mb-8 text-center sm:text-left flex flex-col sm:flex-row justify-between items-center border-b border-gray-100 pb-6">
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 tracking-tight">Google Student Ambassador X HIMAPTIKA</h1>
+                    <p class="text-gray-500 mt-1 text-sm sm:text-base">Workshop Gemini AI</p>
+                </div>
+                <!-- Step Indicator -->
+                <div class="mt-4 sm:mt-0 flex items-center space-x-2 text-sm font-medium">
+                    <span id="indicator-1" class="h-8 w-8 rounded-full flex items-center justify-center bg-[#4285F4] text-white transition-colors">1</span>
+                    <div class="h-px w-6 bg-gray-200"></div>
+                    <span id="indicator-2" class="h-8 w-8 rounded-full flex items-center justify-center bg-gray-100 text-gray-400 transition-colors">2</span>
+                </div>
+            </header>
+
+            <section id="step-1" class="block animate-fade-in">
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Pilih Workshop</h2>
+                    <p class="text-sm text-gray-500 mt-1">Pilih satu atau lebih sesi workshop yang ingin kamu ikuti.</p>
+                </div>
+
+                <div class="flex flex-col gap-3" id="workshop-list">
+                    <!-- Workshop 1 -->
+                    <label class="cursor-pointer relative">
+                        <input type="checkbox" name="workshop" value="Gemini AI for Beginners" data-link="https://chat.whatsapp.com/invite/gemini-beginners" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
+                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full">
+                            <div class="flex justify-between items-center">
+                                <div class="flex-1 pr-4">
+                                    <h3 class="font-semibold text-gray-800 text-lg">Gemini AI for Beginners</h3>
+                                    <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-y-1 gap-x-4 text-sm text-gray-600">
+                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Senin, 19 Okt 2026</div>
+                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 09:00 - 11:00 WIB</div>
+                                        <div class="flex items-center sm:col-span-2"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg> Aula Utama, Gedung A</div>
+                                    </div>
+                                </div>
+                                <div class="check-icon opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- Workshop 2 -->
+                    <label class="cursor-pointer relative">
+                        <input type="checkbox" name="workshop" value="Prompt Engineering Mastery" data-link="https://chat.whatsapp.com/invite/prompt-mastery" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
+                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full">
+                            <div class="flex justify-between items-center">
+                                <div class="flex-1 pr-4">
+                                    <h3 class="font-semibold text-gray-800 text-lg">Prompt Engineering Mastery</h3>
+                                    <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-y-1 gap-x-4 text-sm text-gray-600">
+                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Selasa, 20 Okt 2026</div>
+                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 13:00 - 15:00 WIB</div>
+                                        <div class="flex items-center sm:col-span-2"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg> Ruang Multimedia, Gedung B</div>
+                                    </div>
+                                </div>
+                                <div class="check-icon opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- Workshop 3 -->
+                    <label class="cursor-pointer relative">
+                        <input type="checkbox" name="workshop" value="Web Dev with Gemini API" data-link="https://chat.whatsapp.com/invite/webdev-api" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
+                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full">
+                            <div class="flex justify-between items-center">
+                                <div class="flex-1 pr-4">
+                                    <h3 class="font-semibold text-gray-800 text-lg">Web Dev with Gemini API</h3>
+                                    <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-y-1 gap-x-4 text-sm text-gray-600">
+                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Rabu, 21 Okt 2026</div>
+                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 09:00 - 12:00 WIB</div>
+                                        <div class="flex items-center sm:col-span-2"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg> Lab Komputer 1, Gedung C</div>
+                                    </div>
+                                </div>
+                                <div class="check-icon opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- Workshop 4 -->
+                    <label class="cursor-pointer relative">
+                        <input type="checkbox" name="workshop" value="Building Chatbots with AI" data-link="https://chat.whatsapp.com/invite/chatbots-ai" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
+                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full">
+                            <div class="flex justify-between items-center">
+                                <div class="flex-1 pr-4">
+                                    <h3 class="font-semibold text-gray-800 text-lg">Building Chatbots with AI</h3>
+                                    <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-y-1 gap-x-4 text-sm text-gray-600">
+                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Kamis, 22 Okt 2026</div>
+                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 10:00 - 12:00 WIB</div>
+                                        <div class="flex items-center sm:col-span-2"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg> Ruang Seminar A, Gedung Dekanat</div>
+                                    </div>
+                                </div>
+                                <div class="check-icon opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- Workshop 5 -->
+                    <label class="cursor-pointer relative">
+                        <input type="checkbox" name="workshop" value="Data Analysis with Gemini" data-link="https://chat.whatsapp.com/invite/data-gemini" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
+                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full">
+                            <div class="flex justify-between items-center">
+                                <div class="flex-1 pr-4">
+                                    <h3 class="font-semibold text-gray-800 text-lg">Data Analysis with Gemini</h3>
+                                    <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-y-1 gap-x-4 text-sm text-gray-600">
+                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Jumat, 23 Okt 2026</div>
+                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 13:30 - 15:30 WIB</div>
+                                        <div class="flex items-center sm:col-span-2"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg> Lab Komputer 2, Gedung C</div>
+                                    </div>
+                                </div>
+                                <div class="check-icon opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- Workshop 6 -->
+                    <label class="cursor-pointer relative">
+                        <input type="checkbox" name="workshop" value="AI in UI/UX Design" data-link="https://chat.whatsapp.com/invite/ai-uiux" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
+                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full">
+                            <div class="flex justify-between items-center">
+                                <div class="flex-1 pr-4">
+                                    <h3 class="font-semibold text-gray-800 text-lg">AI in UI/UX Design</h3>
+                                    <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-y-1 gap-x-4 text-sm text-gray-600">
+                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Senin, 26 Okt 2026</div>
+                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 09:00 - 11:00 WIB</div>
+                                        <div class="flex items-center sm:col-span-2"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg> Studio Desain, Gedung D</div>
+                                    </div>
+                                </div>
+                                <div class="check-icon opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- Workshop 7 -->
+                    <label class="cursor-pointer relative">
+                        <input type="checkbox" name="workshop" value="Gemini for Content Creation" data-link="https://chat.whatsapp.com/invite/gemini-content" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
+                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full">
+                            <div class="flex justify-between items-center">
+                                <div class="flex-1 pr-4">
+                                    <h3 class="font-semibold text-gray-800 text-lg">Gemini for Content Creation</h3>
+                                    <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-y-1 gap-x-4 text-sm text-gray-600">
+                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Selasa, 27 Okt 2026</div>
+                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 10:00 - 12:00 WIB</div>
+                                        <div class="flex items-center sm:col-span-2"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg> Ruang Multimedia, Gedung B</div>
+                                    </div>
+                                </div>
+                                <div class="check-icon opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- Workshop 8 -->
+                    <label class="cursor-pointer relative">
+                        <input type="checkbox" name="workshop" value="Hackathon AI Preparation" data-link="https://chat.whatsapp.com/invite/hackathon-ai" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
+                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full">
+                            <div class="flex justify-between items-center">
+                                <div class="flex-1 pr-4">
+                                    <h3 class="font-semibold text-gray-800 text-lg">Hackathon AI Preparation</h3>
+                                    <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-y-1 gap-x-4 text-sm text-gray-600">
+                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Rabu, 28 Okt 2026</div>
+                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 13:00 - 16:00 WIB</div>
+                                        <div class="flex items-center sm:col-span-2"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg> Aula Utama, Gedung A</div>
+                                    </div>
+                                </div>
+                                <div class="check-icon opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="mt-8 flex justify-end">
+                    <button id="btn-next" disabled onclick="goToStep(2)" class="bg-[#4285F4] hover:bg-blue-600 text-white font-medium py-2.5 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center shadow-sm">
+                        Lanjut Isi Data Pribadi
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                </div>
+            </section>
+
+            <section id="step-2" class="hidden animate-fade-in">
+                <div class="mb-6 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">Data Diri Peserta</h2>
+                        <p class="text-sm text-gray-500 mt-1">Lengkapi form di bawah ini untuk pendaftaran.</p>
+                    </div>
+                    <div class="bg-blue-50 text-[#4285F4] px-3 py-1 rounded-md text-sm font-medium border border-blue-100 hidden sm:block" id="selected-workshop-display">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+
+                <form id="registration-form" onsubmit="handleFormSubmit(event)">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        
+                        <!-- Nama Lengkap -->
+                        <div class="sm:col-span-2">
+                            <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap *</label>
+                            <input type="text" id="nama" name="nama" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#4285F4] focus:border-[#4285F4] outline-none transition-all" placeholder="John Doe">
+                        </div>
+
+                        <!-- Email -->
+                        <div class="sm:col-span-2">
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Alamat Email *</label>
+                            <input type="email" id="email" name="email" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#ea4335] focus:border-[#ea4335] outline-none transition-all" placeholder="johndoe@student.univ.ac.id">
+                        </div>
+
+                        <!-- Input WhatsApp -->
+                        <div class="sm:col-span-2">
+                            <label for="whatsapp" class="block text-sm font-medium text-gray-700 mb-1">No. WhatsApp *</label>
+                            <input type="tel" id="whatsapp" name="whatsapp" required placeholder="Contoh: 081234567890" 
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                        </div>
+                        
+                        <!-- Alamat Domisili -->
+                         <div class="sm:col-span-2">
+                            <label for="alamat" class="block text-sm font-medium text-gray-700 mb-1">Alamat Domisili *</label>
+                            <textarea id="alamat" name="alamat" rows="3" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#4285F4] focus:border-[#4285F4] outline-none transition-all resize-none" placeholder="Jl. Veteran No.10..."></textarea>
+                        </div>
+
+                        <!-- Asal Kampus -->
+                        <div class="sm:col-span-2">
+                            <label for="universitas" class="block text-sm font-medium text-gray-700 mb-1">Nama Kampus / Universitas *</label>
+                            <input type="text" id="universitas" name="universitas" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#34a853] focus:border-[#34a853] outline-none transition-all" placeholder="Universitas Brawijaya">
+                        </div>
+
+                        <!-- Fakultas -->
+                        <div>
+                            <label for="fakultas" class="block text-sm font-medium text-gray-700 mb-1">Fakultas *</label>
+                            <input type="text" id="fakultas" name="fakultas" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#fbbc05] focus:border-[#fbbc05] outline-none transition-all" placeholder="Fakultas Ilmu Komputer">
+                        </div>
+
+                        <!-- Jurusan -->
+                        <div>
+                            <label for="jurusan" class="block text-sm font-medium text-gray-700 mb-1">Program Studi / Jurusan *</label>
+                            <input type="text" id="jurusan" name="jurusan" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#fbbc05] focus:border-[#fbbc05] outline-none transition-all" placeholder="Teknik Informatika">
+                        </div>
+
+                        <!-- Semester -->
+                        <div class="sm:col-span-2">
+                            <label for="semester" class="block text-sm font-medium text-gray-700 mb-1">Semester Saat Ini *</label>
+                            <select id="semester" name="semester" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#4285F4] focus:border-[#4285F4] outline-none transition-all bg-white">
+                                <option value="" disabled selected>Pilih Semester</option>
+                                <option value="1">Semester 1</option>
+                                <option value="2">Semester 2</option>
+                                <option value="3">Semester 3</option>
+                                <option value="4">Semester 4</option>
+                                <option value="5">Semester 5</option>
+                                <option value="6">Semester 6</option>
+                                <option value="7">Semester 7</option>
+                                <option value="8">Semester 8</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 border-t border-gray-100 pt-6">
+                        <button type="button" onclick="goToStep(1)" class="w-full sm:w-auto px-6 py-2.5 text-gray-600 font-medium hover:bg-gray-100 rounded-lg transition-colors flex items-center justify-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                            Kembali
+                        </button>
+                        
+                        <button type="submit" id="btn-submit" class="w-full sm:w-auto bg-[#4285F4] hover:bg-blue-600 text-white font-medium py-2.5 px-8 rounded-lg transition-all shadow-md hover:shadow-lg flex items-center justify-center relative overflow-hidden">
+                            <span id="submit-text">Kirim Pendaftaran</span>
+                            <!-- Loading Spinner (Hidden by default) -->
+                            <svg id="submit-spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden absolute" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <section id="step-3" class="hidden text-center py-10 animate-fade-in">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-10 h-10 text-[#34A853]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Pendaftaran Berhasil!</h2>
+                <p class="text-gray-500 mb-4 max-w-md mx-auto">Terima kasih telah mendaftar di <strong>Workshop Gemini AI kolaborasi Google Student Ambassador x HIMAPTIKA</strong>. Email konfirmasi telah dikirimkan ke alamat email kamu.</p>
+                
+                <div class="bg-blue-50 border border-blue-100 rounded-xl p-5 mb-8 max-w-md mx-auto">
+                    <h3 class="text-sm font-semibold text-gray-800 mb-3 text-left">Silakan bergabung ke grup koordinasi berikut:</h3>
+                    <div id="group-links-container" class="flex flex-col gap-2">
+                        <!-- Dynamic Links generated by JS -->
+                    </div>
+                </div>
+                
+                <button onclick="resetForm()" class="px-6 py-2.5 border-2 border-gray-200 text-gray-600 font-medium hover:border-[#4285F4] hover:text-[#4285F4] rounded-lg transition-colors">
+                    Daftar Baru
+                </button>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // Data storage
+        let selectedWorkshops = [];
+
+        // Function to check if a workshop is selected to enable 'Next' button
+        function checkWorkshopSelection() {
+            const checkboxes = document.querySelectorAll('.workshop-checkbox');
+            const btnNext = document.getElementById('btn-next');
+            const displayDiv = document.getElementById('selected-workshop-display');
+            
+            selectedWorkshops = [];
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    selectedWorkshops.push({
+                        title: cb.value,
+                        link: cb.dataset.link
+                    });
+                }
+            });
+
+            if (selectedWorkshops.length > 0) {
+                btnNext.disabled = false;
+                displayDiv.innerText = `${selectedWorkshops.length} Workshop Dipilih`;
+            } else {
+                btnNext.disabled = true;
+                displayDiv.innerText = "";
+            }
+        }
+
+        // Function to navigate between steps
+        function goToStep(step) {
+            const step1 = document.getElementById('step-1');
+            const step2 = document.getElementById('step-2');
+            const step3 = document.getElementById('step-3');
+            
+            const ind1 = document.getElementById('indicator-1');
+            const ind2 = document.getElementById('indicator-2');
+
+            if (step === 1) {
+                step1.classList.remove('hidden');
+                step2.classList.add('hidden');
+                step3.classList.add('hidden');
+                
+                ind1.classList.replace('bg-gray-100', 'bg-[#4285F4]');
+                ind1.classList.replace('text-gray-400', 'text-white');
+                
+                ind2.classList.replace('bg-[#4285F4]', 'bg-gray-100');
+                ind2.classList.replace('text-white', 'text-gray-400');
+            } else if (step === 2) {
+                step1.classList.add('hidden');
+                step2.classList.remove('hidden');
+                step3.classList.add('hidden');
+                
+                ind1.classList.replace('bg-[#4285F4]', 'bg-gray-100');
+                ind1.classList.replace('text-white', 'text-gray-400');
+                
+                ind2.classList.replace('bg-gray-100', 'bg-[#4285F4]');
+                ind2.classList.replace('text-gray-400', 'text-white');
+                
+                // Scroll to top of form smoothly
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (step === 3) {
+                step1.classList.add('hidden');
+                step2.classList.add('hidden');
+                step3.classList.remove('hidden');
+                document.querySelector('header').classList.add('hidden'); // Hide header on success
+            }
+        }
+
+        // Handle Form Submission
+        async function handleFormSubmit(event) {
+            event.preventDefault(); // Prevent page reload
+            
+            const form = event.target;
+
+            // ===== PENAMBAHAN BARU: VALIDASI FORM =====
+            // Ini akan memicu peringatan bawaan browser jika ada input 'required' yang kosong
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return; // Hentikan proses pengiriman jika tidak valid
+            }
+            // ==========================================
+            
+            const btnSubmit = document.getElementById('btn-submit');
+            const submitText = document.getElementById('submit-text');
+            const spinner = document.getElementById('submit-spinner');
+
+            // 1. UI Loading State
+            btnSubmit.disabled = true;
+            submitText.classList.add('opacity-0');
+            spinner.classList.remove('hidden');
+
+            // 2. Susun data jadi Object sesuai Apps Script
+            const formData = {
+                nama: document.getElementById('nama').value,
+                email: document.getElementById('email').value,
+                whatsapp: document.getElementById('whatsapp').value,
+                alamat: document.getElementById('alamat').value,
+                universitas: document.getElementById('universitas').value,
+                fakultas: document.getElementById('fakultas').value,
+                jurusan: document.getElementById('jurusan').value,
+                semester: document.getElementById('semester').value,
+                workshop: selectedWorkshops.map(w => w.title) // Mengambil array judul workshop
+            };
+
+            // 3. Masukkan URL Web App Google Script kamu di sini (GANTI INI NANTI)
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziRlut13ZIeKeOQlpE2VFugfq5oLyjWkE3GptpX4VjHY5JGfNHXARlTHE7bP-F8Io0Gg/exec"; 
+
+            try {
+                // 4. Kirim data ke Apps Script
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(formData),
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8',
+                    }
+                });
+                
+                const data = await response.json();
+
+                if (data.status === "success") {
+                    // Generate Grup Link UI di Halaman Sukses
+                    const linksContainer = document.getElementById('group-links-container');
+                    linksContainer.innerHTML = ''; // Kosongkan dulu
+                    selectedWorkshops.forEach(w => {
+                        linksContainer.innerHTML += `
+                            <a href="${w.link}" target="_blank" class="flex items-center justify-between p-3 bg-white hover:bg-gray-50 border border-gray-200 hover:border-[#4285F4] rounded-lg transition-colors text-left shadow-sm">
+                                <span class="font-medium text-gray-700 text-sm flex-1 mr-2">${w.title}</span>
+                                <span class="text-white bg-[#4285F4] px-3 py-1.5 rounded-md text-xs font-semibold whitespace-nowrap">Join Grup &rarr;</span>
+                            </a>
+                        `;
+                    });
+
+                    // Show Success Screen
+                    goToStep(3);
+                } else {
+                    throw new Error(data.pesan || "Gagal menyimpan data ke Spreadsheet");
+                }
+
+            } catch (error) {
+                console.error('Error!', error.message);
+                alert("Terjadi kesalahan: " + error.message + ". Pastikan kamu sudah menempelkan Web App URL yang benar dan koneksi internet stabil.");
+            } finally {
+                // Restore UI State (kalau error atau selesai)
+                btnSubmit.disabled = false;
+                submitText.classList.remove('opacity-0');
+                spinner.classList.add('hidden');
+            }
+        }
+
+        // Reset form for a new registration
+        function resetForm() {
+            document.getElementById('registration-form').reset();
+            const checkboxes = document.querySelectorAll('.workshop-checkbox');
+            checkboxes.forEach(cb => cb.checked = false);
+            document.getElementById('btn-next').disabled = true;
+            document.getElementById('selected-workshop-display').innerText = "";
+            document.querySelector('header').classList.remove('hidden');
+            selectedWorkshops = [];
+            goToStep(1);
+        }
+
+        // Tailwind config for custom animations
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'fade-in': 'fadeIn 0.4s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
