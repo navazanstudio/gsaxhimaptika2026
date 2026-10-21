@@ -9,26 +9,14 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8f9fa; /* Light clean background */
+            background-color: #f8f9fa;
         }
-        
-        /* Custom scrollbar for textareas */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1; 
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #c1c1c1; 
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #a8a8a8; 
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
 
-        /* Checkbox card styling hidden actual checkbox */
+        /* Custom Checkbox Styling */
         .workshop-checkbox:checked + div {
             border-color: #4285F4;
             background-color: #eff4fe;
@@ -38,6 +26,24 @@
             opacity: 1;
             transform: scale(1);
         }
+
+        /* Perbaikan Dropdown biar panahnya tidak mepet */
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+            padding-right: 2.5rem !important;
+        }
+
+        /* Styling Modal Lightbox Gambar */
+        #imageModal {
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 sm:p-8">
@@ -45,10 +51,10 @@
     <main class="w-full max-w-3xl bg-white rounded-2xl shadow-xl overflow-hidden relative transition-all duration-300">
         <!-- Google Colors Accent Bar -->
         <div class="flex h-2 w-full">
-            <div class="w-1/4 bg-[#4285F4]"></div> <!-- Blue -->
-            <div class="w-1/4 bg-[#EA4335]"></div> <!-- Red -->
-            <div class="w-1/4 bg-[#FBBC05]"></div> <!-- Yellow -->
-            <div class="w-1/4 bg-[#34A853]"></div> <!-- Green -->
+            <div class="w-1/4 bg-[#4285F4]"></div>
+            <div class="w-1/4 bg-[#EA4335]"></div>
+            <div class="w-1/4 bg-[#FBBC05]"></div>
+            <div class="w-1/4 bg-[#34A853]"></div>
         </div>
 
         <div class="p-6 sm:p-10">
@@ -67,171 +73,310 @@
             </header>
 
             <section id="step-1" class="block animate-fade-in">
+
                 <div class="mb-6">
                     <h2 class="text-xl font-semibold text-gray-800">Pilih Workshop</h2>
-                    <p class="text-sm text-gray-500 mt-1">Pilih satu atau lebih sesi workshop yang ingin kamu ikuti.</p>
+                    <p class="text-sm text-gray-500 mt-1">Pilih satu atau lebih sesi workshop yang ingin kamu ikuti. (Klik poster untuk memperbesar).</p>
                 </div>
 
-                <div class="flex flex-col gap-3" id="workshop-list">
-                    <!-- Workshop 1 -->
-                    <label class="cursor-pointer relative">
-                        <input type="checkbox" name="workshop" value="Gemini AI for Beginners" data-link="https://chat.whatsapp.com/invite/gemini-beginners" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
-                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full">
-                            <div class="flex justify-between items-center">
-                                <div class="flex-1 pr-4">
-                                    <h3 class="font-semibold text-gray-800 text-lg">Gemini AI for Beginners</h3>
-                                    <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-y-1 gap-x-4 text-sm text-gray-600">
-                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Senin, 19 Okt 2026</div>
-                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 09:00 - 11:00 WIB</div>
-                                        <div class="flex items-center sm:col-span-2"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg> Aula Utama, Gedung A</div>
+                <div class="flex flex-col gap-4" id="workshop-list">
+                    
+                    <!-- 1. Prompting 101 (Senin 10.00) -->
+                    <div class="relative">
+                        <label class="cursor-pointer absolute inset-0 sm:left-[140px] top-[200px] sm:top-0 z-10" for="ws-1"></label>
+                        <input type="checkbox" id="ws-1" name="workshop" value="Prompting 101: Maksimalkan Gemini Flash untuk Mahasiswa" data-link="https://chat.whatsapp.com/HmvSSPREBXSCUDImPIroRg?s=cl&p=a&mlu=4&ilr=4" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
+                        
+                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full relative overflow-hidden">
+                            <div class="flex flex-col sm:flex-row gap-5">
+                                <div class="w-full sm:w-32 h-48 sm:h-36 bg-gray-100 rounded-lg overflow-hidden shrink-0 border border-gray-100 shadow-sm relative z-20 cursor-zoom-in group" onclick="openModal('src/5.png')">
+                                    <img src="src/5.png" alt="Poster Workshop" class="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105">
+                                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 flex items-center justify-center transition-all duration-300">
+                                        <svg class="w-8 h-8 text-white opacity-0 group-hover:opacity-100 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
                                     </div>
                                 </div>
-                                <div class="check-icon opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
+                                <div class="flex-1 pr-10 pointer-events-none">
+                                    <h3 class="font-bold text-gray-800 text-base leading-tight">Prompting 101: Maksimalkan Gemini Flash untuk Mahasiswa</h3>
+                                    <div class="mt-3 flex flex-col gap-1.5 text-sm text-gray-600">
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#4285F4] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> 
+                                            <span>Senin, 26 Okt 2026 (10.00 - 11.00 WIB)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#EA4335] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> 
+                                            <span>Kelas 209 FTK UIN Sunan Ampel Surabaya</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#FBBC05] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg> 
+                                            <span>Speaker: <strong class="text-gray-800">Kak Pinki</strong></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="check-icon absolute top-4 right-4 opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             </div>
                         </div>
-                    </label>
+                    </div>
 
-                    <!-- Workshop 2 -->
-                    <label class="cursor-pointer relative">
-                        <input type="checkbox" name="workshop" value="Prompt Engineering Mastery" data-link="https://chat.whatsapp.com/invite/prompt-mastery" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
-                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full">
-                            <div class="flex justify-between items-center">
-                                <div class="flex-1 pr-4">
-                                    <h3 class="font-semibold text-gray-800 text-lg">Prompt Engineering Mastery</h3>
-                                    <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-y-1 gap-x-4 text-sm text-gray-600">
-                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Selasa, 20 Okt 2026</div>
-                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 13:00 - 15:00 WIB</div>
-                                        <div class="flex items-center sm:col-span-2"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg> Ruang Multimedia, Gedung B</div>
+                    <!-- 2. AI Asisten Kuliah (Senin 11.00) -->
+                    <div class="relative">
+                        <label class="cursor-pointer absolute inset-0 sm:left-[140px] top-[200px] sm:top-0 z-10" for="ws-2"></label>
+                        <input type="checkbox" id="ws-2" name="workshop" value="AI Asisten Kuliah: Bikin Rangkuman dan Draf Tugas 3x Lebih Cepat" data-link="https://chat.whatsapp.com/EcGH8KLPdXt6lJgGLIRlaT?s=cl&p=a&mlu=4&ilr=4" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
+                        
+                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full relative overflow-hidden">
+                            <div class="flex flex-col sm:flex-row gap-5">
+                                <div class="w-full sm:w-32 h-48 sm:h-36 bg-gray-100 rounded-lg overflow-hidden shrink-0 border border-gray-100 shadow-sm relative z-20 cursor-zoom-in group" onclick="openModal('src/10.png')">
+                                    <img src="src/10.png" alt="Poster Workshop" class="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105">
+                                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 flex items-center justify-center transition-all duration-300">
+                                        <svg class="w-8 h-8 text-white opacity-0 group-hover:opacity-100 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
                                     </div>
                                 </div>
-                                <div class="check-icon opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
+                                <div class="flex-1 pr-10 pointer-events-none">
+                                    <h3 class="font-bold text-gray-800 text-base leading-tight">AI Asisten Kuliah: Bikin Rangkuman dan Draf Tugas 3x Lebih Cepat dengan Gemini Canvas</h3>
+                                    <div class="mt-3 flex flex-col gap-1.5 text-sm text-gray-600">
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#4285F4] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> 
+                                            <span>Senin, 26 Okt 2026 (11.00 - 12.00 WIB)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#EA4335] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> 
+                                            <span>Kelas 213 FTK UIN Sunan Ampel Surabaya</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#FBBC05] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg> 
+                                            <span>Speaker: <strong class="text-gray-800">Kak Farida</strong></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="check-icon absolute top-4 right-4 opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             </div>
                         </div>
-                    </label>
+                    </div>
 
-                    <!-- Workshop 3 -->
-                    <label class="cursor-pointer relative">
-                        <input type="checkbox" name="workshop" value="Web Dev with Gemini API" data-link="https://chat.whatsapp.com/invite/webdev-api" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
-                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full">
-                            <div class="flex justify-between items-center">
-                                <div class="flex-1 pr-4">
-                                    <h3 class="font-semibold text-gray-800 text-lg">Web Dev with Gemini API</h3>
-                                    <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-y-1 gap-x-4 text-sm text-gray-600">
-                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Rabu, 21 Okt 2026</div>
-                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 09:00 - 12:00 WIB</div>
-                                        <div class="flex items-center sm:col-span-2"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg> Lab Komputer 1, Gedung C</div>
+                    <!-- 3. Hack Tugas Kuliah (Senin 12.00) -->
+                    <div class="relative">
+                        <label class="cursor-pointer absolute inset-0 sm:left-[140px] top-[200px] sm:top-0 z-10" for="ws-3"></label>
+                        <input type="checkbox" id="ws-3" name="workshop" value="Hack Tugas Kuliah: Maksimalkan Efektifitas Pemahaman Materi Kuliah Melalui Tugas dengan Gemini" data-link="https://chat.whatsapp.com/L72K5hm8jMo22wZgNSX7dM?s=cl&p=a&mlu=4&ilr=4" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
+                        
+                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full relative overflow-hidden">
+                            <div class="flex flex-col sm:flex-row gap-5">
+                                <div class="w-full sm:w-32 h-48 sm:h-36 bg-gray-100 rounded-lg overflow-hidden shrink-0 border border-gray-100 shadow-sm relative z-20 cursor-zoom-in group" onclick="openModal('src/2.png')">
+                                    <img src="src/2.png" alt="Poster Workshop" class="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105">
+                                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 flex items-center justify-center transition-all duration-300">
+                                        <svg class="w-8 h-8 text-white opacity-0 group-hover:opacity-100 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
                                     </div>
                                 </div>
-                                <div class="check-icon opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
+                                <div class="flex-1 pr-10 pointer-events-none">
+                                    <h3 class="font-bold text-gray-800 text-base leading-tight">Hack Tugas Kuliah: Maksimalkan Efektifitas Pemahaman Materi Kuliah Melalui Tugas dengan Gemini</h3>
+                                    <div class="mt-3 flex flex-col gap-1.5 text-sm text-gray-600">
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#4285F4] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> 
+                                            <span>Senin, 26 Okt 2026 (12.00 - 13.00 WIB)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#EA4335] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> 
+                                            <span>Kelas 213 FTK UIN Sunan Ampel Surabaya</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#FBBC05] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg> 
+                                            <span>Speaker: <strong class="text-gray-800">Kak Fauzan</strong></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="check-icon absolute top-4 right-4 opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             </div>
                         </div>
-                    </label>
+                    </div>
 
-                    <!-- Workshop 4 -->
-                    <label class="cursor-pointer relative">
-                        <input type="checkbox" name="workshop" value="Building Chatbots with AI" data-link="https://chat.whatsapp.com/invite/chatbots-ai" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
-                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full">
-                            <div class="flex justify-between items-center">
-                                <div class="flex-1 pr-4">
-                                    <h3 class="font-semibold text-gray-800 text-lg">Building Chatbots with AI</h3>
-                                    <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-y-1 gap-x-4 text-sm text-gray-600">
-                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Kamis, 22 Okt 2026</div>
-                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 10:00 - 12:00 WIB</div>
-                                        <div class="flex items-center sm:col-span-2"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg> Ruang Seminar A, Gedung Dekanat</div>
+                    <!-- 4. AI Oracle Night (Selasa 12.00) -->
+                    <div class="relative">
+                        <label class="cursor-pointer absolute inset-0 sm:left-[140px] top-[200px] sm:top-0 z-10" for="ws-4"></label>
+                        <input type="checkbox" id="ws-4" name="workshop" value="AI Oracle Night: Cara Cepat Nemu Cita-Cita, Ide Cuan, & Future Planning Bareng Google AI" data-link="https://chat.whatsapp.com/L7wNNlbf6iP4gyXRC0b15Z?s=cl&p=a&mlu=4&ilr=4" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
+                        
+                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full relative overflow-hidden">
+                            <div class="flex flex-col sm:flex-row gap-5">
+                                <div class="w-full sm:w-32 h-48 sm:h-36 bg-gray-100 rounded-lg overflow-hidden shrink-0 border border-gray-100 shadow-sm relative z-20 cursor-zoom-in group" onclick="openModal('src/4.png')">
+                                    <img src="src/4.png" alt="Poster Workshop" class="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105">
+                                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 flex items-center justify-center transition-all duration-300">
+                                        <svg class="w-8 h-8 text-white opacity-0 group-hover:opacity-100 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
                                     </div>
                                 </div>
-                                <div class="check-icon opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
+                                <div class="flex-1 pr-10 pointer-events-none">
+                                    <h3 class="font-bold text-gray-800 text-base leading-tight">AI Oracle Night: Cara Cepat Nemu Cita-Cita, Ide Cuan, & Future Planning Bareng Google AI</h3>
+                                    <div class="mt-3 flex flex-col gap-1.5 text-sm text-gray-600">
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#4285F4] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> 
+                                            <span>Selasa, 27 Okt 2026 (12.00 - 13.00 WIB)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#EA4335] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> 
+                                            <span>Kelas 208 FTK UIN Sunan Ampel Surabaya</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#FBBC05] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg> 
+                                            <span>Speaker: <strong class="text-gray-800">Kak Acha</strong></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="check-icon absolute top-4 right-4 opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             </div>
                         </div>
-                    </label>
+                    </div>
+                    
+                    <!-- 5. Create with AI: Nano Banana (Rabu 10.00) -->
+                    <div class="relative">
+                        <label class="cursor-pointer absolute inset-0 sm:left-[140px] top-[200px] sm:top-0 z-10" for="ws-5"></label>
+                        <input type="checkbox" id="ws-5" name="workshop" value="Create with AI: Eksplorasi Kreativitas dengan Nano Banana" data-link="https://chat.whatsapp.com/F8gBQ77if7KKTcGdnZmcXt?s=cl&p=a&mlu=4&ilr=4" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
+                        
+                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full relative overflow-hidden">
+                            <div class="flex flex-col sm:flex-row gap-5">
+                                <div class="w-full sm:w-32 h-48 sm:h-36 bg-gray-100 rounded-lg overflow-hidden shrink-0 border border-gray-100 shadow-sm relative z-20 cursor-zoom-in group" onclick="openModal('src/6.png')">
+                                    <img src="src/6.png" alt="Poster Workshop" class="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105">
+                                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 flex items-center justify-center transition-all duration-300">
+                                        <svg class="w-8 h-8 text-white opacity-0 group-hover:opacity-100 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
+                                    </div>
+                                </div>
+                                <div class="flex-1 pr-10 pointer-events-none">
+                                    <h3 class="font-bold text-gray-800 text-base leading-tight">Create with AI: Eksplorasi Kreativitas dengan Nano Banana</h3>
+                                    <div class="mt-3 flex flex-col gap-1.5 text-sm text-gray-600">
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#4285F4] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> 
+                                            <span>Rabu, 28 Okt 2026 (10.00 - 11.00 WIB)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#EA4335] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> 
+                                            <span>Kelas 206 FTK UIN Sunan Ampel Surabaya</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#FBBC05] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg> 
+                                            <span>Speaker: <strong class="text-gray-800">Kak Pinki</strong></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="check-icon absolute top-4 right-4 opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                    <!-- Workshop 5 -->
-                    <label class="cursor-pointer relative">
-                        <input type="checkbox" name="workshop" value="Data Analysis with Gemini" data-link="https://chat.whatsapp.com/invite/data-gemini" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
-                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full">
-                            <div class="flex justify-between items-center">
-                                <div class="flex-1 pr-4">
-                                    <h3 class="font-semibold text-gray-800 text-lg">Data Analysis with Gemini</h3>
-                                    <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-y-1 gap-x-4 text-sm text-gray-600">
-                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Jumat, 23 Okt 2026</div>
-                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 13:30 - 15:30 WIB</div>
-                                        <div class="flex items-center sm:col-span-2"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg> Lab Komputer 2, Gedung C</div>
+                    <!-- 6. Workshop AI Campus: NotebookLM (Rabu 11.00) -->
+                    <div class="relative">
+                        <label class="cursor-pointer absolute inset-0 sm:left-[140px] top-[200px] sm:top-0 z-10" for="ws-6"></label>
+                        <input type="checkbox" id="ws-6" name="workshop" value="Workshop AI Campus: Smart Research & Study Hack with NotebookLM" data-link="https://chat.whatsapp.com/FMkJkkceMhHK3qBsA2tfAF?s=cl&p=a&mlu=4&ilr=4" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
+                        
+                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full relative overflow-hidden">
+                            <div class="flex flex-col sm:flex-row gap-5">
+                                <div class="w-full sm:w-32 h-48 sm:h-36 bg-gray-100 rounded-lg overflow-hidden shrink-0 border border-gray-100 shadow-sm relative z-20 cursor-zoom-in group" onclick="openModal('src/3.png')">
+                                    <img src="src/3.png" alt="Poster Workshop" class="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105">
+                                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 flex items-center justify-center transition-all duration-300">
+                                        <svg class="w-8 h-8 text-white opacity-0 group-hover:opacity-100 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
                                     </div>
                                 </div>
-                                <div class="check-icon opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
+                                <div class="flex-1 pr-10 pointer-events-none">
+                                    <h3 class="font-bold text-gray-800 text-base leading-tight">Workshop AI Campus: Smart Research & Study Hack with NotebookLM</h3>
+                                    <div class="mt-3 flex flex-col gap-1.5 text-sm text-gray-600">
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#4285F4] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> 
+                                            <span>Rabu, 28 Okt 2026 (11.00 - 12.00 WIB)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#EA4335] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> 
+                                            <span>Kelas 206 FTK UIN Sunan Ampel Surabaya</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#FBBC05] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg> 
+                                            <span>Speaker: <strong class="text-gray-800">Kak Farida</strong></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="check-icon absolute top-4 right-4 opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             </div>
                         </div>
-                    </label>
+                    </div>
 
-                    <!-- Workshop 6 -->
-                    <label class="cursor-pointer relative">
-                        <input type="checkbox" name="workshop" value="AI in UI/UX Design" data-link="https://chat.whatsapp.com/invite/ai-uiux" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
-                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full">
-                            <div class="flex justify-between items-center">
-                                <div class="flex-1 pr-4">
-                                    <h3 class="font-semibold text-gray-800 text-lg">AI in UI/UX Design</h3>
-                                    <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-y-1 gap-x-4 text-sm text-gray-600">
-                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Senin, 26 Okt 2026</div>
-                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 09:00 - 11:00 WIB</div>
-                                        <div class="flex items-center sm:col-span-2"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg> Studio Desain, Gedung D</div>
+                    <!-- 7. Membangun Konsistensi Harian (Jumat 10.00) -->
+                    <div class="relative">
+                        <label class="cursor-pointer absolute inset-0 sm:left-[140px] top-[200px] sm:top-0 z-10" for="ws-7"></label>
+                        <input type="checkbox" id="ws-7" name="workshop" value="Membangun Konsistensi Harian serta Hack Portofolio pakai Google Gemini" data-link="https://chat.whatsapp.com/Lci2KJP0XTWEBuDKbtoElu?s=cl&p=a&mlu=4&ilr=4" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
+                        
+                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full relative overflow-hidden">
+                            <div class="flex flex-col sm:flex-row gap-5">
+                                <div class="w-full sm:w-32 h-48 sm:h-36 bg-gray-100 rounded-lg overflow-hidden shrink-0 border border-gray-100 shadow-sm relative z-20 cursor-zoom-in group" onclick="openModal('src/9.png')">
+                                    <img src="src/9.png" alt="Poster Workshop" class="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105">
+                                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 flex items-center justify-center transition-all duration-300">
+                                        <svg class="w-8 h-8 text-white opacity-0 group-hover:opacity-100 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
                                     </div>
                                 </div>
-                                <div class="check-icon opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
+                                <div class="flex-1 pr-10 pointer-events-none">
+                                    <h3 class="font-bold text-gray-800 text-base leading-tight">Membangun Konsistensi Harian serta Hack Portofolio pakai Google Gemini</h3>
+                                    <div class="mt-3 flex flex-col gap-1.5 text-sm text-gray-600">
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#4285F4] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> 
+                                            <span>Jumat, 30 Okt 2026 (10.00 - 11.15 WIB)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#EA4335] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> 
+                                            <span>Kelas FTIK 213 UIN Sunan Ampel Surabaya</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#FBBC05] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg> 
+                                            <span>Speaker: <strong class="text-gray-800">Kak Zulfa</strong></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="check-icon absolute top-4 right-4 opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             </div>
                         </div>
-                    </label>
+                    </div>
 
-                    <!-- Workshop 7 -->
-                    <label class="cursor-pointer relative">
-                        <input type="checkbox" name="workshop" value="Gemini for Content Creation" data-link="https://chat.whatsapp.com/invite/gemini-content" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
-                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full">
-                            <div class="flex justify-between items-center">
-                                <div class="flex-1 pr-4">
-                                    <h3 class="font-semibold text-gray-800 text-lg">Gemini for Content Creation</h3>
-                                    <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-y-1 gap-x-4 text-sm text-gray-600">
-                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Selasa, 27 Okt 2026</div>
-                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 10:00 - 12:00 WIB</div>
-                                        <div class="flex items-center sm:col-span-2"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg> Ruang Multimedia, Gedung B</div>
+                    <!-- 8. Level up mathedu (Jumat 13.00) -->
+                    <div class="relative">
+                        <label class="cursor-pointer absolute inset-0 sm:left-[140px] top-[200px] sm:top-0 z-10" for="ws-8"></label>
+                        <input type="checkbox" id="ws-8" name="workshop" value="Level Up MathEdu: Bikin Modul & RPP Kilat pake Sinergi Gemini Flash & Canvas" data-link="https://chat.whatsapp.com/C1aFbWS0EYv70l5ino7jUf?s=cl&p=a&mlu=4&ilr=4" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
+                        
+                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full relative overflow-hidden">
+                            <div class="flex flex-col sm:flex-row gap-5">
+                                <div class="w-full sm:w-32 h-48 sm:h-36 bg-gray-100 rounded-lg overflow-hidden shrink-0 border border-gray-100 shadow-sm relative z-20 cursor-zoom-in group" onclick="openModal('src/8.png')">
+                                    <img src="src/8.png" alt="Poster Workshop" class="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105">
+                                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 flex items-center justify-center transition-all duration-300">
+                                        <svg class="w-8 h-8 text-white opacity-0 group-hover:opacity-100 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
                                     </div>
                                 </div>
-                                <div class="check-icon opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
+                                <div class="flex-1 pr-10 pointer-events-none">
+                                    <h3 class="font-bold text-gray-800 text-base leading-tight">Level Up MathEdu: Bikin Modul & RPP Kilat pake Sinergi Gemini Flash & Canvas</h3>
+                                    <div class="mt-3 flex flex-col gap-1.5 text-sm text-gray-600">
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#4285F4] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> 
+                                            <span>Jumat, 30 Okt 2026 (13.00 - 14.30 WIB)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#EA4335] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> 
+                                            <span>Kelas FTIK 213 UIN Sunan Ampel Surabaya</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <svg class="w-4 h-4 mr-2 text-[#FBBC05] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg> 
+                                            <span>Speaker: <strong class="text-gray-800">Kak Alodia</strong></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="check-icon absolute top-4 right-4 opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
                             </div>
                         </div>
-                    </label>
+                    </div>
 
-                    <!-- Workshop 8 -->
-                    <label class="cursor-pointer relative">
-                        <input type="checkbox" name="workshop" value="Hackathon AI Preparation" data-link="https://chat.whatsapp.com/invite/hackathon-ai" class="workshop-checkbox absolute opacity-0 w-0 h-0" onchange="checkWorkshopSelection()">
-                        <div class="border-2 border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-[#4285F4] w-full">
-                            <div class="flex justify-between items-center">
-                                <div class="flex-1 pr-4">
-                                    <h3 class="font-semibold text-gray-800 text-lg">Hackathon AI Preparation</h3>
-                                    <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-y-1 gap-x-4 text-sm text-gray-600">
-                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Rabu, 28 Okt 2026</div>
-                                        <div class="flex items-center"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 13:00 - 16:00 WIB</div>
-                                        <div class="flex items-center sm:col-span-2"><svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg> Aula Utama, Gedung A</div>
-                                    </div>
-                                </div>
-                                <div class="check-icon opacity-0 transform scale-50 transition-all duration-200 text-[#4285F4] bg-blue-50 p-1.5 rounded-full shrink-0">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                                </div>
-                            </div>
-                        </div>
-                    </label>
                 </div>
 
                 <div class="mt-8 flex justify-end">
@@ -255,54 +400,37 @@
 
                 <form id="registration-form" onsubmit="handleFormSubmit(event)">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        
-                        <!-- Nama Lengkap -->
                         <div class="sm:col-span-2">
                             <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap *</label>
-                            <input type="text" id="nama" name="nama" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#4285F4] focus:border-[#4285F4] outline-none transition-all" placeholder="John Doe">
+                            <input type="text" id="nama" name="nama" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#4285F4] outline-none transition-all" placeholder="Contoh: John Doe">
                         </div>
-
-                        <!-- Email -->
                         <div class="sm:col-span-2">
                             <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Alamat Email *</label>
-                            <input type="email" id="email" name="email" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#ea4335] focus:border-[#ea4335] outline-none transition-all" placeholder="johndoe@student.univ.ac.id">
+                            <input type="email" id="email" name="email" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#ea4335] outline-none transition-all" placeholder="Contoh: johndoe@student.univ.ac.id">
                         </div>
-
-                        <!-- Input WhatsApp -->
                         <div class="sm:col-span-2">
                             <label for="whatsapp" class="block text-sm font-medium text-gray-700 mb-1">No. WhatsApp *</label>
-                            <input type="tel" id="whatsapp" name="whatsapp" required placeholder="Contoh: 081234567890" 
-                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                            <input type="tel" id="whatsapp" name="whatsapp" required placeholder="Contoh: 081234567890" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition-colors">
                         </div>
-                        
-                        <!-- Alamat Domisili -->
-                         <div class="sm:col-span-2">
+                        <div class="sm:col-span-2">
                             <label for="alamat" class="block text-sm font-medium text-gray-700 mb-1">Alamat Domisili *</label>
-                            <textarea id="alamat" name="alamat" rows="3" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#4285F4] focus:border-[#4285F4] outline-none transition-all resize-none" placeholder="Jl. Veteran No.10..."></textarea>
+                            <textarea id="alamat" name="alamat" rows="3" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#4285F4] outline-none transition-all resize-none" placeholder="Contoh: Jl. Veteran No.10..."></textarea>
                         </div>
-
-                        <!-- Asal Kampus -->
                         <div class="sm:col-span-2">
                             <label for="universitas" class="block text-sm font-medium text-gray-700 mb-1">Nama Kampus / Universitas *</label>
-                            <input type="text" id="universitas" name="universitas" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#34a853] focus:border-[#34a853] outline-none transition-all" placeholder="Universitas Brawijaya">
+                            <input type="text" id="universitas" name="universitas" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#34a853] outline-none transition-all" placeholder="Contoh: Universitas Brawijaya">
                         </div>
-
-                        <!-- Fakultas -->
                         <div>
                             <label for="fakultas" class="block text-sm font-medium text-gray-700 mb-1">Fakultas *</label>
-                            <input type="text" id="fakultas" name="fakultas" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#fbbc05] focus:border-[#fbbc05] outline-none transition-all" placeholder="Fakultas Ilmu Komputer">
+                            <input type="text" id="fakultas" name="fakultas" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#fbbc05] outline-none transition-all" placeholder="Contoh: Fakultas Ilmu Komputer">
                         </div>
-
-                        <!-- Jurusan -->
                         <div>
                             <label for="jurusan" class="block text-sm font-medium text-gray-700 mb-1">Program Studi / Jurusan *</label>
-                            <input type="text" id="jurusan" name="jurusan" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#fbbc05] focus:border-[#fbbc05] outline-none transition-all" placeholder="Teknik Informatika">
+                            <input type="text" id="jurusan" name="jurusan" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#fbbc05] outline-none transition-all" placeholder="Contoh: Teknik Informatika">
                         </div>
-
-                        <!-- Semester -->
                         <div class="sm:col-span-2">
                             <label for="semester" class="block text-sm font-medium text-gray-700 mb-1">Semester Saat Ini *</label>
-                            <select id="semester" name="semester" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#4285F4] focus:border-[#4285F4] outline-none transition-all bg-white">
+                            <select id="semester" name="semester" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#4285F4] outline-none transition-all bg-white cursor-pointer">
                                 <option value="" disabled selected>Pilih Semester</option>
                                 <option value="1">Semester 1</option>
                                 <option value="2">Semester 2</option>
@@ -312,6 +440,7 @@
                                 <option value="6">Semester 6</option>
                                 <option value="7">Semester 7</option>
                                 <option value="8">Semester 8</option>
+                                <option value="8">Semester 8+</option>
                             </select>
                         </div>
                     </div>
@@ -324,7 +453,6 @@
                         
                         <button type="submit" id="btn-submit" class="w-full sm:w-auto bg-[#4285F4] hover:bg-blue-600 text-white font-medium py-2.5 px-8 rounded-lg transition-all shadow-md hover:shadow-lg flex items-center justify-center relative overflow-hidden">
                             <span id="submit-text">Kirim Pendaftaran</span>
-                            <!-- Loading Spinner (Hidden by default) -->
                             <svg id="submit-spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden absolute" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -336,17 +464,15 @@
 
             <section id="step-3" class="hidden text-center py-10 animate-fade-in">
                 <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <svg class="w-10 h-10 text-[#34A853]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
-                    </svg>
+                    <svg class="w-10 h-10 text-[#34A853]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                 </div>
                 <h2 class="text-2xl font-bold text-gray-800 mb-2">Pendaftaran Berhasil!</h2>
-                <p class="text-gray-500 mb-4 max-w-md mx-auto">Terima kasih telah mendaftar di <strong>Workshop Gemini AI kolaborasi Google Student Ambassador x HIMAPTIKA</strong>. Email konfirmasi telah dikirimkan ke alamat email kamu.</p>
+                <p class="text-gray-500 mb-4 max-w-md mx-auto">Terima kasih telah mendaftar. Email konfirmasi jadwal beserta rinciannya telah dikirimkan ke alamat email kamu.</p>
                 
                 <div class="bg-blue-50 border border-blue-100 rounded-xl p-5 mb-8 max-w-md mx-auto">
                     <h3 class="text-sm font-semibold text-gray-800 mb-3 text-left">Silakan bergabung ke grup koordinasi berikut:</h3>
                     <div id="group-links-container" class="flex flex-col gap-2">
-                        <!-- Dynamic Links generated by JS -->
+                        <!-- Dynamic Links -->
                     </div>
                 </div>
                 
@@ -358,11 +484,59 @@
         </div>
     </main>
 
+    <!-- Lightbox Modal untuk Gambar -->
+    <div id="imageModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-80 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="relative max-w-4xl w-full flex justify-center items-center">
+            <button onclick="closeModal()" class="absolute -top-12 right-0 sm:-right-12 text-white hover:text-gray-300 p-2 bg-black bg-opacity-50 rounded-full transition-colors">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <img id="modalImage" src="" alt="Poster Diperbesar" class="max-h-[90vh] max-w-full rounded-lg shadow-2xl object-contain transform scale-95 transition-transform duration-300">
+        </div>
+    </div>
+
     <script>
-        // Data storage
         let selectedWorkshops = [];
 
-        // Function to check if a workshop is selected to enable 'Next' button
+        // --- FUNGSI MODAL LIGHTBOX ---
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+
+        function openModal(imageSrc) {
+            modalImg.src = imageSrc;
+            modal.classList.remove('hidden');
+            // Sedikit delay agar animasi transisi terlihat
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalImg.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeModal() {
+            modal.classList.add('opacity-0');
+            modalImg.classList.add('scale-95');
+            // Tunggu animasi selesai baru sembunyikan element
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modalImg.src = ""; // Bersihkan src
+            }, 300);
+        }
+
+        // Tutup modal kalau klik area hitam di luar gambar
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal || e.target.parentElement === modal) {
+                closeModal();
+            }
+        });
+
+        // Tutup modal pakai tombol ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === "Escape" && !modal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+        // -----------------------------
+
+
         function checkWorkshopSelection() {
             const checkboxes = document.querySelectorAll('.workshop-checkbox');
             const btnNext = document.getElementById('btn-next');
@@ -387,70 +561,45 @@
             }
         }
 
-        // Function to navigate between steps
         function goToStep(step) {
             const step1 = document.getElementById('step-1');
             const step2 = document.getElementById('step-2');
             const step3 = document.getElementById('step-3');
-            
             const ind1 = document.getElementById('indicator-1');
             const ind2 = document.getElementById('indicator-2');
 
             if (step === 1) {
-                step1.classList.remove('hidden');
-                step2.classList.add('hidden');
-                step3.classList.add('hidden');
-                
-                ind1.classList.replace('bg-gray-100', 'bg-[#4285F4]');
-                ind1.classList.replace('text-gray-400', 'text-white');
-                
-                ind2.classList.replace('bg-[#4285F4]', 'bg-gray-100');
-                ind2.classList.replace('text-white', 'text-gray-400');
+                step1.classList.remove('hidden'); step2.classList.add('hidden'); step3.classList.add('hidden');
+                ind1.classList.replace('bg-gray-100', 'bg-[#4285F4]'); ind1.classList.replace('text-gray-400', 'text-white');
+                ind2.classList.replace('bg-[#4285F4]', 'bg-gray-100'); ind2.classList.replace('text-white', 'text-gray-400');
             } else if (step === 2) {
-                step1.classList.add('hidden');
-                step2.classList.remove('hidden');
-                step3.classList.add('hidden');
-                
-                ind1.classList.replace('bg-[#4285F4]', 'bg-gray-100');
-                ind1.classList.replace('text-white', 'text-gray-400');
-                
-                ind2.classList.replace('bg-gray-100', 'bg-[#4285F4]');
-                ind2.classList.replace('text-gray-400', 'text-white');
-                
-                // Scroll to top of form smoothly
+                step1.classList.add('hidden'); step2.classList.remove('hidden'); step3.classList.add('hidden');
+                ind1.classList.replace('bg-[#4285F4]', 'bg-gray-100'); ind1.classList.replace('text-white', 'text-gray-400');
+                ind2.classList.replace('bg-gray-100', 'bg-[#4285F4]'); ind2.classList.replace('text-gray-400', 'text-white');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else if (step === 3) {
-                step1.classList.add('hidden');
-                step2.classList.add('hidden');
-                step3.classList.remove('hidden');
-                document.querySelector('header').classList.add('hidden'); // Hide header on success
+                step1.classList.add('hidden'); step2.classList.add('hidden'); step3.classList.remove('hidden');
+                document.querySelector('header').classList.add('hidden'); 
             }
         }
 
-        // Handle Form Submission
         async function handleFormSubmit(event) {
-            event.preventDefault(); // Prevent page reload
-            
+            event.preventDefault(); 
             const form = event.target;
 
-            // ===== PENAMBAHAN BARU: VALIDASI FORM =====
-            // Ini akan memicu peringatan bawaan browser jika ada input 'required' yang kosong
             if (!form.checkValidity()) {
                 form.reportValidity();
-                return; // Hentikan proses pengiriman jika tidak valid
+                return; 
             }
-            // ==========================================
             
             const btnSubmit = document.getElementById('btn-submit');
             const submitText = document.getElementById('submit-text');
             const spinner = document.getElementById('submit-spinner');
 
-            // 1. UI Loading State
             btnSubmit.disabled = true;
             submitText.classList.add('opacity-0');
             spinner.classList.remove('hidden');
 
-            // 2. Susun data jadi Object sesuai Apps Script
             const formData = {
                 nama: document.getElementById('nama').value,
                 email: document.getElementById('email').value,
@@ -460,14 +609,12 @@
                 fakultas: document.getElementById('fakultas').value,
                 jurusan: document.getElementById('jurusan').value,
                 semester: document.getElementById('semester').value,
-                workshop: selectedWorkshops.map(w => w.title) // Mengambil array judul workshop
+                workshop: selectedWorkshops.map(w => w.title) 
             };
 
-            // 3. Masukkan URL Web App Google Script kamu di sini (GANTI INI NANTI)
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziRlut13ZIeKeOQlpE2VFugfq5oLyjWkE3GptpX4VjHY5JGfNHXARlTHE7bP-F8Io0Gg/exec"; 
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfeyD4bdZSXx8QVMB7l4jLi2p7FuO8a2ijDopHIE1x8pusrb7DWofUyjOT3rTPfoK5hg/exec"; 
 
             try {
-                // 4. Kirim data ke Apps Script
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
                     body: JSON.stringify(formData),
@@ -479,36 +626,29 @@
                 const data = await response.json();
 
                 if (data.status === "success") {
-                    // Generate Grup Link UI di Halaman Sukses
                     const linksContainer = document.getElementById('group-links-container');
-                    linksContainer.innerHTML = ''; // Kosongkan dulu
+                    linksContainer.innerHTML = ''; 
                     selectedWorkshops.forEach(w => {
                         linksContainer.innerHTML += `
-                            <a href="${w.link}" target="_blank" class="flex items-center justify-between p-3 bg-white hover:bg-gray-50 border border-gray-200 hover:border-[#4285F4] rounded-lg transition-colors text-left shadow-sm">
-                                <span class="font-medium text-gray-700 text-sm flex-1 mr-2">${w.title}</span>
-                                <span class="text-white bg-[#4285F4] px-3 py-1.5 rounded-md text-xs font-semibold whitespace-nowrap">Join Grup &rarr;</span>
+                            <a href="${w.link}" target="_blank" class="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-white hover:bg-gray-50 border border-gray-200 hover:border-[#4285F4] rounded-lg transition-colors text-left shadow-sm gap-2">
+                                <span class="font-medium text-gray-700 text-xs sm:text-sm flex-1 leading-snug pr-2">${w.title}</span>
+                                <span class="text-white bg-[#4285F4] px-3 py-1.5 rounded-md text-xs font-semibold whitespace-nowrap text-center">Join Grup &rarr;</span>
                             </a>
                         `;
                     });
-
-                    // Show Success Screen
                     goToStep(3);
                 } else {
                     throw new Error(data.pesan || "Gagal menyimpan data ke Spreadsheet");
                 }
-
             } catch (error) {
-                console.error('Error!', error.message);
-                alert("Terjadi kesalahan: " + error.message + ". Pastikan kamu sudah menempelkan Web App URL yang benar dan koneksi internet stabil.");
+                alert("Terjadi kesalahan: " + error.message + ". Pastikan koneksi internet stabil.");
             } finally {
-                // Restore UI State (kalau error atau selesai)
                 btnSubmit.disabled = false;
                 submitText.classList.remove('opacity-0');
                 spinner.classList.add('hidden');
             }
         }
 
-        // Reset form for a new registration
         function resetForm() {
             document.getElementById('registration-form').reset();
             const checkboxes = document.querySelectorAll('.workshop-checkbox');
@@ -520,13 +660,10 @@
             goToStep(1);
         }
 
-        // Tailwind config for custom animations
         tailwind.config = {
             theme: {
                 extend: {
-                    animation: {
-                        'fade-in': 'fadeIn 0.4s ease-out forwards',
-                    },
+                    animation: { 'fade-in': 'fadeIn 0.4s ease-out forwards' },
                     keyframes: {
                         fadeIn: {
                             '0%': { opacity: '0', transform: 'translateY(10px)' },
@@ -539,3 +676,4 @@
     </script>
 </body>
 </html>
+```<FollowUp>
