@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArthaCokelat - Game Edukasi Aritmatika Sosial Kelas 8</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- jsPDF & AutoTable untuk Download PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        cocoa: {
+                            50: '#fdfaf7',
+                            100: '#f7efe6',
+                            200: '#eedccb',
+                            300: '#dfc2a6',
+                            400: '#cca07a',
+                            500: '#b88256',
+                            600: '#9e673f',
+                            700: '#7d4f32',
+                            800: '#5c3a25',
+                            900: '#3d2618',
+                            950: '#24150c',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #fdfaf7;
+            color: #3d2618;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Animasi Transisi Level */
+        @keyframes slideUpFade {
+            0% {
+                opacity: 0;
+                transform: translateY(24px) scale(0.98);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .animate-level-enter {
+            animation: slideUpFade 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Custom Scrollbar Minimalis */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f7efe6;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cca07a;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9e673f;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-cocoa-700 selection:text-white">
+
+    <!-- OVERLAY ANIMASI PINDAH LEVEL -->
+    <div id="levelTransitionOverlay" class="fixed inset-0 z-50 bg-cocoa-900/95 backdrop-blur-md hidden flex-col items-center justify-center text-white px-6 text-center transition-opacity duration-300">
+        <div class="w-20 h-20 rounded-3xl bg-cocoa-700/80 border border-cocoa-400/40 flex items-center justify-center mb-6 shadow-2xl animate-bounce">
+            <i id="transitionIcon" class="fa-solid fa-award text-4xl text-cocoa-200"></i>
+        </div>
+        <p id="transitionSub" class="text-xs uppercase tracking-widest text-cocoa-300 font-semibold mb-2">MEMBUKA LEVEL BERIKUTNYA</p>
+        <h2 id="transitionTitle" class="text-2xl sm:text-4xl font-extrabold tracking-tight mb-3">Level 2: Strategi Diskon</h2>
+        <p id="transitionDesc" class="text-sm sm:text-base text-cocoa-200 max-w-md">Memuat skenario cerita dan tantangan aritmatika sosial...</p>
+        <div class="w-56 h-2 bg-cocoa-800 rounded-full overflow-hidden mt-6">
+            <div id="transitionBar" class="h-full bg-cocoa-300 w-0 transition-all duration-1000 ease-out"></div>
+        </div>
+    </div>
+
+    <!-- MODAL PENGATURAN GOOGLE APPS SCRIPT -->
+    <div id="gasModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white border border-cocoa-200 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-cocoa-100 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-cocoa-100 text-cocoa-800 flex items-center justify-center">
+                        <i class="fa-solid fa-table text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-cocoa-900">Integrasi Google Spreadsheet (Apps Script)</h3>
+                        <p class="text-xs text-cocoa-600">Hubungkan game agar nilai siswa otomatis masuk ke Google Sheet</p>
+                    </div>
+                </div>
+                <button type="button" onclick="toggleGasModal()" class="w-9 h-9 rounded-xl bg-cocoa-50 hover:bg-cocoa-100 text-cocoa-700 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-sm">
+                <div>
+                    <label class="block font-semibold text-cocoa-900 mb-1.5">URL Web App Google Apps Script (<code class="text-xs bg-cocoa-100 px-1.5 py-0.5 rounded">.../exec</code>)</label>
+                    <input id="gasUrlInput" type="url" placeholder="https://script.google.com/macros/s/AKfycb.../exec" class="w-full px-4 py-3 rounded-xl border border-cocoa-300 focus:outline-none focus:ring-2 focus:ring-cocoa-700 text-cocoa-900 bg-cocoa-50/50">
+                    <p class="text-xs text-cocoa-600 mt-1">Kosongkan jika hanya ingin mengunduh PDF tanpa kirim ke Spreadsheet.</p>
+                </div>
+
+                <div class="bg-cocoa-50 border border-cocoa-200 rounded-2xl p-4 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-xs uppercase tracking-wider text-cocoa-800">Kode Google Apps Script (Code.gs)</span>
+                        <button type="button" onclick="copyAppsScriptCode()" class="text-xs px-3 py-1.5 rounded-lg bg-cocoa-800 text-white hover:bg-cocoa-900 transition flex items-center gap-1.5">
+                            <i class="fa-regular fa-copy"></i> <span id="copyGasBtnText">Salin Kode Apps Script</span>
+                        </button>
+                    </div>
+                    <textarea id="gasCodeTemplate" readonly rows="7" class="w-full p-3 rounded-xl bg-cocoa-950 text-cocoa-100 font-mono text-[11px] leading-relaxed focus:outline-none">function doGet(e) {
+  return ContentService.createTextOutput("Server Apps Script ArthaCokelat Aktif & Siap Menerima Data!");
+}
+
+function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var rawContent = e.postData ? e.postData.contents : "{}";
+    var data = JSON.parse(rawContent);
+    
+    if (sheet.getLastRow() === 0) {
+      var headers = [
+        "Waktu Submit", "Nama Siswa", "Kelas", "Skor Akhir (0-100)", 
+        "Total Benar", "Total Durasi", "Lv1 (3)", "Lv2 (3)", 
+        "Lv3 (3)", "Lv4 (3)", "Lv5 (9)"
+      ];
+      for (var i = 1; i <= 21; i++) {
+        headers.push("Soal " + i + " (Langkah & Jawaban)");
+      }
+      sheet.appendRow(headers);
+    }
+    
+    var row = [
+      new Date(),
+      data.studentName || "-",
+      data.studentClass || "-",
+      data.finalScore || 0,
+      (data.totalCorrect || 0) + " / " + (data.totalQuestions || 21),
+      data.totalTimeFormatted || "-",
+      data.levelScores ? data.levelScores.L1 : "0/3",
+      data.levelScores ? data.levelScores.L2 : "0/3",
+      data.levelScores ? data.levelScores.L3 : "0/3",
+      data.levelScores ? data.levelScores.L4 : "0/3",
+      data.levelScores ? data.levelScores.L5 : "0/9"
+    ];
+    
+    if (data.details && Array.isArray(data.details)) {
+      data.details.forEach(function(item) {
+        var status = item.isCorrect ? "[BENAR]" : "[SALAH]";
+        var steps = item.steps ? item.steps : "(Tanpa langkah)";
+        var ans = item.answer ? item.answer : "(Kosong)";
+        row.push(status + " Jawab: " + ans + " | Cara: " + steps);
+      });
+    }
+    
+    sheet.appendRow(row);
+    
+    return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}</textarea>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-2">
+                    <button type="button" onclick="toggleGasModal()" class="px-4 py-2.5 rounded-xl border border-cocoa-200 text-cocoa-700 hover:bg-cocoa-50 font-medium">Tutup</button>
+                    <button type="button" onclick="saveGasUrl()" class="px-5 py-2.5 rounded-xl bg-cocoa-800 hover:bg-cocoa-900 text-white font-semibold shadow-md">Simpan Pengaturan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFIKASI -->
+    <div id="toastBox" class="fixed bottom-5 right-5 z-50 hidden max-w-sm bg-cocoa-900 text-white px-5 py-4 rounded-2xl shadow-2xl border border-cocoa-700 flex items-start gap-3">
+        <i id="toastIcon" class="fa-solid fa-circle-info text-cocoa-300 text-lg mt-0.5"></i>
+        <div class="text-xs sm:text-sm leading-relaxed font-medium" id="toastMessage">Pesan notifikasi</div>
+    </div>
+
+    <!-- HEADER / NAVBAR PROFIL -->
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-cocoa-200 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-cocoa-800 text-white flex items-center justify-center shadow-sm">
+                    <i class="fa-solid fa-mug-hot text-lg"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="font-extrabold text-base sm:text-lg tracking-tight text-cocoa-900">ArthaCokelat</h1>
+                        <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-cocoa-100 text-cocoa-800 border border-cocoa-200">Kelas 8 SMP</span>
+                    </div>
+                    <p class="text-xs text-cocoa-600 hidden sm:block">Petualangan Aritmatika Sosial Kedai Cokelat Nusantara</p>
+                </div>
+            </div>
+
+            <!-- Kartu Profil & Timer (Muncul setelah login) -->
+            <div id="headerPlayerStatus" class="hidden items-center gap-2.5 sm:gap-4 flex-wrap">
+                <!-- Countdown Timer -->
+                <div id="timerBadge" class="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-cocoa-100 border border-cocoa-300 text-cocoa-900">
+                    <i class="fa-regular fa-clock text-cocoa-700"></i>
+                    <div>
+                        <p class="text-[10px] uppercase tracking-wider font-semibold text-cocoa-600 leading-none">Sisa Waktu Level</p>
+                        <p id="timerDisplay" class="font-mono font-extrabold text-sm sm:text-base leading-tight">10:00</p>
+                    </div>
+                </div>
+
+                <!-- Kartu Profil Siswa -->
+                <div class="flex items-center gap-2.5 bg-cocoa-800 text-white px-3.5 py-2 rounded-2xl shadow-sm">
+                    <div class="w-8 h-8 rounded-xl bg-cocoa-600 flex items-center justify-center text-cocoa-100">
+                        <i id="profileAvatarIcon" class="fa-solid fa-user-graduate"></i>
+                    </div>
+                    <div class="text-left pr-1">
+                        <p id="profileNameDisplay" class="font-bold text-xs sm:text-sm leading-tight truncate max-w-[140px] sm:max-w-[200px]">Nama Siswa</p>
+                        <p id="profileClassDisplay" class="text-[11px] text-cocoa-200 leading-tight">Kelas VIII-A</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-10">
+
+        <!-- LAYAR 1: FORM INPUT PROFIL AWAL -->
+        <section id="welcomeScreen" class="max-w-4xl mx-auto">
+            <div class="bg-white rounded-3xl border border-cocoa-200 shadow-xl overflow-hidden grid grid-cols-1 lg:grid-cols-12">
+                <!-- Kolom Kiri: Info Cerita & Aturan Level -->
+                <div class="lg:col-span-6 bg-cocoa-800 text-white p-6 sm:p-9 flex flex-col justify-between relative overflow-hidden">
+                    <div class="relative z-10 space-y-5">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cocoa-700 text-cocoa-100 text-xs font-semibold border border-cocoa-600">
+                            <i class="fa-solid fa-store"></i> Simulasi Manajer Kedai Cokelat
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold leading-tight">Selamat Datang di Kedai ArthaCokelat!</h2>
+                        <p class="text-sm text-cocoa-100/90 leading-relaxed">
+                            Kamu ditunjuk menjadi Manajer Keuangan Muda di Kedai Cokelat Artisan. Selesaikan 5 tahap pengelolaan toko menggunakan ilmu <strong>Aritmatika Sosial Kelas 8 SMP</strong>!
+                        </p>
+
+                        <!-- Daftar 5 Level -->
+                        <div class="space-y-2.5 pt-2">
+                            <p class="text-xs font-bold uppercase tracking-wider text-cocoa-300">Peta Misi & Batas Waktu:</p>
+                            <div class="space-y-2 text-xs">
+                                <div class="flex items-center justify-between bg-cocoa-900/60 px-3.5 py-2.5 rounded-xl border border-cocoa-700">
+                                    <span><strong>Level 1:</strong> Untung & Rugi (3 Soal Uraian)</span>
+                                    <span class="px-2 py-0.5 rounded bg-cocoa-700 text-cocoa-100 font-mono">10 Menit</span>
+                                </div>
+                                <div class="flex items-center justify-between bg-cocoa-900/60 px-3.5 py-2.5 rounded-xl border border-cocoa-700">
+                                    <span><strong>Level 2:</strong> Diskon / Rabat (3 Soal Uraian)</span>
+                                    <span class="px-2 py-0.5 rounded bg-cocoa-700 text-cocoa-100 font-mono">10 Menit</span>
+                                </div>
+                                <div class="flex items-center justify-between bg-cocoa-900/60 px-3.5 py-2.5 rounded-xl border border-cocoa-700">
+                                    <span><strong>Level 3:</strong> Pajak PPN & PPh (3 Soal Uraian)</span>
+                                    <span class="px-2 py-0.5 rounded bg-cocoa-700 text-cocoa-100 font-mono">10 Menit</span>
+                                </div>
+                                <div class="flex items-center justify-between bg-cocoa-900/60 px-3.5 py-2.5 rounded-xl border border-cocoa-700">
+                                    <span><strong>Level 4:</strong> Evaluasi Gabungan Lv 1–3 (3 Soal)</span>
+                                    <span class="px-2 py-0.5 rounded bg-cocoa-700 text-cocoa-100 font-mono">10 Menit</span>
+                                </div>
+                                <div class="flex items-center justify-between bg-amber-900/60 px-3.5 py-2.5 rounded-xl border border-amber-600/50">
+                                    <span><strong>Level 5:</strong> Post-Test HOTS (9 Soal Uraian)</span>
+                                    <span class="px-2 py-0.5 rounded bg-amber-700 text-white font-mono">30 Menit</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative z-10 mt-8 pt-4 border-t border-cocoa-700/60 flex flex-wrap items-center justify-between gap-2 text-xs text-cocoa-200">
+                        <span><i class="fa-solid fa-file-pdf mr-1"></i> Unduh Bukti PDF</span>
+                        <div class="flex items-center gap-3">
+                            <button type="button" onclick="copyAppsScriptCodeQuick()" class="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-bold transition cursor-pointer">
+                                <i class="fa-solid fa-copy mr-1"></i> <span id="quickCopyGasText">Copas Kode Apps Script</span>
+                            </button>
+                            <button type="button" onclick="toggleGasModal()" class="underline hover:text-white font-semibold cursor-pointer">
+                                <i class="fa-solid fa-gear mr-1"></i> Atur URL Sheet
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kolom Kanan: Form Input Profil Siswa -->
+                <div class="lg:col-span-6 p-6 sm:p-9 flex flex-col justify-center bg-white">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-extrabold text-cocoa-900">Buat Profil Manajer Toko</h3>
+                        <p class="text-xs sm:text-sm text-cocoa-600 mt-1">Isi nama lengkap dan kelasmu sebelum memulai misi pertama.</p>
+                    </div>
+
+                    <form id="profileForm" onsubmit="startGame(event)" class="space-y-5">
+                        <div>
+                            <label for="studentNameInput" class="block text-xs font-bold uppercase tracking-wider text-cocoa-800 mb-2">
+                                <i class="fa-solid fa-user mr-1 text-cocoa-600"></i> Nama Lengkap Siswa
+                            </label>
+                            <input
+                                id="studentNameInput"
+                                type="text"
+                                required
+                                placeholder="Contoh: Budi Santoso"
+                                class="w-full px-4 py-3.5 rounded-2xl border border-cocoa-300 bg-cocoa-50/60 text-cocoa-900 font-medium focus:outline-none focus:ring-2 focus:ring-cocoa-700 focus:bg-white transition"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="studentClassInput" class="block text-xs font-bold uppercase tracking-wider text-cocoa-800 mb-2">
+                                <i class="fa-solid fa-school mr-1 text-cocoa-600"></i> Kelas
+                            </label>
+                            <input
+                                id="studentClassInput"
+                                type="text"
+                                required
+                                placeholder="Contoh: VIII - A / 8B"
+                                class="w-full px-4 py-3.5 rounded-2xl border border-cocoa-300 bg-cocoa-50/60 text-cocoa-900 font-medium focus:outline-none focus:ring-2 focus:ring-cocoa-700 focus:bg-white transition"
+                            >
+                        </div>
+
+                        <!-- Pilih Karakter Ikon -->
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-cocoa-800 mb-2">
+                                <i class="fa-solid fa-id-badge mr-1 text-cocoa-600"></i> Pilih Ikon Profil
+                            </label>
+                            <div class="grid grid-cols-4 gap-2.5" id="avatarPicker">
+                                <button type="button" onclick="selectAvatar('fa-user-graduate', this)" class="avatar-btn py-3 rounded-2xl border-2 border-cocoa-800 bg-cocoa-100 text-cocoa-900 flex flex-col items-center gap-1 transition">
+                                    <i class="fa-solid fa-user-graduate text-lg"></i>
+                                    <span class="text-[10px] font-semibold">Pelajar</span>
+                                </button>
+                                <button type="button" onclick="selectAvatar('fa-user-tie', this)" class="avatar-btn py-3 rounded-2xl border border-cocoa-200 bg-cocoa-50 text-cocoa-700 flex flex-col items-center gap-1 hover:bg-cocoa-100 transition">
+                                    <i class="fa-solid fa-user-tie text-lg"></i>
+                                    <span class="text-[10px] font-semibold">Manajer</span>
+                                </button>
+                                <button type="button" onclick="selectAvatar('fa-mug-saucer', this)" class="avatar-btn py-3 rounded-2xl border border-cocoa-200 bg-cocoa-50 text-cocoa-700 flex flex-col items-center gap-1 hover:bg-cocoa-100 transition">
+                                    <i class="fa-solid fa-mug-saucer text-lg"></i>
+                                    <span class="text-[10px] font-semibold">Barista</span>
+                                </button>
+                                <button type="button" onclick="selectAvatar('fa-calculator', this)" class="avatar-btn py-3 rounded-2xl border border-cocoa-200 bg-cocoa-50 text-cocoa-700 flex flex-col items-center gap-1 hover:bg-cocoa-100 transition">
+                                    <i class="fa-solid fa-calculator text-lg"></i>
+                                    <span class="text-[10px] font-semibold">Akuntan</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-cocoa-50 border border-cocoa-200 rounded-2xl p-3.5 text-xs text-cocoa-700 leading-relaxed">
+                            <i class="fa-solid fa-circle-exclamation text-cocoa-800 mr-1"></i>
+                            <strong>Aturan Main:</strong> Setiap soal harus diisi langkah uraian dan jawaban akhirnya. Jika semua benar, kamu bisa langsung naik level. Jika waktu habis, sistem otomatis memindahkanmu ke level berikutnya!
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="w-full py-4 px-6 rounded-2xl bg-cocoa-800 hover:bg-cocoa-900 active:scale-[0.99] text-white font-bold text-sm sm:text-base shadow-lg shadow-cocoa-800/20 transition flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                            <span>Mulai Petualangan Level 1</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- LAYAR 2: AREA BERMAIN (5 LEVEL) -->
+        <section id="gameScreen" class="hidden space-y-6">
+
+            <!-- Stepper Progress 5 Level -->
+            <div class="bg-white rounded-3xl border border-cocoa-200 p-4 sm:p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-cocoa-600">Progres Tahapan Level</span>
+                    <span id="overallProgressText" class="text-xs font-bold text-cocoa-800">Level 1 dari 5</span>
+                </div>
+                <div id="levelStepper" class="grid grid-cols-5 gap-2 sm:gap-3">
+                    <!-- Dirender via JS -->
+                </div>
+            </div>
+
+            <!-- Konten Level Aktif -->
+            <div id="levelContentWrapper" class="space-y-6 animate-level-enter">
+
+                <!-- Kartu Cerita & Ringkasan Materi Level -->
+                <div class="bg-white rounded-3xl border border-cocoa-200 shadow-sm overflow-hidden">
+                    <div class="bg-cocoa-800 text-white p-5 sm:p-7 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="space-y-1.5">
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cocoa-700 text-cocoa-200 text-xs font-semibold">
+                                <i id="levelHeaderIcon" class="fa-solid fa-scale-balanced"></i>
+                                <span id="levelBadgeText">LEVEL 1 • FOKUS UNTUNG & RUGI</span>
+                            </div>
+                            <h2 id="levelTitleText" class="text-xl sm:text-2xl font-extrabold">Hari Pertama: Menghitung Untung & Rugi Produksi</h2>
+                        </div>
+                        <div class="flex items-center gap-3 self-start md:self-center bg-cocoa-900/70 px-4 py-2.5 rounded-2xl border border-cocoa-700 shrink-0">
+                            <i class="fa-solid fa-list-check text-cocoa-300"></i>
+                            <div class="text-xs">
+                                <p class="text-cocoa-300">Target Ketuntasan</p>
+                                <p id="levelStatusCounter" class="font-bold text-white">0 / 3 Soal Benar</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-5 sm:p-7 grid grid-cols-1 lg:grid-cols-12 gap-5 items-center bg-cocoa-50/40">
+                        <!-- Cerita Konteks -->
+                        <div class="lg:col-span-7 space-y-2">
+                            <h3 class="text-xs font-extrabold uppercase tracking-wider text-cocoa-700 flex items-center gap-1.5">
+                                <i class="fa-solid fa-book-open"></i> Cerita Skenario Level Ini
+                            </h3>
+                            <p id="levelStoryText" class="text-sm sm:text-base text-cocoa-900 leading-relaxed font-normal"></p>
+                        </div>
+                        <!-- Kotak Rumus Penting -->
+                        <div class="lg:col-span-5 bg-white p-4 sm:p-5 rounded-2xl border border-cocoa-200 shadow-xs space-y-2">
+                            <h4 class="text-xs font-extrabold uppercase tracking-wider text-cocoa-800 flex items-center gap-1.5">
+                                <i class="fa-solid fa-lightbulb text-amber-600"></i> Catatan Rumus Cepat
+                            </h4>
+                            <div id="levelFormulaBox" class="text-xs text-cocoa-800 space-y-1.5 leading-relaxed"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daftar Soal Uraian pada Level Aktif -->
+                <div id="questionsContainer" class="space-y-5">
+                    <!-- Dirender dinamis via JS -->
+                </div>
+
+                <!-- Panel Navigasi Bawah Level -->
+                <div class="bg-white rounded-3xl border border-cocoa-200 p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3 text-xs sm:text-sm text-cocoa-700">
+                        <div id="gateLockIcon" class="w-10 h-10 rounded-2xl bg-cocoa-100 text-cocoa-800 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <div>
+                            <p id="gateStatusTitle" class="font-bold text-cocoa-900">Level Berikutnya Masih Terkunci</p>
+                            <p id="gateStatusSubtitle" class="text-xs text-cocoa-600">Jawab seluruh soal uraian di level ini dengan benar untuk membuka level selanjutnya.</p>
+                        </div>
+                    </div>
+
+                    <button
+                        id="nextLevelBtn"
+                        type="button"
+                        onclick="handleNextLevelClick()"
+                        disabled
+                        class="w-full sm:w-auto px-6 py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition bg-cocoa-200 text-cocoa-500 cursor-not-allowed"
+                    >
+                        <span id="nextLevelBtnText">Lanjut ke Level Berikutnya</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- LAYAR 3: HASIL AKHIR, SERTIFIKAT & DOWNLOAD PDF -->
+        <section id="resultScreen" class="hidden max-w-5xl mx-auto space-y-6 animate-level-enter">
+            <div class="bg-white rounded-3xl border border-cocoa-200 shadow-xl overflow-hidden">
+                <!-- Banner Atas -->
+                <div class="bg-cocoa-800 text-white p-6 sm:p-9 text-center space-y-3">
+                    <div class="w-16 h-16 rounded-3xl bg-cocoa-700 border border-cocoa-500 mx-auto flex items-center justify-center text-3xl text-amber-300 shadow-lg">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <p class="text-xs uppercase tracking-widest text-cocoa-200 font-bold">LAPORAN AKHIR MANAJER ARTHACOKELAT</p>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold">Selamat! Seluruh Rangkaian Misi Selesai</h2>
+                    <p id="resultSyncStatus" class="text-xs inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-cocoa-900/80 text-cocoa-200 border border-cocoa-700">
+                        <i class="fa-solid fa-circle-info"></i> Hasil siap diunduh ke PDF atau dikirim ke Spreadsheet Guru
+                    </p>
+                </div>
+
+                <!-- Ringkasan Profil & Nilai -->
+                <div class="p-6 sm:p-8 space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-cocoa-50 border border-cocoa-200 rounded-2xl p-4">
+                            <p class="text-xs text-cocoa-600 font-semibold">Nama & Kelas Siswa</p>
+                            <p id="resStudentName" class="text-base font-extrabold text-cocoa-900 mt-1">-</p>
+                            <p id="resStudentClass" class="text-xs text-cocoa-700 font-medium">-</p>
+                        </div>
+                        <div class="bg-cocoa-50 border border-cocoa-200 rounded-2xl p-4">
+                            <p class="text-xs text-cocoa-600 font-semibold">Nilai Akhir (Skala 100)</p>
+                            <p id="resFinalScore" class="text-3xl font-extrabold text-cocoa-800 mt-1">0</p>
+                            <p id="resPredicate" class="text-xs text-cocoa-700 font-medium">Predikat</p>
+                        </div>
+                        <div class="bg-cocoa-50 border border-cocoa-200 rounded-2xl p-4">
+                            <p class="text-xs text-cocoa-600 font-semibold">Ketuntasan Soal</p>
+                            <p id="resTotalCorrect" class="text-2xl font-extrabold text-cocoa-900 mt-1">0 / 21</p>
+                            <p class="text-xs text-cocoa-700">Soal Uraian Terjawab Benar</p>
+                        </div>
+                        <div class="bg-cocoa-50 border border-cocoa-200 rounded-2xl p-4">
+                            <p class="text-xs text-cocoa-600 font-semibold">Total Durasi Pengerjaan</p>
+                            <p id="resTotalTime" class="text-2xl font-extrabold text-cocoa-900 mt-1 font-mono">00:00</p>
+                            <p class="text-xs text-cocoa-700">Akumulasi Level 1–5</p>
+                        </div>
+                    </div>
+
+                    <!-- Rincian Skor Per Level -->
+                    <div>
+                        <h3 class="text-sm font-extrabold uppercase tracking-wider text-cocoa-800 mb-3">Rekapitulasi Setiap Level</h3>
+                        <div id="resLevelBreakdown" class="grid grid-cols-1 sm:grid-cols-5 gap-3">
+                            <!-- Dirender via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Tombol Aksi Hasil -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-cocoa-200">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <button
+                                type="button"
+                                onclick="downloadResultPDF()"
+                                class="px-5 py-3.5 rounded-2xl bg-cocoa-800 hover:bg-cocoa-900 text-white font-bold text-sm shadow-md flex items-center gap-2 transition cursor-pointer"
+                            >
+                                <i class="fa-solid fa-file-pdf"></i>
+                                <span>Download Hasil PDF</span>
+                            </button>
+
+                            <button
+                                type="button"
+                                onclick="sendResultsToSpreadsheet(true)"
+                                id="manualSendSheetBtn"
+                                class="px-5 py-3.5 rounded-2xl bg-cocoa-100 hover:bg-cocoa-200 text-cocoa-900 border border-cocoa-300 font-bold text-sm flex items-center gap-2 transition cursor-pointer"
+                            >
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span>Kirim ke Spreadsheet</span>
+                            </button>
+
+                            <button
+                                type="button"
+                                onclick="toggleGasModal()"
+                                class="px-4 py-3.5 rounded-2xl border border-cocoa-200 text-cocoa-700 hover:bg-cocoa-50 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+                            >
+                                <i class="fa-solid fa-gear"></i>
+                                <span>Pengaturan URL Apps Script</span>
+                            </button>
+                        </div>
+
+                        <button
+                            type="button"
+                            onclick="resetGameSession()"
+                            class="px-4 py-3 rounded-2xl text-xs font-bold text-cocoa-700 hover:text-cocoa-900 hover:bg-cocoa-100 transition cursor-pointer"
+                        >
+                            <i class="fa-solid fa-rotate-right mr-1"></i> Main Ulang dengan Siswa Baru
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabel Review Jawaban & Pembahasan Lengkap 21 Soal -->
+            <div class="bg-white rounded-3xl border border-cocoa-200 p-6 sm:p-8 shadow-sm space-y-4">
+                <h3 class="text-base font-extrabold text-cocoa-900 flex items-center gap-2">
+                    <i class="fa-solid fa-clipboard-check text-cocoa-700"></i>
+                    Detail Jawaban Uraian Siswa (Level 1 – Level 5)
+                </h3>
+                <div id="resultDetailsList" class="space-y-3">
+                    <!-- Dirender via JS -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-cocoa-200 bg-white py-4 px-4 sm:px-6 text-center text-xs text-cocoa-600 mt-8">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p><strong>ArthaCokelat</strong> — Media Pembelajaran Interaktif Aritmatika Sosial SMP Kelas VIII</p>
+            <p>Desain Minimalis Cokelat & Putih • Dilengkapi Timer Level, Unduh PDF & Integrasi Spreadsheet</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Masukkan URL Web App Google Apps Script default Anda di sini jika ingin langsung terhubung
+        const DEFAULT_GAS_WEB_APP_URL = "";
+
+        // Data Lengkap 5 Level (Level 1-4 @ 3 Soal Uraian = 12 Soal, Level 5 Post-Test @ 9 Soal Uraian = Total 21 Soal)
+        const GAME_LEVELS = [
+            {
+                levelNumber: 1,
+                code: "L1",
+                title: "Untung & Rugi",
+                fullTitle: "Level 1: Analisis Untung & Rugi Kedai",
+                icon: "fa-scale-balanced",
+                durationSeconds: 10 * 60, // 10 Menit
+                story: "Hari pertama kamu mengelola Kedai ArthaCokelat! Tugas pertamamu adalah memeriksa catatan pembelian bahan baku (Harga Beli/Modal) dan pemasukan penjualan (Harga Jual) agar toko tahu apakah mengalami Keuntungan atau Kerugian.",
+                formulas: `
+                    <p>• <strong>Untung</strong> = Harga Jual − Harga Beli (jika HJ > HB)</p>
+                    <p>• <strong>Rugi</strong> = Harga Beli − Harga Jual (jika HB > HJ)</p>
+                    <p>• <strong>% Untung</strong> = (Untung / Harga Beli) × 100%</p>
+                    <p>• <strong>% Rugi</strong> = (Rugi / Harga Beli) × 100%</p>
+                `,
+                questions: [
+                    {
+                        id: "L1Q1",
+                        number: 1,
+                        contextTitle: "Penjualan Brownies Panggang",
+                        question: "Kedai ArthaCokelat mengeluarkan modal Rp350.000 untuk membuat 50 kotak brownies. Seluruh brownies habis terjual dengan harga Rp9.000 per kotak. Berapakah total keuntungan (dalam Rupiah) yang diperoleh kedai?",
+                        unitLabel: "Rupiah (Rp)",
+                        correctAnswer: 100000,
+                        exampleQuestion: "Modal membuat 40 cup puding cokelat adalah Rp200.000. Jika dijual Rp6.500 per cup dan habis terjual, berapa keuntungan yang didapat?",
+                        exampleSolution: "1) Total Harga Jual = 40 × Rp6.500 = Rp260.000.\n2) Untung = Harga Jual − Harga Beli = Rp260.000 − Rp200.000 = Rp60.000."
+                    },
+                    {
+                        id: "L1Q2",
+                        number: 2,
+                        contextTitle: "Persentase Kerugian Susu Kakao",
+                        question: "Kedai membeli satu paket stok susu kakao segar seharga Rp400.000. Karena listrik sempat padam, sebagian stok mendekati masa kedaluwarsa sehingga seluruhnya terpaksa dijual murah dan hanya menghasilkan uang Rp340.000. Berapa persen (%) kerugian yang dialami kedai?",
+                        unitLabel: "Persen (%)",
+                        correctAnswer: 15,
+                        exampleQuestion: "Seorang pedagang membeli buah seharga Rp500.000, namun karena sebagian layu ia hanya berhasil menjualnya seharga Rp450.000. Tentukan persentase kerugiannya!",
+                        exampleSolution: "1) Besar Rugi = Rp500.000 − Rp450.000 = Rp50.000.\n2) % Rugi = (Rp50.000 / Rp500.000) × 100% = 10%."
+                    },
+                    {
+                        id: "L1Q3",
+                        number: 3,
+                        contextTitle: "Menentukan Harga Jual per Toples",
+                        question: "Kedai membeli 20 toples selai cokelat hazelnut dengan total modal Rp600.000. Jika kedai menginginkan keuntungan sebesar 25% dari total modal tersebut, berapakah harga jual untuk 1 toples selai?",
+                        unitLabel: "Rupiah (Rp)",
+                        correctAnswer: 37500,
+                        exampleQuestion: "Pedagang membeli 10 kotak kue dengan modal total Rp200.000. Jika ingin untung 20%, berapa harga jual per kotak?",
+                        exampleSolution: "1) Total Untung = 20% × Rp200.000 = Rp40.000.\n2) Total Harga Jual = Rp200.000 + Rp40.000 = Rp240.000.\n3) Harga Jual per kotak = Rp240.000 ÷ 10 = Rp24.000."
+                    }
+                ]
+            },
+            {
+                levelNumber: 2,
+                code: "L2",
+                title: "Diskon (Rabat)",
+                fullTitle: "Level 2: Strategi Promosi & Diskon Toko",
+                icon: "fa-tags",
+                durationSeconds: 10 * 60, // 10 Menit
+                story: "Memasuki akhir pekan, Kedai ArthaCokelat mengadakan festival potongan harga (Diskon/Rabat) untuk menarik pelanggan baru. Pastikan kamu menghitung harga bersih setelah diskon dengan tepat agar kasir tidak salah menagih!",
+                formulas: `
+                    <p>• <strong>Besar Diskon (Rp)</strong> = (% Diskon) × Harga Awal</p>
+                    <p>• <strong>Harga Bersih</strong> = Harga Awal − Besar Diskon</p>
+                    <p>• <strong>Diskon Bertingkat (a% + b%)</strong>: Hitung diskon pertama dulu, lalu diskon kedua dihitung dari sisa harganya.</p>
+                `,
+                questions: [
+                    {
+                        id: "L2Q1",
+                        number: 1,
+                        contextTitle: "Promo Akhir Pekan Hamper Cokelat",
+                        question: "Satu paket Hamper Cokelat Spesial memiliki harga label Rp180.000. Saat promo akhir pekan, kedai memberikan diskon sebesar 15%. Berapakah harga yang harus dibayar oleh pembeli?",
+                        unitLabel: "Rupiah (Rp)",
+                        correctAnswer: 153000,
+                        exampleQuestion: "Harga sebuah kue tart adalah Rp120.000. Jika mendapat diskon 20%, berapa uang yang harus dibayar?",
+                        exampleSolution: "1) Besar Diskon = 20% × Rp120.000 = Rp24.000.\n2) Harga Dibayar = Rp120.000 − Rp24.000 = Rp96.000."
+                    },
+                    {
+                        id: "L2Q2",
+                        number: 2,
+                        contextTitle: "Mencari Persentase Diskon",
+                        question: "Harga asli sekotak Truffle Cokelat Premium adalah Rp250.000. Seorang pelanggan member hanya membayar Rp200.000 setelah dipotong diskon. Berapa persen (%) diskon yang diterima pelanggan tersebut?",
+                        unitLabel: "Persen (%)",
+                        correctAnswer: 20,
+                        exampleQuestion: "Sepatu seharga Rp300.000 dibayar hanya Rp255.000. Berapa persen diskonnya?",
+                        exampleSolution: "1) Potongan Harga = Rp300.000 − Rp255.000 = Rp45.000.\n2) % Diskon = (Rp45.000 / Rp300.000) × 100% = 15%."
+                    },
+                    {
+                        id: "L2Q3",
+                        number: 3,
+                        contextTitle: "Diskon Bertingkat (Double Discount)",
+                        question: "Mesin pembuat minuman cokelat panas di katalog bertuliskan harga Rp400.000 dengan promo diskon bertingkat 20% + 10%. Berapakah harga akhir yang harus dibayar setelah kedua diskon tersebut diterapkan?",
+                        unitLabel: "Rupiah (Rp)",
+                        correctAnswer: 288000,
+                        exampleQuestion: "Jaket seharga Rp200.000 mendapat diskon 30% + 10%. Berapa harga akhirnya?",
+                        exampleSolution: "1) Setelah diskon pertama 30%: Rp200.000 − (30% × Rp200.000) = Rp140.000.\n2) Diskon kedua 10% dari Rp140.000 = Rp14.000.\n3) Harga Akhir = Rp140.000 − Rp14.000 = Rp126.000."
+                    }
+                ]
+            },
+            {
+                levelNumber: 3,
+                code: "L3",
+                title: "Pajak (PPN & PPh)",
+                fullTitle: "Level 3: Kepatuhan Pajak Restoran & Penghasilan",
+                icon: "fa-file-invoice-dollar",
+                durationSeconds: 10 * 60, // 10 Menit
+                story: "Sebagai usaha yang taat aturan, Kedai ArthaCokelat wajib menghitung Pajak Pertambahan Nilai (PPN) pada struk pelanggan dan Pajak Penghasilan (PPh) untuk gaji staf serta pajak UMKM.",
+                formulas: `
+                    <p>• <strong>PPN (Pajak Pembelian)</strong> Menambah harga bayar:<br>Harga Total = Harga Awal + (% Pajak × Harga Awal)</p>
+                    <p>• <strong>PPh (Pajak Penghasilan)</strong> Mengurangi gaji diterima:<br>Gaji Bersih = Gaji Kotor − (% PPh × Gaji Kotor)</p>
+                `,
+                questions: [
+                    {
+                        id: "L3Q1",
+                        number: 1,
+                        contextTitle: "Pajak Pembelian Kafe (PPN)",
+                        question: "Keluarga Pak Rahmat memesan paket fondue cokelat dan minuman di Kedai ArthaCokelat dengan total harga makanan Rp300.000 (belum termasuk pajak). Jika dikenakan pajak restoran/PPN sebesar 11%, berapakah total tagihan yang harus dibayar Pak Rahmat?",
+                        unitLabel: "Rupiah (Rp)",
+                        correctAnswer: 333000,
+                        exampleQuestion: "Beli makanan seharga Rp200.000 dengan pajak 10%. Berapa total yang harus dibayar?",
+                        exampleSolution: "1) Besar Pajak = 10% × Rp200.000 = Rp20.000.\n2) Total Bayar = Rp200.000 + Rp20.000 = Rp220.000."
+                    },
+                    {
+                        id: "L3Q2",
+                        number: 2,
+                        contextTitle: "Pajak Penghasilan Kepala Barista (PPh)",
+                        question: "Gaji kotor Kepala Barista di Kedai ArthaCokelat adalah Rp4.800.000 per bulan. Jika penghasilan tersebut dikenakan Pajak Penghasilan (PPh) sebesar 5%, berapakah gaji bersih yang diterima Kepala Barista setiap bulan?",
+                        unitLabel: "Rupiah (Rp)",
+                        correctAnswer: 4560000,
+                        exampleQuestion: "Gaji seorang pegawai Rp4.000.000 per bulan dengan PPh 5%. Berapa gaji bersih yang diterima?",
+                        exampleSolution: "1) Besar PPh = 5% × Rp4.000.000 = Rp200.000.\n2) Gaji Bersih = Rp4.000.000 − Rp200.000 = Rp3.800.000."
+                    },
+                    {
+                        id: "L3Q3",
+                        number: 3,
+                        contextTitle: "Pajak Omzet UMKM Kedai",
+                        question: "Pada bulan ini, Kedai ArthaCokelat membukukan total omzet penjualan kotor sebesar Rp24.000.000. Pemerintah menetapkan tarif pajak UMKM sebesar 0,5% dari total omzet. Berapa Rupiah pajak UMKM yang wajib disetorkan kedai?",
+                        unitLabel: "Rupiah (Rp)",
+                        correctAnswer: 120000,
+                        exampleQuestion: "Sebuah toko roti memiliki omzet Rp10.000.000 sebulan dengan pajak UMKM 0,5%. Berapa pajak yang harus dibayar?",
+                        exampleSolution: "1) Pajak UMKM = 0,5% × Rp10.000.000 = (0,5 / 100) × Rp10.000.000 = Rp50.000."
+                    }
+                ]
+            },
+            {
+                levelNumber: 4,
+                code: "L4",
+                title: "Kesimpulan Lv 1–3",
+                fullTitle: "Level 4: Evaluasi Terpadu (Untung Rugi, Diskon & Pajak)",
+                icon: "fa-layer-group",
+                durationSeconds: 10 * 60, // 10 Menit
+                story: "Kini saatnya menggabungkan seluruh kemampuanmu dari Level 1, Level 2, dan Level 3! Dalam transaksi nyata, sebuah produk bisa mengalami diskon sekaligus pajak, serta tetap harus dihitung keuntungan bersihnya.",
+                formulas: `
+                    <p>• Urutan Transaksi Kasir: <strong>Harga Awal → Kurangi Diskon → Tambahkan Pajak dari Harga Setelah Diskon</strong>.</p>
+                    <p>• <strong>Untung Bersih Toko</strong> = Harga Jual Setelah Diskon − Modal Awal (Pajak disetor ke negara, bukan milik toko).</p>
+                `,
+                questions: [
+                    {
+                        id: "L4Q1",
+                        number: 1,
+                        contextTitle: "Transaksi Gabungan Diskon & Pajak",
+                        question: "Seorang pelanggan membeli Paket Cokelat Royal dengan harga label Rp200.000. Pelanggan tersebut mendapat diskon promo 10%, kemudian dari harga setelah diskon dikenakan pajak PPN 10%. Berapakah total uang yang harus dibayarkan pelanggan di kasir?",
+                        unitLabel: "Rupiah (Rp)",
+                        correctAnswer: 198000,
+                        exampleQuestion: "Barang seharga Rp100.000 didiskon 20%, lalu dikenakan pajak 10% dari harga setelah diskon. Berapa total bayarnya?",
+                        exampleSolution: "1) Harga setelah diskon 20% = Rp100.000 − Rp20.000 = Rp80.000.\n2) Pajak 10% dari Rp80.000 = Rp8.000.\n3) Total Bayar = Rp80.000 + Rp8.000 = Rp88.000."
+                    },
+                    {
+                        id: "L4Q2",
+                        number: 2,
+                        contextTitle: "Menghitung Untung Setelah Memberi Diskon",
+                        question: "Kedai memproduksi sebuah Kue Cokelat Lapis dengan modal Rp150.000. Kedai memasang harga label Rp250.000, lalu memberikan diskon 20% kepada pembeli. Berapa Rupiah keuntungan bersih yang masih diperoleh kedai dari penjualan kue tersebut?",
+                        unitLabel: "Rupiah (Rp)",
+                        correctAnswer: 50000,
+                        exampleQuestion: "Modal baju Rp100.000, diberi label Rp160.000 dan dijual dengan diskon 25%. Berapa untung pedagang?",
+                        exampleSolution: "1) Diskon = 25% × Rp160.000 = Rp40.000.\n2) Harga Jual Bersih = Rp160.000 − Rp40.000 = Rp120.000.\n3) Untung = Rp120.000 − Rp100.000 = Rp20.000."
+                    },
+                    {
+                        id: "L4Q3",
+                        number: 3,
+                        contextTitle: "Modal Belanja Bahan Baku (Diskon Supplier + Pajak)",
+                        question: "Kedai membeli bahan baku bubuk kakao dari distributor dengan harga katalog Rp1.000.000. Distributor memberi diskon grosir 10%, namun mengenakan PPN 10% atas harga setelah diskon. Jika seluruh bubuk kakao itu diolah dan berhasil dijual kembali oleh kedai dengan total pemasukan bersih Rp1.200.000, berapa Rupiah keuntungan bersih kedai?",
+                        unitLabel: "Rupiah (Rp)",
+                        correctAnswer: 210000,
+                        exampleQuestion: "Beli barang katalog Rp500.000, diskon 20%, lalu PPN 10%. Jika barang dijual laku Rp550.000, berapa untungnya?",
+                        exampleSolution: "1) Harga setelah diskon = Rp500.000 − Rp100.000 = Rp400.000.\n2) Tambah PPN 10% = Rp400.000 + Rp40.000 = Rp440.000 (Modal Bersih).\n3) Untung = Rp550.000 − Rp440.000 = Rp110.000."
+                    }
+                ]
+            },
+            {
+                levelNumber: 5,
+                code: "L5",
+                title: "Post-Test (9 Soal)",
+                fullTitle: "Level 5: Post-Test Manajer Utama (9 Soal Uraian HOTS)",
+                icon: "fa-crown",
+                durationSeconds: 30 * 60, // 30 Menit
+                story: "Ini adalah ujian akhir (Post-Test) dengan waktu 30 menit! Terdapat 9 soal uraian tingkat lanjut dengan konteks pengelolaan Kedai ArthaCokelat yang menguji pemahaman mendalam tentang untung-rugi, diskon, pajak, dan analisis gabungan.",
+                formulas: `
+                    <p>• <strong>Mencari Harga Beli (Modal) dari Harga Jual:</strong><br>Jika Untung p%: HB = HJ × 100 / (100 + p)<br>Jika Rugi r%: HB = HJ × 100 / (100 − r)</p>
+                    <p>• <strong>Mencari Harga Label sebelum Diskon d%:</strong><br>Harga Label = Harga Setelah Diskon × 100 / (100 − d)</p>
+                `,
+                questions: [
+                    {
+                        id: "L5Q1",
+                        number: 1,
+                        contextTitle: "Post-Test 1 • Analisis Penjualan Cokelat Batang (Sebagian Rusak)",
+                        question: "Kedai membeli 100 batang cokelat artisan dengan total modal Rp1.200.000. Saat pemeriksaan kualitas, ternyata 10 batang cokelat patah dan tidak bisa dijual normal, sehingga 10 batang tersebut dijual obral Rp8.000 per batang. Jika kedai tetap ingin meraih total keuntungan 20% dari modal awal, berapakah harga jual per batang untuk 90 cokelat yang masih utuh?",
+                        unitLabel: "Rupiah (Rp)",
+                        correctAnswer: 15111,
+                        customNote: "Catatan: Bulatkan ke satuan terdekat jika perlu, atau gunakan angka tepat sesuai perhitungan: (Target Total Jual Rp1.440.000 - Rp80.000) / 90? Tunggu, supaya hasilnya bulat untuk siswa SMP, mari gunakan angka yang habis dibagi 90!",
+                        question: "Kedai membeli 100 batang cokelat artisan dengan total modal Rp1.200.000. Saat pemeriksaan, 10 batang cokelat retak sehingga dijual murah seharga Rp9.000 per batang. Jika kedai ingin memperoleh total keuntungan 20% dari modal awal, berapakah harga jual per batang untuk 90 cokelat yang masih bagus?",
+                        unitLabel: "Rupiah (Rp)",
+                        correctAnswer: 15000,
+                        exampleQuestion: "Beli 50 kue modal Rp500.000. Sebanyak 5 kue rusak dijual Rp5.000/kue. Agar untung 10%, berapa harga jual 45 kue sisanya?",
+                        exampleSolution: "1) Target pemasukan total (untung 10%) = Rp500.000 + (10% × Rp500.000) = Rp550.000.\n2) Hasil jual 5 kue rusak = 5 × Rp5.000 = Rp25.000.\n3) Sisa pemasukan dari 45 kue bagus = Rp550.000 − Rp25.000 = Rp525.000 (dibagi 45 kue)."
+                    },
+                    {
+                        id: "L5Q2",
+                        number: 2,
+                        contextTitle: "Post-Test 2 • Mencari Modal Awal dari Persentase Untung",
+                        question: "Satu paket Mesin Roasting Kakao bekas dijual kembali oleh kedai dengan harga Rp2.760.000. Dari penjualan tersebut, kedai tercatat mendapatkan keuntungan sebesar 15%. Berapakah harga beli (modal awal) mesin tersebut saat dulu dibeli?",
+                        unitLabel: "Rupiah (Rp)",
+                        correctAnswer: 2400000,
+                        exampleQuestion: "Sebuah barang dijual Rp1.320.000 dan sudah termasuk untung 10%. Berapa harga belinya?",
+                        exampleSolution: "1) Harga Jual = 110% dari Harga Beli.\n2) Harga Beli = Rp1.320.000 × (100 / 110) = Rp1.200.000."
+                    },
+                    {
+                        id: "L5Q3",
+                        number: 3,
+                        contextTitle: "Post-Test 3 • Mencari Modal Awal Saat Mengalami Kerugian",
+                        question: "Kedai menjual etalase pendingin lama seharga Rp1.360.000. Dari penjualan tersebut, kedai mengalami kerugian sebesar 15% dari harga belinya. Berapakah harga beli awal etalase pendingin tersebut?",
+                        unitLabel: "Rupiah (Rp)",
+                        correctAnswer: 1600000,
+                        exampleQuestion: "Sepeda dijual Rp720.000 dan mengalami rugi 20%. Berapa harga beli sepeda itu?",
+                        exampleSolution: "1) Harga Jual = (100% − 20%) = 80% dari Harga Beli.\n2) Harga Beli = Rp720.000 × (100 / 80) = Rp900.000."
+                    },
+                    {
+                        id: "L5Q4",
+                        number: 4,
+                        contextTitle: "Post-Test 4 • Mencari Harga Label Sebelum Diskon Bertingkat",
+                        question: "Seorang pelanggan membeli Paket Parcel Lebaran Cokelat yang sedang diskon bertingkat 20% + 10%. Jika pelanggan tersebut membayar uang sebesar Rp360.000 di kasir, berapakah harga label awal parcel tersebut sebelum didiskon?",
+                        unitLabel: "Rupiah (Rp)",
+                        correctAnswer: 500000,
+                        exampleQuestion: "Setelah diskon 25% + 20%, sebuah tas dibayar Rp180.000. Berapa harga label awalnya?",
+                        exampleSolution: "1) Sisa persentase bayar = (100% − 25%) × (100% − 20%) = 75% × 80% = 60%.\n2) Harga Label Awal = Rp180.000 ÷ 60% = Rp300.000."
+                    },
+                    {
+                        id: "L5Q5",
+                        number: 5,
+                        contextTitle: "Post-Test 5 • Membandingkan Dua Pemasok Bahan Baku",
+                        question: "Kedai ingin membeli gula halus dengan harga katalog Rp800.000. Toko A menawarkan diskon tunggal 25%, sedangkan Toko B menawarkan diskon bertingkat 15% + 10%. Berapa Rupiah selisih harga bayar antara Toko A dan Toko B?",
+                        unitLabel: "Rupiah (Rp)",
+                        correctAnswer: 12000,
+                        exampleQuestion: "Harga barang Rp1.000.000. Toko X diskon 30%, Toko Y diskon 20% + 10%. Berapa selisih harganya?",
+                        exampleSolution: "1) Toko X (diskon 30%): Bayar 70% × Rp1.000.000 = Rp700.000.\n2) Toko Y (20% + 10%): Bayar 80% × 90% × Rp1.000.000 = 72% × Rp1.000.000 = Rp720.000.\n3) Selisih = Rp720.000 − Rp700.000 = Rp20.000."
+                    },
+                    {
+                        id: "L5Q6",
+                        number: 6,
+                        contextTitle: "Post-Test 6 • Mencari Harga Makanan Sebelum PPN",
+                        question: "Seorang pelanggan membayar total tagihan di kasir Kedai ArthaCokelat sebesar Rp555.000. Tagihan tersebut sudah termasuk Pajak Pertambahan Nilai (PPN) sebesar 11%. Berapakah harga pesanan makanan dan minuman pelanggan tersebut sebelum ditambah pajak?",
+                        unitLabel: "Rupiah (Rp)",
+                        correctAnswer: 500000,
+                        exampleQuestion: "Total tagihan makan termasuk PPN 10% adalah Rp330.000. Berapa harga sebelum pajak?",
+                        exampleSolution: "1) Total Tagihan = 110% × Harga Awal.\n2) Harga Awal = Rp330.000 × (100 / 110) = Rp300.000."
+                    },
+                    {
+                        id: "L5Q7",
+                        number: 7,
+                        contextTitle: "Post-Test 7 • Pajak Penghasilan dengan PTKP",
+                        question: "Manajer Utama Kedai memiliki gaji kotor Rp7.500.000 per bulan dengan Penghasilan Tidak Kena Pajak (PTKP) sebesar Rp4.500.000. Jika selisih penghasilan kena pajak dikenai PPh sebesar 10%, berapakah gaji bersih yang diterima Manajer tersebut?",
+                        unitLabel: "Rupiah (Rp)",
+                        correctAnswer: 7200000,
+                        exampleQuestion: "Gaji Rp6.000.000, PTKP Rp4.000.000, dan PPh 5%. Berapa gaji bersih yang diterima?",
+                        exampleSolution: "1) Penghasilan Kena Pajak (PKP) = Rp6.000.000 − Rp4.000.000 = Rp2.000.000.\n2) Besar PPh = 5% × Rp2.000.000 = Rp100.000.\n3) Gaji Bersih = Rp6.000.000 − Rp100.000 = Rp5.900.000."
+                    },
+                    {
+                        id: "L5Q8",
+                        number: 8,
+                        contextTitle: "Post-Test 8 • Menentukan Harga Label agar Tetap Untung Setelah Diskon",
+                        question: "Kedai mengeluarkan modal Rp240.000 untuk membuat satu set Menara Praline Cokelat. Kedai berencana memberikan diskon promosi 20% pada menu tersebut, namun tetap ingin meraih keuntungan 25% dari modal awal. Berapakah harga label yang harus dipasang pada menu?",
+                        unitLabel: "Rupiah (Rp)",
+                        correctAnswer: 375000,
+                        exampleQuestion: "Modal sepatu Rp160.000. Ingin untung 20% walaupun sudah memberi diskon 20%. Berapa harga label yang harus dipasang?",
+                        exampleSolution: "1) Harga Jual yang diinginkan (untung 20%) = Rp160.000 + (20% × Rp160.000) = Rp192.000.\n2) Karena diberi diskon 20%, maka Rp192.000 adalah 80% dari Harga Label.\n3) Harga Label = Rp192.000 × (100 / 80) = Rp240.000."
+                    },
+                    {
+                        id: "L5Q9",
+                        number: 9,
+                        contextTitle: "Post-Test 9 • Evaluasi Komprehensif (Modal, Diskon, Pajak & % Untung)",
+                        question: "Kedai memproduksi Paket Kado Eksklusif dengan modal Rp400.000 dan memasang harga label Rp600.000. Saat terjual, pembeli mendapat diskon 15%, lalu pembeli juga membayar PPN 10% dari harga setelah diskon (PPN disetorkan seluruhnya ke negara). Berapa persen (%) keuntungan bersih yang diperoleh kedai terhadap modal awalnya?",
+                        unitLabel: "Persen (%)",
+                        correctAnswer: 27.5,
+                        exampleQuestion: "Modal barang Rp200.000, label Rp300.000, dijual diskon 20% dan PPN 10%. Berapa % untung bersih toko terhadap modal?",
+                        exampleSolution: "1) Harga jual bersih yang masuk ke toko (setelah diskon 20%) = 80% × Rp300.000 = Rp240.000 (PPN 10% disetor ke kas negara).\n2) Untung Bersih = Rp240.000 − Rp200.000 = Rp40.000.\n3) % Untung = (Rp40.000 / Rp200.000) × 100% = 20%."
+                    }
+                ]
+            }
+        ];
+
+        // State Permainan
+        let gameState = {
+            studentName: "",
+            studentClass: "",
+            avatarIcon: "fa-user-graduate",
+            currentLevelIndex: 0,
+            levelRemainingSeconds: 600,
+            levelTimeSpent: [0, 0, 0, 0, 0],
+            timerInterval: null,
+            gasWebAppUrl: DEFAULT_GAS_WEB_APP_URL,
+            // Menyimpan jawaban per soal: { [questionId]: { steps: "", rawAnswer: "", numericAnswer: null, isChecked: false, isCorrect: false } }
+            answers: {}
+        };
+
+        // Inisialisasi State Jawaban Kosong
+        function initEmptyAnswers() {
+            GAME_LEVELS.forEach(lvl => {
+                lvl.questions.forEach(q => {
+                    gameState.answers[q.id] = {
+                        steps: "",
+                        rawAnswer: "",
+                        numericAnswer: null,
+                        isChecked: false,
+                        isCorrect: false
+                    };
+                });
+            });
+        }
+
+        // Pilih Avatar di Halaman Awal
+        function selectAvatar(iconClass, btnEl) {
+            gameState.avatarIcon = iconClass;
+            document.querySelectorAll('.avatar-btn').forEach(btn => {
+                btn.className = "avatar-btn py-3 rounded-2xl border border-cocoa-200 bg-cocoa-50 text-cocoa-700 flex flex-col items-center gap-1 hover:bg-cocoa-100 transition";
+            });
+            btnEl.className = "avatar-btn py-3 rounded-2xl border-2 border-cocoa-800 bg-cocoa-100 text-cocoa-900 flex flex-col items-center gap-1 transition";
+        }
+
+        // Mulai Game setelah Submit Form Profil
+        function startGame(event) {
+            event.preventDefault();
+            const nameVal = document.getElementById('studentNameInput').value.trim();
+            const classVal = document.getElementById('studentClassInput').value.trim();
+
+            if (!nameVal || !classVal) {
+                showToast("Mohon lengkapi Nama Lengkap dan Kelas terlebih dahulu.", "fa-triangle-exclamation");
+                return;
+            }
+
+            gameState.studentName = nameVal;
+            gameState.studentClass = classVal;
+            gameState.currentLevelIndex = 0;
+            gameState.levelTimeSpent = [0, 0, 0, 0, 0];
+            initEmptyAnswers();
+
+            // Update Kartu Profil di Header
+            document.getElementById('profileNameDisplay').textContent = gameState.studentName;
+            document.getElementById('profileClassDisplay').textContent = "Kelas " + gameState.studentClass;
+            document.getElementById('profileAvatarIcon').className = "fa-solid " + gameState.avatarIcon;
+            document.getElementById('headerPlayerStatus').classList.remove('hidden');
+            document.getElementById('headerPlayerStatus').classList.add('flex');
+
+            // Tampilkan layar permainan
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+
+            loadLevel(0, false);
+        }
+
+        // Memuat Level Tertentu
+        function loadLevel(levelIdx, withTransition = true) {
+            stopLevelTimer();
+            gameState.currentLevelIndex = levelIdx;
+            const levelObj = GAME_LEVELS[levelIdx];
+
+            const renderAction = () => {
+                renderStepper();
+                document.getElementById('overallProgressText').textContent = `Level ${levelObj.levelNumber} dari ${GAME_LEVELS.length}`;
+                document.getElementById('levelHeaderIcon').className = `fa-solid ${levelObj.icon}`;
+                document.getElementById('levelBadgeText').textContent = `LEVEL ${levelObj.levelNumber} • ${levelObj.title.toUpperCase()} (${levelObj.questions.length} SOAL URAIAN)`;
+                document.getElementById('levelTitleText').textContent = levelObj.fullTitle;
+                document.getElementById('levelStoryText').textContent = levelObj.story;
+                document.getElementById('levelFormulaBox').innerHTML = levelObj.formulas;
+
+                renderQuestionsForCurrentLevel();
+                updateLevelGateStatus();
+
+                // Reset animasi masuk
+                const wrapper = document.getElementById('levelContentWrapper');
+                wrapper.classList.remove('animate-level-enter');
+                void wrapper.offsetWidth;
+                wrapper.classList.add('animate-level-enter');
+
+                // Mulai timer level
+                startLevelTimer(levelObj.durationSeconds);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            if (withTransition) {
+                const overlay = document.getElementById('levelTransitionOverlay');
+                const bar = document.getElementById('transitionBar');
+                document.getElementById('transitionIcon').className = `fa-solid ${levelObj.icon} text-4xl text-cocoa-200`;
+                document.getElementById('transitionSub').textContent = `MEMASUKI LEVEL ${levelObj.levelNumber}`;
+                document.getElementById('transitionTitle').textContent = levelObj.fullTitle;
+                document.getElementById('transitionDesc').textContent = `Waktu Pengerjaan: ${Math.floor(levelObj.durationSeconds / 60)} Menit • ${levelObj.questions.length} Soal Uraian`;
+
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
+                bar.style.width = '0%';
+                setTimeout(() => { bar.style.width = '100%'; }, 50);
+
+                setTimeout(() => {
+                    renderAction();
+                    overlay.classList.add('hidden');
+                    overlay.classList.remove('flex');
+                }, 1100);
+            } else {
+                renderAction();
+            }
+        }
+
+        // Render Stepper 5 Level di Atas
+        function renderStepper() {
+            const container = document.getElementById('levelStepper');
+            container.innerHTML = GAME_LEVELS.map((lvl, idx) => {
+                const isCurrent = idx === gameState.currentLevelIndex;
+                const isPassed = idx < gameState.currentLevelIndex;
+                const correctCount = lvl.questions.filter(q => gameState.answers[q.id]?.isCorrect).length;
+
+                let boxClass = "border-cocoa-200 bg-cocoa-50 text-cocoa-500";
+                let badgeIcon = `<i class="fa-solid fa-lock text-xs"></i>`;
+
+                if (isCurrent) {
+                    boxClass = "border-2 border-cocoa-800 bg-cocoa-800 text-white shadow-md";
+                    badgeIcon = `<i class="fa-solid ${lvl.icon} text-xs"></i>`;
+                } else if (isPassed) {
+                    boxClass = "border-cocoa-300 bg-cocoa-100 text-cocoa-900";
+                    badgeIcon = `<i class="fa-solid fa-check text-xs text-emerald-700"></i>`;
+                }
+
+                return `
+                    <div class="rounded-2xl p-2.5 sm:p-3 border transition flex flex-col justify-between ${boxClass}">
+                        <div class="flex items-center justify-between gap-1">
+                            <span class="text-[10px] sm:text-xs font-extrabold uppercase">Lv ${lvl.levelNumber}</span>
+                            ${badgeIcon}
+                        </div>
+                        <p class="text-[11px] font-semibold truncate mt-1">${lvl.title}</p>
+                        <p class="text-[10px] opacity-80 mt-0.5">${correctCount}/${lvl.questions.length} Benar</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render Daftar Soal Uraian di Level Aktif
+        function renderQuestionsForCurrentLevel() {
+            const levelObj = GAME_LEVELS[gameState.currentLevelIndex];
+            const container = document.getElementById('questionsContainer');
+
+            container.innerHTML = levelObj.questions.map((q) => {
+                const ansState = gameState.answers[q.id];
+                const statusBadge = ansState.isChecked
+                    ? (ansState.isCorrect
+                        ? `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300"><i class="fa-solid fa-circle-check"></i> Jawaban Tepat</span>`
+                        : `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300"><i class="fa-solid fa-circle-xmark"></i> Belum Tepat, Cek Kembali</span>`)
+                    : `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-cocoa-100 text-cocoa-700 border border-cocoa-200"><i class="fa-regular fa-pen-to-square"></i> Belum Diperiksa</span>`;
+
+                return `
+                    <div id="card-${q.id}" class="bg-white rounded-3xl border ${ansState.isCorrect ? 'border-emerald-400 ring-2 ring-emerald-100' : 'border-cocoa-200'} p-5 sm:p-7 shadow-xs space-y-5 transition">
+                        <!-- Header Nomor Soal -->
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-cocoa-100 pb-4">
+                            <div class="flex items-center gap-3">
+                                <span class="w-9 h-9 rounded-2xl bg-cocoa-800 text-white font-extrabold text-sm flex items-center justify-center">
+                                    ${q.number}
+                                </span>
+                                <div>
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-cocoa-600">Soal Uraian #${q.number}</span>
+                                    <h4 class="font-extrabold text-sm sm:text-base text-cocoa-900">${q.contextTitle}</h4>
+                                </div>
+                            </div>
+                            <div id="badge-${q.id}">
+                                ${statusBadge}
+                            </div>
+                        </div>
+
+                        <!-- Teks Pertanyaan -->
+                        <div class="bg-cocoa-50/70 border border-cocoa-200/80 rounded-2xl p-4 sm:p-5 text-sm sm:text-base text-cocoa-950 leading-relaxed font-medium">
+                            ${q.question}
+                        </div>
+
+                        <!-- Tombol Buka/Tutup Contoh Soal & Pembahasan -->
+                        <div>
+                            <button
+                                type="button"
+                                onclick="toggleExampleBox('${q.id}')"
+                                class="inline-flex items-center gap-2 text-xs font-bold text-cocoa-800 bg-cocoa-100 hover:bg-cocoa-200 px-4 py-2.5 rounded-xl border border-cocoa-300 transition cursor-pointer"
+                            >
+                                <i class="fa-solid fa-book-open-reader text-cocoa-700"></i>
+                                <span>Lihat Contoh Soal & Pembahasan Serupa</span>
+                                <i id="ex-chevron-${q.id}" class="fa-solid fa-chevron-down text-[10px] transition-transform"></i>
+                            </button>
+
+                            <div id="ex-box-${q.id}" class="hidden mt-3 bg-amber-50/70 border border-amber-200 rounded-2xl p-4 sm:p-5 text-xs sm:text-sm space-y-2.5 text-cocoa-900">
+                                <div class="font-bold text-amber-900 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-lightbulb text-amber-600"></i> Contoh Soal Serupa:
+                                </div>
+                                <p class="leading-relaxed">${q.exampleQuestion}</p>
+                                <div class="pt-2 border-t border-amber-200/80">
+                                    <p class="font-bold text-amber-900 mb-1">Langkah Pembahasan Contoh:</p>
+                                    <pre class="whitespace-pre-wrap font-sans text-xs sm:text-sm text-cocoa-800 leading-relaxed">${q.exampleSolution}</pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Jawaban Uraian Siswa -->
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 pt-1">
+                            <div class="lg:col-span-7">
+                                <label for="steps-${q.id}" class="block text-xs font-bold uppercase tracking-wider text-cocoa-800 mb-1.5">
+                                    1. Langkah Penyelesaian Uraian (Wajib Diisi)
+                                </label>
+                                <textarea
+                                    id="steps-${q.id}"
+                                    rows="3"
+                                    oninput="saveDraftInput('${q.id}')"
+                                    placeholder="Tuliskan rumus dan cara menghitungmu di sini..."
+                                    class="w-full p-3.5 rounded-2xl border border-cocoa-300 bg-cocoa-50/40 text-sm text-cocoa-900 focus:outline-none focus:ring-2 focus:ring-cocoa-700 focus:bg-white transition"
+                                >${ansState.steps}</textarea>
+                            </div>
+
+                            <div class="lg:col-span-5 flex flex-col justify-between">
+                                <div>
+                                    <label for="ans-${q.id}" class="block text-xs font-bold uppercase tracking-wider text-cocoa-800 mb-1.5">
+                                        2. Jawaban Akhir (${q.unitLabel})
+                                    </label>
+                                    <input
+                                        id="ans-${q.id}"
+                                        type="text"
+                                        oninput="saveDraftInput('${q.id}')"
+                                        value="${ansState.rawAnswer}"
+                                        placeholder="Ketik angka jawaban (misal: ${q.correctAnswer})"
+                                        class="w-full px-4 py-3.5 rounded-2xl border border-cocoa-300 bg-cocoa-50/40 text-sm font-bold text-cocoa-900 focus:outline-none focus:ring-2 focus:ring-cocoa-700 focus:bg-white transition"
+                                    >
+                                    <p class="text-[11px] text-cocoa-600 mt-1">Boleh diketik angka saja (contoh: <strong>150000</strong> atau <strong>27,5</strong>).</p>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    onclick="checkSingleQuestion('${q.id}')"
+                                    class="mt-3 w-full py-3 px-4 rounded-2xl bg-cocoa-800 hover:bg-cocoa-900 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition cursor-pointer"
+                                >
+                                    <i class="fa-solid fa-check-double"></i>
+                                    <span>Periksa Jawaban Soal #${q.number}</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Kotak Umpan Balik Soal -->
+                        <div id="feedback-${q.id}" class="${ansState.isChecked ? '' : 'hidden'} rounded-2xl p-3.5 text-xs sm:text-sm font-medium ${ansState.isCorrect ? 'bg-emerald-50 text-emerald-900 border border-emerald-200' : 'bg-rose-50 text-rose-900 border border-rose-200'}">
+                            ${ansState.isChecked
+                                ? (ansState.isCorrect
+                                    ? `<i class="fa-solid fa-circle-check mr-1.5 text-emerald-700"></i> Luar biasa! Langkah uraian dan jawaban akhirmu sudah benar.`
+                                    : `<i class="fa-solid fa-circle-exclamation mr-1.5 text-rose-700"></i> Jawaban akhir atau langkah uraianmu masih kurang tepat. Buka <strong>Contoh Soal & Pembahasan</strong> di atas sebagai panduan!`)
+                                : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Toggle Buka/Tutup Kotak Contoh Soal & Pembahasan
+        function toggleExampleBox(qId) {
+            const box = document.getElementById(`ex-box-${qId}`);
+            const chev = document.getElementById(`ex-chevron-${qId}`);
+            if (box.classList.contains('hidden')) {
+                box.classList.remove('hidden');
+                chev.style.transform = 'rotate(180deg)';
+            } else {
+                box.classList.add('hidden');
+                chev.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Parse Input Angka Siswa (Mendukung format Rp150.000, 150000, atau desimal 27,5 / 27.5)
+        function parseIndonesianNumber(rawStr) {
+            if (!rawStr) return NaN;
+            let cleaned = rawStr.toString().trim().replace(/[Rp\s%]/gi, '');
+            // Jika ada koma sebagai desimal (contoh 27,5)
+            if (cleaned.includes(',') && !cleaned.includes('.')) {
+                cleaned = cleaned.replace(',', '.');
+            } else if (cleaned.includes('.')) {
+                // Cek apakah titik adalah pemisah ribuan (contoh 150.000 atau 1.200.000)
+                const parts = cleaned.split('.');
+                if (parts.length > 2 || (parts.length === 2 && parts[1].length === 3)) {
+                    cleaned = cleaned.replace(/\./g, '').replace(',', '.');
+                }
+            }
+            return parseFloat(cleaned);
+        }
+
+        // Simpan Draft saat Siswa Mengetik (Agar tetap tersimpan walau waktu habis sebelum klik Periksa)
+        function saveDraftInput(qId) {
+            const stepsEl = document.getElementById(`steps-${qId}`);
+            const ansEl = document.getElementById(`ans-${qId}`);
+            if (!stepsEl || !ansEl) return;
+
+            const stepsVal = stepsEl.value.trim();
+            const rawVal = ansEl.value.trim();
+            const numVal = parseIndonesianNumber(rawVal);
+
+            gameState.answers[qId].steps = stepsVal;
+            gameState.answers[qId].rawAnswer = rawVal;
+            gameState.answers[qId].numericAnswer = isNaN(numVal) ? null : numVal;
+        }
+
+        // Periksa 1 Soal Uraian
+        function checkSingleQuestion(qId) {
+            saveDraftInput(qId);
+            const levelObj = GAME_LEVELS[gameState.currentLevelIndex];
+            const qObj = levelObj.questions.find(q => q.id === qId);
+            const ansState = gameState.answers[qId];
+
+            const feedbackEl = document.getElementById(`feedback-${qId}`);
+            const badgeEl = document.getElementById(`badge-${qId}`);
+            const cardEl = document.getElementById(`card-${qId}`);
+
+            if (!ansState.steps || ansState.steps.length < 4) {
+                showToast(`Tuliskan langkah penyelesaian uraian pada Soal #${qObj.number} terlebih dahulu!`, "fa-pen");
+                return;
+            }
+
+            if (ansState.numericAnswer === null || isNaN(ansState.numericAnswer)) {
+                showToast(`Masukkan angka jawaban akhir pada Soal #${qObj.number}!`, "fa-calculator");
+                return;
+            }
+
+            ansState.isChecked = true;
+            const isMatch = Math.abs(ansState.numericAnswer - qObj.correctAnswer) < 0.05;
+            ansState.isCorrect = isMatch;
+
+            feedbackEl.classList.remove('hidden');
+            if (isMatch) {
+                cardEl.className = "bg-white rounded-3xl border border-emerald-400 ring-2 ring-emerald-100 p-5 sm:p-7 shadow-xs space-y-5 transition";
+                badgeEl.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300"><i class="fa-solid fa-circle-check"></i> Jawaban Tepat</span>`;
+                feedbackEl.className = "rounded-2xl p-3.5 text-xs sm:text-sm font-medium bg-emerald-50 text-emerald-900 border border-emerald-200";
+                feedbackEl.innerHTML = `<i class="fa-solid fa-circle-check mr-1.5 text-emerald-700"></i> Luar biasa! Langkah uraian dan jawaban akhirmu (<strong>${qObj.correctAnswer.toLocaleString('id-ID')}</strong>) benar.`;
+            } else {
+                cardEl.className = "bg-white rounded-3xl border border-rose-300 p-5 sm:p-7 shadow-xs space-y-5 transition";
+                badgeEl.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300"><i class="fa-solid fa-circle-xmark"></i> Belum Tepat, Cek Kembali</span>`;
+                feedbackEl.className = "rounded-2xl p-3.5 text-xs sm:text-sm font-medium bg-rose-50 text-rose-900 border border-rose-200";
+                feedbackEl.innerHTML = `<i class="fa-solid fa-circle-exclamation mr-1.5 text-rose-700"></i> Jawaban akhirmu belum tepat. Silakan periksa kembali cara hitungmu atau lihat <strong>Contoh Soal & Pembahasan</strong> di atas!`;
+            }
+
+            renderStepper();
+            updateLevelGateStatus();
+        }
+
+        // Cek Apakah Seluruh Soal di Level Aktif Sudah Benar Semua
+        function updateLevelGateStatus() {
+            const levelObj = GAME_LEVELS[gameState.currentLevelIndex];
+            const totalQ = levelObj.questions.length;
+            const correctQ = levelObj.questions.filter(q => gameState.answers[q.id]?.isCorrect).length;
+
+            document.getElementById('levelStatusCounter').textContent = `${correctQ} / ${totalQ} Soal Benar`;
+
+            const nextBtn = document.getElementById('nextLevelBtn');
+            const nextBtnText = document.getElementById('nextLevelBtnText');
+            const gateIcon = document.getElementById('gateLockIcon');
+            const gateTitle = document.getElementById('gateStatusTitle');
+            const gateSub = document.getElementById('gateStatusSubtitle');
+
+            const isLastLevel = gameState.currentLevelIndex === GAME_LEVELS.length - 1;
+
+            if (correctQ === totalQ) {
+                nextBtn.disabled = false;
+                nextBtn.className = "w-full sm:w-auto px-6 py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition bg-cocoa-800 hover:bg-cocoa-900 text-white shadow-lg cursor-pointer";
+                gateIcon.className = "w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0";
+                gateIcon.innerHTML = `<i class="fa-solid fa-lock-open"></i>`;
+                gateTitle.textContent = isLastLevel ? "Seluruh Soal Post-Test Selesai!" : `Hebat! Level ${levelObj.levelNumber} Tuntas 100%`;
+                gateSub.textContent = isLastLevel ? "Klik tombol di kanan untuk melihat nilai akhir dan mengunduh PDF." : "Kamu sudah menjawab semua soal dengan benar dan dapat lanjut ke level berikutnya.";
+                nextBtnText.textContent = isLastLevel ? "Selesaikan Game & Lihat Hasil" : `Lanjut ke Level ${levelObj.levelNumber + 1}`;
+            } else {
+                nextBtn.disabled = true;
+                nextBtn.className = "w-full sm:w-auto px-6 py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition bg-cocoa-200 text-cocoa-500 cursor-not-allowed";
+                gateIcon.className = "w-10 h-10 rounded-2xl bg-cocoa-100 text-cocoa-800 flex items-center justify-center shrink-0";
+                gateIcon.innerHTML = `<i class="fa-solid fa-lock"></i>`;
+                gateTitle.textContent = isLastLevel ? `Post-Test Belum Lengkap (${correctQ}/${totalQ} Benar)` : `Level ${levelObj.levelNumber + 1} Masih Terkunci (${correctQ}/${totalQ} Benar)`;
+                gateSub.textContent = "Jika ada jawaban yang salah, perbaiki hingga benar untuk lanjut manual, atau sistem akan lanjut otomatis saat waktu level habis.";
+                nextBtnText.textContent = isLastLevel ? "SelesaikanSemua Soal Dahulu" : `Selesaikan ${totalQ - correctQ} Soal Lagi`;
+            }
+        }
+
+        // Evaluasi Otomatis Draft Jawaban Saat Waktu Habis
+        function autoEvaluateCurrentLevelDrafts() {
+            const levelObj = GAME_LEVELS[gameState.currentLevelIndex];
+            levelObj.questions.forEach(q => {
+                saveDraftInput(q.id);
+                const ansState = gameState.answers[q.id];
+                if (ansState.numericAnswer !== null && !isNaN(ansState.numericAnswer) && ansState.steps.length >= 2) {
+                    ansState.isChecked = true;
+                    ansState.isCorrect = Math.abs(ansState.numericAnswer - q.correctAnswer) < 0.05;
+                }
+            });
+        }
+
+        // Klik Tombol Lanjut Level
+        function handleNextLevelClick() {
+            if (gameState.currentLevelIndex < GAME_LEVELS.length - 1) {
+                loadLevel(gameState.currentLevelIndex + 1, true);
+            } else {
+                finishGameAndShowResults();
+            }
+        }
+
+        // Sistem Timer Hitung Mundur per Level
+        function startLevelTimer(seconds) {
+            stopLevelTimer();
+            gameState.levelRemainingSeconds = seconds;
+            updateTimerUI();
+
+            gameState.timerInterval = setInterval(() => {
+                gameState.levelRemainingSeconds--;
+                gameState.levelTimeSpent[gameState.currentLevelIndex]++;
+                updateTimerUI();
+
+                if (gameState.levelRemainingSeconds <= 0) {
+                    stopLevelTimer();
+                    handleLevelTimeout();
+                }
+            }, 1000);
+        }
+
+        function stopLevelTimer() {
+            if (gameState.timerInterval) {
+                clearInterval(gameState.timerInterval);
+                gameState.timerInterval = null;
+            }
+        }
+
+        function updateTimerUI() {
+            const s = Math.max(0, gameState.levelRemainingSeconds);
+            const mins = String(Math.floor(s / 60)).padStart(2, '0');
+            const secs = String(s % 60).padStart(2, '0');
+            const display = document.getElementById('timerDisplay');
+            const badge = document.getElementById('timerBadge');
+
+            display.textContent = `${mins}:${secs}`;
+            if (s <= 60) {
+                badge.className = "flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-rose-100 border border-rose-400 text-rose-900 animate-pulse";
+            } else {
+                badge.className = "flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-cocoa-100 border border-cocoa-300 text-cocoa-900";
+            }
+        }
+
+        // Ketika Waktu Level Habis (Otomatis Pindah ke Level Selanjutnya Selesai Tidak Selesai)
+        function handleLevelTimeout() {
+            autoEvaluateCurrentLevelDrafts();
+            const currentLvNum = GAME_LEVELS[gameState.currentLevelIndex].levelNumber;
+
+            if (gameState.currentLevelIndex < GAME_LEVELS.length - 1) {
+                showToast(`Waktu Level ${currentLvNum} habis! Otomatis memindahkanmu ke Level ${currentLvNum + 1}.`, "fa-hourglass-end");
+                loadLevel(gameState.currentLevelIndex + 1, true);
+            } else {
+                showToast("Waktu Post-Test Level 5 habis! Menyimpan seluruh hasil pengerjaanmu...", "fa-flag-checkered");
+                finishGameAndShowResults();
+            }
+        }
+
+        // Format Detik ke Menit:Detik
+        function formatSeconds(totalSec) {
+            const m = Math.floor(totalSec / 60);
+            const s = totalSec % 60;
+            return `${m}m ${s}d`;
+        }
+
+        // Hitung Ringkasan Nilai Akhir
+        function calculateFinalSummary() {
+            let totalQuestions = 0;
+            let totalCorrect = 0;
+            const levelScores = {};
+            const details = [];
+
+            GAME_LEVELS.forEach((lvl, idx) => {
+                let lvCorrect = 0;
+                lvl.questions.forEach(q => {
+                    totalQuestions++;
+                    const ans = gameState.answers[q.id];
+                    if (ans && ans.isCorrect) {
+                        totalCorrect++;
+                        lvCorrect++;
+                    }
+                    details.push({
+                        levelNumber: lvl.levelNumber,
+                        questionNumber: q.number,
+                        code: `${lvl.code}-Q${q.number}`,
+                        title: q.contextTitle,
+                        question: q.question,
+                        steps: ans?.steps || "",
+                        answer: ans?.rawAnswer || "",
+                        correctAnswer: q.correctAnswer,
+                        unit: q.unitLabel,
+                        isCorrect: Boolean(ans?.isCorrect)
+                    });
+                });
+                levelScores[lvl.code] = `${lvCorrect}/${lvl.questions.length}`;
+            });
+
+            const finalScore = Math.round((totalCorrect / totalQuestions) * 100);
+            const totalSeconds = gameState.levelTimeSpent.reduce((a, b) => a + b, 0);
+
+            return {
+                studentName: gameState.studentName,
+                studentClass: gameState.studentClass,
+                finalScore,
+                totalCorrect,
+                totalQuestions,
+                totalTimeFormatted: formatSeconds(totalSeconds),
+                levelScores,
+                details
+            };
+        }
+
+        // Tampilkan Halaman Hasil Akhir
+        function finishGameAndShowResults() {
+            stopLevelTimer();
+            autoEvaluateCurrentLevelDrafts();
+
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+
+            const summary = calculateFinalSummary();
+
+            document.getElementById('resStudentName').textContent = summary.studentName;
+            document.getElementById('resStudentClass').textContent = "Kelas " + summary.studentClass;
+            document.getElementById('resFinalScore').textContent = summary.finalScore;
+            document.getElementById('resTotalCorrect').textContent = `${summary.totalCorrect} / ${summary.totalQuestions}`;
+            document.getElementById('resTotalTime').textContent = summary.totalTimeFormatted;
+
+            let predicate = "Perlu Bimbingan Tambahan";
+            if (summary.finalScore >= 90) predicate = "Sangat Baik (Manajer Utama)";
+            else if (summary.finalScore >= 75) predicate = "Baik (Manajer Terampil)";
+            else if (summary.finalScore >= 60) predicate = "Cukup Baik";
+            document.getElementById('resPredicate').textContent = predicate;
+
+            // Render kartu skor per level
+            const breakdownEl = document.getElementById('resLevelBreakdown');
+            breakdownEl.innerHTML = GAME_LEVELS.map((lvl, idx) => {
+                const lvCor = lvl.questions.filter(q => gameState.answers[q.id]?.isCorrect).length;
+                return `
+                    <div class="bg-cocoa-50 border border-cocoa-200 rounded-2xl p-3.5 text-center">
+                        <p class="text-xs font-extrabold uppercase text-cocoa-700">Level ${lvl.levelNumber}</p>
+                        <p class="text-[11px] text-cocoa-600 truncate">${lvl.title}</p>
+                        <p class="text-lg font-extrabold text-cocoa-900 mt-1">${lvCor} / ${lvl.questions.length}</p>
+                        <p class="text-[10px] text-cocoa-500 font-mono">Durasi: ${formatSeconds(gameState.levelTimeSpent[idx])}</p>
+                    </div>
+                `;
+            }).join('');
+
+            // Render daftar rincian 21 soal
+            const detailsEl = document.getElementById('resultDetailsList');
+            detailsEl.innerHTML = summary.details.map((d, i) => `
+                <div class="p-4 rounded-2xl border ${d.isCorrect ? 'border-emerald-200 bg-emerald-50/40' : 'border-rose-200 bg-rose-50/40'} text-xs sm:text-sm space-y-1.5">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <span class="font-extrabold text-cocoa-900">${i + 1}. [Level ${d.levelNumber} - Soal #${d.questionNumber}] ${d.title}</span>
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${d.isCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                            ${d.isCorrect ? 'BENAR' : 'BELUM TEPAT'}
+                        </span>
+                    </div>
+                    <p class="text-cocoa-700"><strong>Langkah Uraian Siswa:</strong> ${d.steps ? d.steps : '<em>(Tidak diisi)</em>'}</p>
+                    <p class="text-cocoa-800">
+                        <strong>Jawaban Siswa:</strong> ${d.answer ? d.answer : '-'}
+                        <span class="mx-2">•</span>
+                        <strong>Kunci Jawaban:</strong> ${d.correctAnswer.toLocaleString('id-ID')} (${d.unit})
+                    </p>
+                </div>
+            `).join('');
+
+            // Otomatis kirim ke Spreadsheet jika URL Apps Script sudah diisi
+            if (gameState.gasWebAppUrl) {
+                sendResultsToSpreadsheet(false);
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Download Hasil Lengkap ke PDF menggunakan jsPDF
+        function downloadResultPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+            const summary = calculateFinalSummary();
+
+            // Header Cokelat
+            doc.setFillColor(92, 58, 37);
+            doc.rect(0, 0, 210, 34, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(16);
+            doc.setFont('helvetica', 'bold');
+            doc.text('LAPORAN HASIL GAME EDUKASI ARTHACOKELAT', 14, 15);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Materi Aritmatika Sosial SMP Kelas VIII (Level 1 - Level 5 Post-Test)', 14, 23);
+
+            // Identitas Siswa
+            doc.setTextColor(61, 38, 24);
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'bold');
+            doc.text(`Nama Siswa : ${summary.studentName}`, 14, 44);
+            doc.text(`Kelas            : ${summary.studentClass}`, 14, 51);
+            doc.text(`Total Durasi : ${summary.totalTimeFormatted}`, 14, 58);
+
+            doc.text(`Nilai Akhir     : ${summary.finalScore} / 100`, 125, 44);
+            doc.text(`Total Benar   : ${summary.totalCorrect} dari ${summary.totalQuestions} Soal`, 125, 51);
+            doc.text(`Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`, 125, 58);
+
+            // Tabel Rekap Level
+            const levelRows = GAME_LEVELS.map((lvl, idx) => {
+                const cor = lvl.questions.filter(q => gameState.answers[q.id]?.isCorrect).length;
+                return [
+                    `Level ${lvl.levelNumber}: ${lvl.title}`,
+                    `${lvl.questions.length} Soal Uraian`,
+                    `${cor} / ${lvl.questions.length}`,
+                    formatSeconds(gameState.levelTimeSpent[idx])
+                ];
+            });
+
+            doc.autoTable({
+                startY: 64,
+                head: [['Tahapan Level', 'Jumlah Soal', 'Skor Benar', 'Durasi']],
+                body: levelRows,
+                theme: 'grid',
+                headStyles: { fillColor: [92, 58, 37], textColor: 255 },
+                styles: { fontSize: 9, cellPadding: 2.5 }
+            });
+
+            // Tabel Detail Jawaban 21 Soal
+            const detailRows = summary.details.map((d, idx) => [
+                idx + 1,
+                `Lv${d.levelNumber}-S${d.questionNumber}\n${d.title}`,
+                d.steps || '(Kosong)',
+                d.answer || '-',
+                `${d.correctAnswer.toLocaleString('id-ID')}`,
+                d.isCorrect ? 'Benar' : 'Salah'
+            ]);
+
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 8,
+                head: [['No', 'Level & Konteks', 'Langkah Penyelesaian Siswa', 'Jawab', 'Kunci', 'Status']],
+                body: detailRows,
+                theme: 'striped',
+                headStyles: { fillColor: [125, 79, 50], textColor: 255 },
+                styles: { fontSize: 8, cellPadding: 2 },
+                columnStyles: {
+                    0: { cellWidth: 10 },
+                    1: { cellWidth: 38 },
+                    2: { cellWidth: 72 },
+                    3: { cellWidth: 22 },
+                    4: { cellWidth: 22 },
+                    5: { cellWidth: 18 }
+                }
+            });
+
+            const safeName = summary.studentName.replace(/[^a-zA-Z0-9]/g, '_');
+            doc.save(`Hasil_AritmatikaSosial_${safeName}_${summary.studentClass}.pdf`);
+            showToast("File PDF berhasil diunduh ke perangkatmu!", "fa-file-pdf");
+        }
+
+        // Modal Pengaturan Google Apps Script
+        function toggleGasModal() {
+            const modal = document.getElementById('gasModal');
+            const input = document.getElementById('gasUrlInput');
+            if (modal.classList.contains('hidden')) {
+                input.value = gameState.gasWebAppUrl || "";
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function saveGasUrl() {
+            const val = document.getElementById('gasUrlInput').value.trim();
+            gameState.gasWebAppUrl = val;
+            toggleGasModal();
+            showToast(val ? "URL Google Apps Script berhasil disimpan!" : "URL Spreadsheet dikosongkan.", "fa-check");
+        }
+
+        function copyAppsScriptCode() {
+            const codeArea = document.getElementById('gasCodeTemplate');
+            codeArea.select();
+            codeArea.setSelectionRange(0, 99999);
+            document.execCommand('copy');
+
+            const btnText = document.getElementById('copyGasBtnText');
+            btnText.textContent = "Kode Berhasil Disalin!";
+            setTimeout(() => {
+                btnText.textContent = "Salin Kode Apps Script";
+            }, 2000);
+        }
+
+        function copyAppsScriptCodeQuick() {
+            const codeArea = document.getElementById('gasCodeTemplate');
+            const temp = document.createElement('textarea');
+            temp.value = codeArea.value;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+
+            const quickText = document.getElementById('quickCopyGasText');
+            if (quickText) {
+                quickText.textContent = "Tersalin ke Clipboard!";
+                setTimeout(() => {
+                    quickText.textContent = "Copas Kode Apps Script";
+                }, 2000);
+            }
+            showToast("Kode Google Apps Script berhasil disalin ke Clipboard!", "fa-copy");
+        }
+
+        // Kirim Data ke Google Spreadsheet via Google Apps Script Web App
+        async function sendResultsToSpreadsheet(isManualClick = false) {
+            if (!gameState.gasWebAppUrl) {
+                if (isManualClick) {
+                    toggleGasModal();
+                    showToast("Masukkan URL Web App Google Apps Script terlebih dahulu!", "fa-link");
+                }
+                return;
+            }
+
+            const statusBadge = document.getElementById('resultSyncStatus');
+            const summary = calculateFinalSummary();
+
+            statusBadge.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengirim hasil ke Google Spreadsheet...`;
+
+            try {
+                await fetch(gameState.gasWebAppUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(summary)
+                });
+
+                statusBadge.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> Data nilai berhasil dikirim ke Google Spreadsheet!`;
+                if (isManualClick) {
+                    showToast("Data nilai dan jawaban uraian berhasil dikirim ke Spreadsheet!", "fa-cloud-check");
+                }
+            } catch (err) {
+                statusBadge.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-400"></i> Gagal mengirim ke Spreadsheet. Periksa URL Web App.`;
+                if (isManualClick) {
+                    showToast("Gagal mengirim data. Pastikan URL berakhiran /exec dan akses disetel ke Anyone.", "fa-circle-xmark");
+                }
+            }
+        }
+
+        // Reset Game untuk Siswa Baru
+        function resetGameSession() {
+            stopLevelTimer();
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('headerPlayerStatus').classList.add('hidden');
+            document.getElementById('welcomeScreen').classList.remove('hidden');
+            document.getElementById('studentNameInput').value = "";
+            document.getElementById('studentClassInput').value = "";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Tampilkan Notifikasi Toast
+        let toastTimeout = null;
+        function showToast(msg, iconClass = "fa-circle-info") {
+            const box = document.getElementById('toastBox');
+            const icon = document.getElementById('toastIcon');
+            const text = document.getElementById('toastMessage');
+
+            icon.className = `fa-solid ${iconClass} text-cocoa-300 text-lg mt-0.5`;
+            text.textContent = msg;
+            box.classList.remove('hidden');
+
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                box.classList.add('hidden');
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

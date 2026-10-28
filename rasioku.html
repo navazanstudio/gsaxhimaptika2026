@@ -1,0 +1,2302 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rasioku - Media Pembelajaran Matematika SMP Kelas VII</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome 6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- AOS (Animate On Scroll) CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Konfigurasi Tema Tailwind (Biru Dongker & Oranye) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: {
+                            50: '#f0f4f8',
+                            100: '#d9e2ec',
+                            200: '#bcccdc',
+                            500: '#334e68',
+                            700: '#1e293b',
+                            800: '#0f172a',
+                            900: '#0a1128',
+                        },
+                        orange: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#fed7aa',
+                            400: '#fb923c',
+                            500: '#f97316',
+                            600: '#ea580c',
+                            700: '#c2410c',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar Minimalis */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Animasi Kustom untuk Visualisasi */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        .animate-float {
+            animation: floatSlow 3s ease-in-out infinite;
+        }
+
+        @keyframes pulseBorder {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(249, 115, 22, 0); }
+        }
+        .pulse-orange {
+            animation: pulseBorder 2s infinite;
+        }
+
+        /* Transisi Halus untuk Bar & Elemen Simulasi */
+        .smooth-transition {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Gaya Slider Input Kustom */
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            background: #e2e8f0;
+            height: 8px;
+            border-radius: 999px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            margin-top: -6px;
+            background-color: #f97316;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            border: 3px solid #ffffff;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.25);
+            transition: transform 0.15s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            background-color: #ea580c;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-orange-500 selection:text-white overflow-x-hidden">
+
+    <!-- Overlay Mobile Sidebar -->
+    <div id="sidebarOverlay" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-navy-900/60 backdrop-blur-xs z-30 hidden lg:hidden transition-opacity"></div>
+
+    <!-- Layout Utama Dashboard -->
+    <div class="flex min-h-screen">
+
+        <!-- ================= SIDEBAR NAVIGASI ================= -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-navy-900 text-white flex flex-col justify-between transform -translate-x-full lg:translate-x-0 lg:static lg:inset-0 transition-transform duration-300 ease-in-out shadow-2xl">
+            
+            <!-- Bagian Atas: Logo & Menu -->
+            <div>
+                <!-- Brand Header -->
+                <div class="flex items-center justify-between px-6 py-6 border-b border-slate-800">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/30">
+                            <i class="fa-solid fa-shapes text-xl text-white"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-extrabold tracking-tight text-white flex items-center gap-1">
+                                RASIO<span class="text-orange-500">KU</span>
+                            </h1>
+                            <p class="text-xs text-slate-400 font-medium">Matematika SMP Kelas VII</p>
+                        </div>
+                    </div>
+                    <!-- Tombol Tutup di Mobile -->
+                    <button onclick="toggleMobileSidebar()" class="lg:hidden text-slate-400 hover:text-white p-2 rounded-lg">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+
+                <!-- Indikator Progress Belajar Siswa -->
+                <div class="mx-5 mt-5 p-4 rounded-2xl bg-navy-800/90 border border-slate-700/70">
+                    <div class="flex justify-between items-center text-xs mb-2">
+                        <span class="text-slate-300 font-semibold"><i class="fa-solid fa-chart-line text-orange-400 mr-1.5"></i>Progres Belajar</span>
+                        <span id="sidebarProgressText" class="text-orange-400 font-bold">20%</span>
+                    </div>
+                    <div class="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
+                        <div id="sidebarProgressBar" class="h-full bg-gradient-to-r from-orange-500 to-orange-400 rounded-full smooth-transition" style="width: 20%"></div>
+                    </div>
+                    <p id="sidebarStatusDesc" class="text-[11px] text-slate-400 mt-2">Yuk, jelajahi semua menu pembelajaran!</p>
+                </div>
+
+                <!-- Daftar Menu Sidebar -->
+                <nav class="mt-6 px-4 space-y-2">
+                    <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">Menu Utama</p>
+                    
+                    <button onclick="switchMenu('beranda')" id="nav-beranda" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl font-semibold text-sm transition-all bg-orange-500 text-white shadow-lg shadow-orange-500/25">
+                        <i class="fa-solid fa-house-chimney w-5 text-center text-base"></i>
+                        <span>Beranda</span>
+                    </button>
+
+                    <button onclick="switchMenu('materi')" id="nav-materi" class="nav-btn w-full flex items-center justify-between px-4 py-3.5 rounded-xl font-semibold text-sm text-slate-300 hover:bg-navy-800 hover:text-white transition-all">
+                        <div class="flex items-center gap-3.5">
+                            <i class="fa-solid fa-book-open-reader w-5 text-center text-base"></i>
+                            <span>Materi Belajar</span>
+                        </div>
+                        <span class="text-[11px] px-2 py-0.5 rounded-full bg-slate-800 text-orange-400 font-bold">3 Topik</span>
+                    </button>
+
+                    <button onclick="switchMenu('simulasi')" id="nav-simulasi" class="nav-btn w-full flex items-center justify-between px-4 py-3.5 rounded-xl font-semibold text-sm text-slate-300 hover:bg-navy-800 hover:text-white transition-all">
+                        <div class="flex items-center gap-3.5">
+                            <i class="fa-solid fa-flask-vial w-5 text-center text-base"></i>
+                            <span>Simulasi Lab</span>
+                        </div>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-400 font-bold border border-orange-500/30">Interaktif</span>
+                    </button>
+
+                    <button onclick="switchMenu('latihan')" id="nav-latihan" class="nav-btn w-full flex items-center justify-between px-4 py-3.5 rounded-xl font-semibold text-sm text-slate-300 hover:bg-navy-800 hover:text-white transition-all">
+                        <div class="flex items-center gap-3.5">
+                            <i class="fa-solid fa-pen-to-square w-5 text-center text-base"></i>
+                            <span>Latihan Soal</span>
+                        </div>
+                        <span class="text-[11px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-bold">15 Soal</span>
+                    </button>
+
+                    <button onclick="switchMenu('postest')" id="nav-postest" class="nav-btn w-full flex items-center justify-between px-4 py-3.5 rounded-xl font-semibold text-sm text-slate-300 hover:bg-navy-800 hover:text-white transition-all">
+                        <div class="flex items-center gap-3.5">
+                            <i class="fa-solid fa-award w-5 text-center text-base"></i>
+                            <span>Post-Test</span>
+                        </div>
+                        <span class="text-[11px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-bold">Evaluasi</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Bagian Bawah: Info Pengembang / Bantuan -->
+            <div class="p-4 border-t border-slate-800">
+                <div class="p-3.5 rounded-xl bg-navy-800/70 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-orange-500/20 border border-orange-500/40 flex items-center justify-center text-orange-400">
+                            <i class="fa-solid fa-user-graduate"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-white">Pendidikan Matematika</p>
+                            <p class="text-[11px] text-slate-400">Tugas Aplikasi Komputer</p>
+                        </div>
+                    </div>
+                    <button onclick="toggleInfoModal()" title="Info Media" class="w-8 h-8 rounded-lg bg-slate-700/60 hover:bg-orange-500 text-slate-300 hover:text-white transition flex items-center justify-center">
+                        <i class="fa-solid fa-circle-info text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ================= KONTEN UTAMA DASHBOARD ================= -->
+        <div class="flex-1 flex flex-col min-w-0">
+
+            <!-- Top Navbar -->
+            <header class="sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 sm:px-8 py-3.5 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleMobileSidebar()" class="lg:hidden p-2.5 rounded-xl bg-navy-900 text-white hover:bg-navy-800 transition">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div>
+                        <span id="headerBreadcrumb" class="text-xs font-bold uppercase tracking-wider text-orange-600 block">Dashboard Pembelajaran</span>
+                        <h2 id="headerTitle" class="text-lg sm:text-xl font-extrabold text-navy-900">Beranda Utama</h2>
+                    </div>
+                </div>
+
+                <!-- Right Header Controls -->
+                <div class="flex items-center gap-3">
+                    <!-- Kalkulator Kecil / Rumus Cepat -->
+                    <button onclick="toggleFormulaModal()" class="hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-xl bg-orange-50 hover:bg-orange-100 text-orange-600 border border-orange-200 text-xs font-bold transition">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <span>Rangkuman Rumus</span>
+                    </button>
+
+                    <!-- Sapaan Siswa -->
+                    <div class="flex items-center gap-2.5 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
+                        <div class="w-8 h-8 rounded-lg bg-navy-900 text-orange-400 flex items-center justify-center font-bold text-sm">
+                            <i class="fa-solid fa-face-smile-beam"></i>
+                        </div>
+                        <div class="hidden md:block text-left pr-1">
+                            <p id="studentNameBadge" class="text-xs font-bold text-navy-900 leading-tight">Sobat Matematika</p>
+                            <p class="text-[10px] text-slate-500 font-medium">Kelas VII SMP/MTs</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Container Semua Halaman Menu -->
+            <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+
+                <!-- ==========================================
+                     1. HALAMAN BERANDA
+                =========================================== -->
+                <section id="section-beranda" class="menu-section space-y-8">
+                    
+                    <!-- Hero Banner Greetings -->
+                    <div data-aos="fade-up" class="relative rounded-3xl bg-gradient-to-br from-navy-900 via-navy-800 to-navy-900 text-white p-6 sm:p-10 overflow-hidden shadow-xl border border-slate-800">
+                        <!-- Dekorasi Latar Minimalis -->
+                        <div class="absolute -top-16 -right-16 w-64 h-64 bg-orange-500/15 rounded-full blur-2xl pointer-events-none"></div>
+                        <div class="absolute -bottom-16 right-24 w-48 h-48 bg-orange-400/10 rounded-full blur-xl pointer-events-none"></div>
+
+                        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-8 space-y-4">
+                                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-500/20 border border-orange-500/40 text-orange-300 text-xs font-bold">
+                                    <i class="fa-solid fa-sparkles"></i>
+                                    <span id="dynamicGreeting">Selamat Datang di Laboratorium Matematika Digital!</span>
+                                </div>
+                                <h1 class="text-2xl sm:text-4xl font-extrabold leading-tight tracking-tight">
+                                    Kuasai Konsep <span class="text-orange-400 underline decoration-orange-500/40 decoration-wavy underline-offset-8">Rasio, Skala, & Laju Perubahan</span> dengan Cara Seru!
+                                </h1>
+                                <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl">
+                                    Halo Sobat Kelas VII! Pernahkah kamu meracik sirup, membaca peta digital di smartphone, atau menghitung kecepatan kendaraan? Semua itu menggunakan konsep <strong>Perbandingan (Rasio)</strong>. Yuk, kita pelajari bersama di <strong>Rasioku</strong>!
+                                </p>
+                                <div class="pt-2 flex flex-wrap gap-3">
+                                    <button onclick="switchMenu('materi')" class="px-6 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm shadow-lg shadow-orange-500/30 transition flex items-center gap-2">
+                                        <span>Mulai Belajar Sekarang</span>
+                                        <i class="fa-solid fa-arrow-right"></i>
+                                    </button>
+                                    <button onclick="switchMenu('simulasi')" class="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/15 transition flex items-center gap-2">
+                                        <i class="fa-solid fa-flask"></i>
+                                        <span>Coba Simulasi Interaktif</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Ilustrasi Kartu Visual di Hero -->
+                            <div class="lg:col-span-4 flex justify-center">
+                                <div class="w-full max-w-xs bg-navy-800/90 border border-slate-700 p-5 rounded-2xl shadow-lg animate-float">
+                                    <div class="flex items-center justify-between mb-3 pb-3 border-b border-slate-700">
+                                        <span class="text-xs font-bold text-orange-400"><i class="fa-solid fa-cubes mr-1"></i> Visualisasi Cepat</span>
+                                        <span class="text-[11px] bg-orange-500 text-white px-2 py-0.5 rounded-md font-bold">SMP Kelas 7</span>
+                                    </div>
+                                    <div class="space-y-3 text-xs">
+                                        <div class="p-3 rounded-xl bg-navy-900 flex items-center justify-between">
+                                            <span class="text-slate-300"><i class="fa-solid fa-mug-hot text-orange-400 mr-2"></i>Rasio Sirup : Air</span>
+                                            <span class="font-extrabold text-white bg-orange-500/20 border border-orange-500/40 px-2.5 py-1 rounded-lg">1 : 4</span>
+                                        </div>
+                                        <div class="p-3 rounded-xl bg-navy-900 flex items-center justify-between">
+                                            <span class="text-slate-300"><i class="fa-solid fa-map-location-dot text-orange-400 mr-2"></i>Skala Peta</span>
+                                            <span class="font-extrabold text-white bg-orange-500/20 border border-orange-500/40 px-2.5 py-1 rounded-lg">1 : 100.000</span>
+                                        </div>
+                                        <div class="p-3 rounded-xl bg-navy-900 flex items-center justify-between">
+                                            <span class="text-slate-300"><i class="fa-solid fa-gauge-high text-orange-400 mr-2"></i>Laju Kecepatan</span>
+                                            <span class="font-extrabold text-white bg-orange-500/20 border border-orange-500/40 px-2.5 py-1 rounded-lg">60 km/jam</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Informasi Pembelajaran (JP, Fase, Kurikulum, dll) -->
+                    <div data-aos="fade-up" data-aos-delay="100" class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-navy-900 text-orange-400 flex items-center justify-center text-xl shrink-0">
+                                <i class="fa-solid fa-school"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 font-semibold">Sasaran Jenjang</p>
+                                <h3 class="text-base font-extrabold text-navy-900 mt-0.5">SMP / MTs Kelas VII</h3>
+                                <span class="inline-block mt-1 text-[11px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md">Fase D - Semester 1</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-orange-500 text-white flex items-center justify-center text-xl shrink-0">
+                                <i class="fa-solid fa-clock"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 font-semibold">Alokasi Waktu</p>
+                                <h3 class="text-base font-extrabold text-navy-900 mt-0.5">6 Jam Pelajaran (JP)</h3>
+                                <span class="inline-block mt-1 text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">3 Pertemuan (3 × 80 Menit)</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-navy-900 text-orange-400 flex items-center justify-center text-xl shrink-0">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 font-semibold">Elemen Kurikulum</p>
+                                <h3 class="text-base font-extrabold text-navy-900 mt-0.5">Bilangan & Proporsi</h3>
+                                <span class="inline-block mt-1 text-[11px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md">Kurikulum Merdeka</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-orange-500 text-white flex items-center justify-center text-xl shrink-0">
+                                <i class="fa-solid fa-bullseye"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 font-semibold">Target Ketuntasan</p>
+                                <h3 class="text-base font-extrabold text-navy-900 mt-0.5">KKTP Minimal 75</h3>
+                                <span class="inline-block mt-1 text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">Evaluasi Post-Test</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grid 2 Kolom: Tujuan Pembelajaran & Alur Pembelajaran -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        
+                        <!-- Tujuan Pembelajaran -->
+                        <div data-aos="fade-right" class="lg:col-span-6 bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 shadow-xs flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center gap-3 mb-5">
+                                    <div class="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center font-bold">
+                                        <i class="fa-solid fa-flag-checkered"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-extrabold text-navy-900">Tujuan Pembelajaran</h3>
+                                        <p class="text-xs text-slate-500">Capaian yang diharapkan setelah menggunakan Rasioku</p>
+                                    </div>
+                                </div>
+
+                                <ul class="space-y-3.5 text-sm text-slate-700">
+                                    <li class="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-100">
+                                        <span class="w-6 h-6 rounded-full bg-navy-900 text-orange-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">1</span>
+                                        <span>Menjelaskan konsep <strong>rasio</strong> dua besaran dan menentukan rasio yang ekuivalen (senilai) dalam bentuk paling sederhana.</span>
+                                    </li>
+                                    <li class="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-100">
+                                        <span class="w-6 h-6 rounded-full bg-navy-900 text-orange-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">2</span>
+                                        <span>Menghitung <strong>skala peta/denah</strong>, jarak pada peta, maupun ukuran sebenarnya dalam masalah kontekstual.</span>
+                                    </li>
+                                    <li class="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-100">
+                                        <span class="w-6 h-6 rounded-full bg-navy-900 text-orange-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">3</span>
+                                        <span>Menganalisis <strong>laju perubahan satuan</strong> (seperti kecepatan atau harga per satuan) untuk mengambil keputusan yang tepat.</span>
+                                    </li>
+                                    <li class="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-100">
+                                        <span class="w-6 h-6 rounded-full bg-navy-900 text-orange-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">4</span>
+                                        <span>Menyelesaikan masalah sehari-hari yang berkaitan dengan proporsi menggunakan penalaran matematis.</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="mt-6 p-4 rounded-2xl bg-navy-900 text-white flex items-center justify-between">
+                                <div class="text-xs">
+                                    <span class="text-orange-400 font-bold block">Capaian Pembelajaran (CP) Fase D:</span>
+                                    <span class="text-slate-300">Peserta didik dapat menggunakan pengertian rasio (skala, proporsi, dan laju perubahan) dalam penyelesaian masalah.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Alur Pembelajaran -->
+                        <div data-aos="fade-left" class="lg:col-span-6 bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 shadow-xs">
+                            <div class="flex items-center gap-3 mb-5">
+                                <div class="w-10 h-10 rounded-xl bg-navy-900 text-orange-400 flex items-center justify-center font-bold">
+                                    <i class="fa-solid fa-route"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-extrabold text-navy-900">Alur Pembelajaran</h3>
+                                    <p class="text-xs text-slate-500">Ikuti 4 langkah mudah berikut agar pemahamanmu maksimal</p>
+                                </div>
+                            </div>
+
+                            <div class="relative pl-6 border-l-2 border-dashed border-orange-300 space-y-5 my-2">
+                                <!-- Step 1 -->
+                                <div class="relative group cursor-pointer" onclick="switchMenu('materi')">
+                                    <div class="absolute -left-[35px] top-1 w-6 h-6 rounded-full bg-orange-500 text-white text-xs font-bold flex items-center justify-center ring-4 ring-orange-100">1</div>
+                                    <div class="p-4 rounded-2xl bg-slate-50 group-hover:bg-orange-50/70 border border-slate-200 group-hover:border-orange-300 transition">
+                                        <div class="flex justify-between items-center">
+                                            <h4 class="font-extrabold text-navy-900 text-sm">Eksplorasi Materi & Visualisasi</h4>
+                                            <span class="text-[11px] font-bold text-orange-600">Pertemuan 1–3</span>
+                                        </div>
+                                        <p class="text-xs text-slate-600 mt-1">Pelajari konsep Rasio, Skala, dan Laju Perubahan Satuan lengkap dengan animasi visual serta contoh soal bertahap.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Step 2 -->
+                                <div class="relative group cursor-pointer" onclick="switchMenu('simulasi')">
+                                    <div class="absolute -left-[35px] top-1 w-6 h-6 rounded-full bg-navy-900 text-orange-400 text-xs font-bold flex items-center justify-center ring-4 ring-slate-100">2</div>
+                                    <div class="p-4 rounded-2xl bg-slate-50 group-hover:bg-orange-50/70 border border-slate-200 group-hover:border-orange-300 transition">
+                                        <div class="flex justify-between items-center">
+                                            <h4 class="font-extrabold text-navy-900 text-sm">Praktik di Laboratorium Simulasi</h4>
+                                            <span class="text-[11px] font-bold text-orange-600">Eksperimen Mandiri</span>
+                                        </div>
+                                        <p class="text-xs text-slate-600 mt-1">Uji coba langsung takaran sirup, skala denah peta, dan simulasi kecepatan mobil secara interaktif.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Step 3 -->
+                                <div class="relative group cursor-pointer" onclick="switchMenu('latihan')">
+                                    <div class="absolute -left-[35px] top-1 w-6 h-6 rounded-full bg-orange-500 text-white text-xs font-bold flex items-center justify-center ring-4 ring-orange-100">3</div>
+                                    <div class="p-4 rounded-2xl bg-slate-50 group-hover:bg-orange-50/70 border border-slate-200 group-hover:border-orange-300 transition">
+                                        <div class="flex justify-between items-center">
+                                            <h4 class="font-extrabold text-navy-900 text-sm">Asah Kemampuan di Latihan Soal</h4>
+                                            <span class="text-[11px] font-bold text-orange-600">15 Soal Terbimbing</span>
+                                        </div>
+                                        <p class="text-xs text-slate-600 mt-1">Kerjakan 5 soal pada masing-masing topik disertai umpan balik langsung dan pembahasan lengkap.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Step 4 -->
+                                <div class="relative group cursor-pointer" onclick="switchMenu('postest')">
+                                    <div class="absolute -left-[35px] top-1 w-6 h-6 rounded-full bg-navy-900 text-orange-400 text-xs font-bold flex items-center justify-center ring-4 ring-slate-100">4</div>
+                                    <div class="p-4 rounded-2xl bg-slate-50 group-hover:bg-orange-50/70 border border-slate-200 group-hover:border-orange-300 transition">
+                                        <div class="flex justify-between items-center">
+                                            <h4 class="font-extrabold text-navy-900 text-sm">Evaluasi Akhir (Post-Test)</h4>
+                                            <span class="text-[11px] font-bold text-orange-600">Uji Kompetensi</span>
+                                        </div>
+                                        <p class="text-xs text-slate-600 mt-1">Selesaikan evaluasi akhir untuk mengukur tingkat penguasaan materi dan dapatkan rapor hasil belajarmu.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ==========================================
+                     2. HALAMAN MATERI PEMBELAJARAN
+                =========================================== -->
+                <section id="section-materi" class="menu-section hidden space-y-6">
+                    
+                    <!-- Sub-Navigasi Pemilihan Topik Materi -->
+                    <div class="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-xs flex flex-wrap gap-2">
+                        <button onclick="switchMateriTab('rasio')" id="tab-materi-rasio" class="materi-tab-btn flex-1 min-w-[160px] py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2.5 bg-navy-900 text-white shadow-sm">
+                            <i class="fa-solid fa-scale-balanced text-orange-400"></i>
+                            <span>1. Konsep Rasio</span>
+                        </button>
+                        <button onclick="switchMateriTab('skala')" id="tab-materi-skala" class="materi-tab-btn flex-1 min-w-[160px] py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2.5 text-slate-600 hover:bg-slate-100">
+                            <i class="fa-solid fa-map-location-dot text-orange-500"></i>
+                            <span>2. Skala & Proporsi</span>
+                        </button>
+                        <button onclick="switchMateriTab('laju')" id="tab-materi-laju" class="materi-tab-btn flex-1 min-w-[160px] py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2.5 text-slate-600 hover:bg-slate-100">
+                            <i class="fa-solid fa-gauge-high text-orange-500"></i>
+                            <span>3. Laju Perubahan Satuan</span>
+                        </button>
+                    </div>
+
+                    <!-- -------- SUB-MATERI 1: RASIO -------- -->
+                    <div id="materi-content-rasio" class="materi-panel space-y-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                            <!-- Penjelasan Konsep Rasio -->
+                            <div class="lg:col-span-7 bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-5">
+                                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-orange-50 text-orange-600 font-bold text-xs">
+                                    <i class="fa-solid fa-bookmark"></i> Topik 1 • Pertemuan 1 (2 JP)
+                                </div>
+                                <h3 class="text-2xl font-extrabold text-navy-900">Apa Itu Rasio (Perbandingan)?</h3>
+                                <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                                    <strong>Rasio</strong> adalah cara membandingkan dua besaran atau lebih yang menunjukkan hubungan ukuran di antara keduanya. Jika terdapat besaran <span class="font-bold text-navy-900">a</span> dan <span class="font-bold text-navy-900">b</span> (dengan <span class="italic">b ≠ 0</span>), maka rasio dapat ditulis dalam tiga cara:
+                                </p>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    <div class="p-4 rounded-2xl bg-navy-900 text-white text-center">
+                                        <span class="text-xs text-slate-400 block mb-1">Menggunakan Titik Dua</span>
+                                        <span class="text-xl font-extrabold text-orange-400">a : b</span>
+                                    </div>
+                                    <div class="p-4 rounded-2xl bg-navy-900 text-white text-center">
+                                        <span class="text-xs text-slate-400 block mb-1">Bentuk Pecahan</span>
+                                        <span class="text-xl font-extrabold text-orange-400"><sup>a</sup>&frasl;<sub>b</sub></span>
+                                    </div>
+                                    <div class="p-4 rounded-2xl bg-navy-900 text-white text-center">
+                                        <span class="text-xs text-slate-400 block mb-1">Kalimat Kata</span>
+                                        <span class="text-base font-extrabold text-orange-400">"a terhadap b"</span>
+                                    </div>
+                                </div>
+
+                                <div class="p-4 rounded-2xl bg-orange-50 border border-orange-200 space-y-2">
+                                    <h4 class="font-extrabold text-navy-900 text-sm flex items-center gap-2">
+                                        <i class="fa-solid fa-triangle-exclamation text-orange-500"></i>
+                                        Syarat Penting Menyederhanakan Rasio:
+                                    </h4>
+                                    <ul class="list-disc list-inside text-xs sm:text-sm text-slate-700 space-y-1">
+                                        <li><strong>Satuannya harus sama!</strong> (Contoh: jika membandingkan <span class="font-semibold">500 gram</span> dengan <span class="font-semibold">2 kg</span>, ubah dulu <span class="font-semibold">2 kg = 2.000 gram</span>).</li>
+                                        <li><strong>Bagi dengan FPB!</strong> Rasio paling sederhana diperoleh dengan membagi kedua bilangan menggunakan Faktor Persekutuan Terbesar (FPB).</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Animasi Visualisasi Interaktif Rasio -->
+                            <div class="lg:col-span-5 bg-navy-900 text-white rounded-3xl p-6 sm:p-7 shadow-lg flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between mb-4">
+                                        <span class="text-xs font-bold uppercase tracking-wider text-orange-400 flex items-center gap-1.5">
+                                            <i class="fa-solid fa-wand-magic-sparkles"></i> Animasi Visualisasi Rasio
+                                        </span>
+                                        <span class="text-[11px] bg-white/10 px-2.5 py-1 rounded-full text-slate-300">Coba Klik Tombol!</span>
+                                    </div>
+                                    <h4 class="text-lg font-extrabold mb-1">Visualisasi Rasio Senilai (Ekuivalen)</h4>
+                                    <p class="text-xs text-slate-300 mb-5">Perhatikan bagaimana perbandingan kotak <span class="text-orange-400 font-bold">Oranye</span> dan <span class="text-sky-400 font-bold">Biru</span> tetap memiliki proporsi yang sama meskipun jumlahnya dikalikan!</p>
+
+                                    <!-- Pilihan Pengali Rasio -->
+                                    <div class="flex gap-2 mb-5">
+                                        <button onclick="animateMateriRasio(1)" id="btn-rasio-mult-1" class="flex-1 py-2 rounded-xl bg-orange-500 text-white font-bold text-xs transition">×1 (2 : 3)</button>
+                                        <button onclick="animateMateriRasio(2)" id="btn-rasio-mult-2" class="flex-1 py-2 rounded-xl bg-navy-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition">×2 (4 : 6)</button>
+                                        <button onclick="animateMateriRasio(3)" id="btn-rasio-mult-3" class="flex-1 py-2 rounded-xl bg-navy-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition">×3 (6 : 9)</button>
+                                    </div>
+
+                                    <!-- Kanvas Animasi Balok Rasio -->
+                                    <div class="bg-navy-800 rounded-2xl p-4 border border-slate-700 space-y-4">
+                                        <div>
+                                            <div class="flex justify-between text-xs mb-1.5">
+                                                <span class="text-orange-400 font-bold">Kelereng Oranye</span>
+                                                <span id="visRasioOrangeCount" class="font-extrabold">2 Butir</span>
+                                            </div>
+                                            <div id="visRasioOrangeBoxes" class="flex flex-wrap gap-2 min-h-[36px]"></div>
+                                        </div>
+                                        <div>
+                                            <div class="flex justify-between text-xs mb-1.5">
+                                                <span class="text-sky-400 font-bold">Kelereng Biru</span>
+                                                <span id="visRasioBlueCount" class="font-extrabold">3 Butir</span>
+                                            </div>
+                                            <div id="visRasioBlueBoxes" class="flex flex-wrap gap-2 min-h-[36px]"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-5 p-3.5 rounded-xl bg-orange-500/15 border border-orange-500/30 text-center">
+                                    <p id="visRasioSummary" class="text-xs font-bold text-orange-300">
+                                        Rasio Saat Ini = 2 : 3 (Bentuk Paling Sederhana)
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contoh Soal & Pembahasan Rasio -->
+                        <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs">
+                            <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center font-bold">
+                                        <i class="fa-solid fa-lightbulb"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-extrabold text-navy-900">Contoh Soal & Pembahasan Interaktif (Rasio)</h4>
+                                        <p class="text-xs text-slate-500">Klik tombol "Lihat Langkah Pembahasan" untuk memahami cara penyelesaiannya</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Contoh 1 -->
+                                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+                                    <div>
+                                        <span class="text-[11px] font-bold px-2.5 py-1 rounded-md bg-navy-900 text-orange-400">Contoh Soal 1 • Menyederhanakan Rasio</span>
+                                        <p class="text-sm font-semibold text-navy-900 mt-3 leading-relaxed">
+                                            Ibu membuat kue dengan menggunakan <strong>400 gram mentega</strong> dan <strong>1,2 kg tepung terigu</strong>. Tentukan rasio berat mentega terhadap tepung terigu dalam bentuk paling sederhana!
+                                        </p>
+                                    </div>
+                                    <div class="mt-4">
+                                        <button onclick="toggleSolution('sol-rasio-1')" class="w-full py-2.5 px-4 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs transition flex items-center justify-center gap-2">
+                                            <i class="fa-solid fa-eye"></i>
+                                            <span>Tampilkan / Sembunyikan Pembahasan</span>
+                                        </button>
+                                        <div id="sol-rasio-1" class="hidden mt-3 p-4 rounded-xl bg-white border border-orange-200 text-xs space-y-2 text-slate-700">
+                                            <p><strong class="text-navy-900">Langkah 1 (Samakan Satuan):</strong><br>Mentega = 400 gram<br>Tepung = 1,2 kg = 1,2 × 1.000 = <strong>1.200 gram</strong></p>
+                                            <p><strong class="text-navy-900">Langkah 2 (Susun Rasio):</strong><br>Mentega : Tepung = 400 : 1.200</p>
+                                            <p><strong class="text-navy-900">Langkah 3 (Bagi dengan FPB = 400):</strong><br>(400 ÷ 400) : (1.200 ÷ 400) = <strong class="text-orange-600 text-sm">1 : 3</strong></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Contoh 2 -->
+                                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+                                    <div>
+                                        <span class="text-[11px] font-bold px-2.5 py-1 rounded-md bg-navy-900 text-orange-400">Contoh Soal 2 • Proporsi Jumlah</span>
+                                        <p class="text-sm font-semibold text-navy-900 mt-3 leading-relaxed">
+                                            Rasio banyak siswa laki-laki dan perempuan di kelas VII-A adalah <strong>3 : 5</strong>. Jika jumlah seluruh siswa di kelas tersebut adalah <strong>32 orang</strong>, berapakah banyak siswa perempuan?
+                                        </p>
+                                    </div>
+                                    <div class="mt-4">
+                                        <button onclick="toggleSolution('sol-rasio-2')" class="w-full py-2.5 px-4 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs transition flex items-center justify-center gap-2">
+                                            <i class="fa-solid fa-eye"></i>
+                                            <span>Tampilkan / Sembunyikan Pembahasan</span>
+                                        </button>
+                                        <div id="sol-rasio-2" class="hidden mt-3 p-4 rounded-xl bg-white border border-orange-200 text-xs space-y-2 text-slate-700">
+                                            <p><strong class="text-navy-900">Langkah 1 (Jumlahkan Angka Rasio):</strong><br>Total bagian rasio = 3 + 5 = <strong>8 bagian</strong> (mewakili 32 siswa).</p>
+                                            <p><strong class="text-navy-900">Langkah 2 (Hitung Nilai 1 Bagian):</strong><br>1 bagian = 32 ÷ 8 = <strong>4 siswa</strong>.</p>
+                                            <p><strong class="text-navy-900">Langkah 3 (Hitung Siswa Perempuan = 5 bagian):</strong><br>Siswa perempuan = 5 × 4 = <strong class="text-orange-600 text-sm">20 siswa</strong>.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- -------- SUB-MATERI 2: SKALA -------- -->
+                    <div id="materi-content-skala" class="materi-panel hidden space-y-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                            <!-- Penjelasan Konsep Skala -->
+                            <div class="lg:col-span-7 bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-5">
+                                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-orange-50 text-orange-600 font-bold text-xs">
+                                    <i class="fa-solid fa-bookmark"></i> Topik 2 • Pertemuan 2 (2 JP)
+                                </div>
+                                <h3 class="text-2xl font-extrabold text-navy-900">Memahami Skala Peta & Denah</h3>
+                                <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                                    <strong>Skala</strong> adalah rasio yang membandingkan <strong>Jarak pada Peta/Gambar (JP)</strong> dengan <strong>Jarak Sebenarnya (JS)</strong>. Biasanya skala ditulis dalam bentuk <span class="font-bold text-navy-900">1 : n</span> dan menggunakan satuan <strong>centimeter (cm)</strong>.
+                                </p>
+
+                                <!-- Segitiga Rumus Skala -->
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    <div class="p-4 rounded-2xl bg-navy-900 text-white">
+                                        <span class="text-xs text-orange-400 font-bold block">Mencari Skala (S)</span>
+                                        <p class="text-lg font-extrabold mt-1">S = JP : JS</p>
+                                        <p class="text-[11px] text-slate-400 mt-1">Samakan ke cm dulu</p>
+                                    </div>
+                                    <div class="p-4 rounded-2xl bg-navy-900 text-white">
+                                        <span class="text-xs text-orange-400 font-bold block">Jarak Sebenarnya (JS)</span>
+                                        <p class="text-lg font-extrabold mt-1">JS = JP ÷ S</p>
+                                        <p class="text-[11px] text-slate-400 mt-1">Atau JS = JP × Penyebut Skala</p>
+                                    </div>
+                                    <div class="p-4 rounded-2xl bg-navy-900 text-white">
+                                        <span class="text-xs text-orange-400 font-bold block">Jarak Peta (JP)</span>
+                                        <p class="text-lg font-extrabold mt-1">JP = S × JS</p>
+                                        <p class="text-[11px] text-slate-400 mt-1">Atau JP = JS ÷ Penyebut Skala</p>
+                                    </div>
+                                </div>
+
+                                <div class="p-4 rounded-2xl bg-orange-50 border border-orange-200 text-xs sm:text-sm text-slate-700 space-y-1.5">
+                                    <p class="font-extrabold text-navy-900"><i class="fa-solid fa-ruler-combined text-orange-500 mr-1.5"></i>Tips Konversi Satuan Panjang Cepat:</p>
+                                    <p>• <strong>1 meter (m)</strong> = 100 cm &nbsp;|&nbsp; <strong>1 kilometer (km)</strong> = 100.000 cm</p>
+                                    <p>• Arti skala <strong>1 : 250.000</strong> adalah setiap <strong>1 cm pada peta</strong> mewakili <strong>250.000 cm (atau 2,5 km)</strong> jarak sebenarnya!</p>
+                                </div>
+                            </div>
+
+                            <!-- Animasi Visualisasi Interaktif Skala -->
+                            <div class="lg:col-span-5 bg-navy-900 text-white rounded-3xl p-6 sm:p-7 shadow-lg flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between mb-4">
+                                        <span class="text-xs font-bold uppercase tracking-wider text-orange-400 flex items-center gap-1.5">
+                                            <i class="fa-solid fa-magnifying-glass-location"></i> Visualisasi Zoom Skala
+                                        </span>
+                                        <span class="text-[11px] bg-white/10 px-2.5 py-1 rounded-full text-slate-300">Skala 1 : 100.000</span>
+                                    </div>
+                                    <h4 class="text-lg font-extrabold mb-1">Perbandingan Peta vs Dunia Nyata</h4>
+                                    <p class="text-xs text-slate-300 mb-4">Geser tombol jarak pada peta di bawah ini untuk melihat animasi perubahan jarak antar kota di dunia nyata!</p>
+
+                                    <div class="flex gap-2 mb-4">
+                                        <button onclick="animateMateriSkala(2)" id="btn-skala-2" class="flex-1 py-2 rounded-xl bg-orange-500 text-white font-bold text-xs transition">JP = 2 cm</button>
+                                        <button onclick="animateMateriSkala(5)" id="btn-skala-5" class="flex-1 py-2 rounded-xl bg-navy-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition">JP = 5 cm</button>
+                                        <button onclick="animateMateriSkala(8)" id="btn-skala-8" class="flex-1 py-2 rounded-xl bg-navy-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition">JP = 8 cm</button>
+                                    </div>
+
+                                    <!-- Visual Peta Animasi -->
+                                    <div class="bg-navy-800 rounded-2xl p-5 border border-slate-700">
+                                        <div class="flex justify-between items-center text-xs text-slate-300 mb-3">
+                                            <span><i class="fa-solid fa-city text-orange-400 mr-1"></i>Kota A</span>
+                                            <span id="visSkalaLabel" class="font-bold text-orange-400">Jarak Peta: 2 cm</span>
+                                            <span>Kota B <i class="fa-solid fa-tree-city text-sky-400 ml-1"></i></span>
+                                        </div>
+
+                                        <!-- Track Garis Peta -->
+                                        <div class="w-full bg-navy-900 h-10 rounded-xl p-2 flex items-center relative overflow-hidden">
+                                            <div id="visSkalaBar" class="h-4 bg-gradient-to-r from-orange-500 to-sky-400 rounded-full smooth-transition flex items-center justify-end pr-2" style="width: 25%;">
+                                                <span class="w-2.5 h-2.5 rounded-full bg-white"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-4 grid grid-cols-2 gap-2 text-center">
+                                            <div class="p-2.5 rounded-xl bg-navy-900">
+                                                <span class="text-[10px] text-slate-400 block">Dalam Centimeter</span>
+                                                <span id="visSkalaCm" class="text-sm font-extrabold text-white">200.000 cm</span>
+                                            </div>
+                                            <div class="p-2.5 rounded-xl bg-navy-900">
+                                                <span class="text-[10px] text-slate-400 block">Jarak Sebenarnya (km)</span>
+                                                <span id="visSkalaKm" class="text-sm font-extrabold text-orange-400">2 km</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 p-3 rounded-xl bg-orange-500/15 border border-orange-500/30 text-center">
+                                    <p class="text-xs font-bold text-orange-300">Rumus: JS = JP × 100.000 cm</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contoh Soal & Pembahasan Skala -->
+                        <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center font-bold">
+                                    <i class="fa-solid fa-lightbulb"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-extrabold text-navy-900">Contoh Soal & Pembahasan Interaktif (Skala)</h4>
+                                    <p class="text-xs text-slate-500">Pelajari cara menyelesaikan soal skala peta dan denah bangunan</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+                                    <div>
+                                        <span class="text-[11px] font-bold px-2.5 py-1 rounded-md bg-navy-900 text-orange-400">Contoh Soal 1 • Mencari Jarak Sebenarnya</span>
+                                        <p class="text-sm font-semibold text-navy-900 mt-3 leading-relaxed">
+                                            Jarak antara Kota Surabaya dan Malang pada peta adalah <strong>4,5 cm</strong>. Jika peta tersebut memiliki skala <strong>1 : 2.000.000</strong>, berapakah jarak sebenarnya kedua kota tersebut dalam satuan km?
+                                        </p>
+                                    </div>
+                                    <div class="mt-4">
+                                        <button onclick="toggleSolution('sol-skala-1')" class="w-full py-2.5 px-4 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs transition flex items-center justify-center gap-2">
+                                            <i class="fa-solid fa-eye"></i>
+                                            <span>Tampilkan / Sembunyikan Pembahasan</span>
+                                        </button>
+                                        <div id="sol-skala-1" class="hidden mt-3 p-4 rounded-xl bg-white border border-orange-200 text-xs space-y-2 text-slate-700">
+                                            <p><strong class="text-navy-900">Diketahui:</strong> JP = 4,5 cm dan Skala = 1 : 2.000.000</p>
+                                            <p><strong class="text-navy-900">Langkah 1 (Hitung JS dalam cm):</strong><br>JS = 4,5 × 2.000.000 = <strong>9.000.000 cm</strong></p>
+                                            <p><strong class="text-navy-900">Langkah 2 (Ubah cm ke km dibagi 100.000):</strong><br>JS = 9.000.000 ÷ 100.000 = <strong class="text-orange-600 text-sm">90 km</strong></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+                                    <div>
+                                        <span class="text-[11px] font-bold px-2.5 py-1 rounded-md bg-navy-900 text-orange-400">Contoh Soal 2 • Mencari Skala Denah</span>
+                                        <p class="text-sm font-semibold text-navy-900 mt-3 leading-relaxed">
+                                            Tinggi sebuah menara pada gambar arsitek adalah <strong>12 cm</strong>. Jika tinggi menara sebenarnya adalah <strong>36 meter</strong>, tentukan skala gambar menara tersebut!
+                                        </p>
+                                    </div>
+                                    <div class="mt-4">
+                                        <button onclick="toggleSolution('sol-skala-2')" class="w-full py-2.5 px-4 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs transition flex items-center justify-center gap-2">
+                                            <i class="fa-solid fa-eye"></i>
+                                            <span>Tampilkan / Sembunyikan Pembahasan</span>
+                                        </button>
+                                        <div id="sol-skala-2" class="hidden mt-3 p-4 rounded-xl bg-white border border-orange-200 text-xs space-y-2 text-slate-700">
+                                            <p><strong class="text-navy-900">Langkah 1 (Samakan satuan ke cm):</strong><br>JP = 12 cm<br>JS = 36 meter = 36 × 100 = <strong>3.600 cm</strong></p>
+                                            <p><strong class="text-navy-900">Langkah 2 (Bandingkan JP : JS lalu bagi 12):</strong><br>Skala = 12 : 3.600 = (12 ÷ 12) : (3.600 ÷ 12) = <strong class="text-orange-600 text-sm">1 : 300</strong></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- -------- SUB-MATERI 3: LAJU PERUBAHAN SATUAN -------- -->
+                    <div id="materi-content-laju" class="materi-panel hidden space-y-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                            <!-- Penjelasan Konsep Laju Perubahan -->
+                            <div class="lg:col-span-7 bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-5">
+                                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-orange-50 text-orange-600 font-bold text-xs">
+                                    <i class="fa-solid fa-bookmark"></i> Topik 3 • Pertemuan 3 (2 JP)
+                                </div>
+                                <h3 class="text-2xl font-extrabold text-navy-900">Laju Perubahan Satuan (Unit Rate)</h3>
+                                <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                                    Berbeda dengan rasio biasa yang membandingkan satuan sejenis, <strong>Laju Perubahan Satuan</strong> membandingkan <strong>dua besaran dengan satuan yang berbeda</strong> untuk mengetahui nilai per <strong>1 satuan</strong> pembaginya.
+                                </p>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    <div class="p-4 rounded-2xl bg-navy-900 text-white">
+                                        <i class="fa-solid fa-car-side text-orange-400 text-lg mb-1"></i>
+                                        <h5 class="font-extrabold text-sm">Kecepatan</h5>
+                                        <p class="text-xs text-slate-300 mt-1">Jarak per satuan waktu (<strong>km/jam</strong> atau <strong>m/detik</strong>)</p>
+                                    </div>
+                                    <div class="p-4 rounded-2xl bg-navy-900 text-white">
+                                        <i class="fa-solid fa-tags text-orange-400 text-lg mb-1"></i>
+                                        <h5 class="font-extrabold text-sm">Harga Satuan</h5>
+                                        <p class="text-xs text-slate-300 mt-1">Harga per barang/berat (<strong>Rp/kg</strong> atau <strong>Rp/buah</strong>)</p>
+                                    </div>
+                                    <div class="p-4 rounded-2xl bg-navy-900 text-white">
+                                        <i class="fa-solid fa-faucet-drip text-orange-400 text-lg mb-1"></i>
+                                        <h5 class="font-extrabold text-sm">Debit & Konsumsi</h5>
+                                        <p class="text-xs text-slate-300 mt-1">Liter per menit atau <strong>km/liter</strong> BBM</p>
+                                    </div>
+                                </div>
+
+                                <div class="p-4 rounded-2xl bg-orange-50 border border-orange-200 text-xs sm:text-sm text-slate-700">
+                                    <p class="font-extrabold text-navy-900 mb-1"><i class="fa-solid fa-calculator text-orange-500 mr-1.5"></i>Rumus Umum Laju Perubahan Satuan:</p>
+                                    <p class="font-semibold text-orange-700">Laju Satuan = Besaran Pertama ÷ Besaran Kedua (untuk 1 satuan)</p>
+                                    <p class="mt-1">Contoh: Menempuh <strong>180 km dalam 3 jam</strong> berarti laju kecepatannya adalah 180 ÷ 3 = <strong>60 km/jam</strong>.</p>
+                                </div>
+                            </div>
+
+                            <!-- Animasi Visualisasi Laju Perubahan Satuan -->
+                            <div class="lg:col-span-5 bg-navy-900 text-white rounded-3xl p-6 sm:p-7 shadow-lg flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between mb-4">
+                                        <span class="text-xs font-bold uppercase tracking-wider text-orange-400 flex items-center gap-1.5">
+                                            <i class="fa-solid fa-bolt"></i> Visualisasi Laju Ketik & Kecepatan
+                                        </span>
+                                        <span class="text-[11px] bg-white/10 px-2.5 py-1 rounded-full text-slate-300">Animasi Real-Time</span>
+                                    </div>
+                                    <h4 class="text-lg font-extrabold mb-1">Simulasi Perbandingan Belanja Hemat</h4>
+                                    <p class="text-xs text-slate-300 mb-4">Klik salah satu paket susu kotak di bawah ini untuk menganalisis mana yang memiliki <strong>laju harga per ml</strong> paling hemat!</p>
+
+                                    <div class="space-y-3">
+                                        <button onclick="animateMateriLaju('A')" id="btn-laju-A" class="w-full p-3.5 rounded-2xl bg-orange-500 text-white text-left transition flex items-center justify-between">
+                                            <div>
+                                                <span class="font-extrabold text-sm block">Paket A (200 ml)</span>
+                                                <span class="text-xs text-orange-100">Harga: Rp6.000</span>
+                                            </div>
+                                            <span class="text-xs font-extrabold bg-navy-900 px-3 py-1.5 rounded-xl">Rp30 / ml</span>
+                                        </button>
+
+                                        <button onclick="animateMateriLaju('B')" id="btn-laju-B" class="w-full p-3.5 rounded-2xl bg-navy-800 hover:bg-slate-800 text-slate-200 text-left transition flex items-center justify-between border border-slate-700">
+                                            <div>
+                                                <span class="font-extrabold text-sm block">Paket B (500 ml)</span>
+                                                <span class="text-xs text-slate-400">Harga: Rp12.500</span>
+                                            </div>
+                                            <span class="text-xs font-extrabold bg-navy-900 text-orange-400 px-3 py-1.5 rounded-xl">Rp25 / ml</span>
+                                        </button>
+
+                                        <button onclick="animateMateriLaju('C')" id="btn-laju-C" class="w-full p-3.5 rounded-2xl bg-navy-800 hover:bg-slate-800 text-slate-200 text-left transition flex items-center justify-between border border-slate-700">
+                                            <div>
+                                                <span class="font-extrabold text-sm block">Paket C (1.000 ml)</span>
+                                                <span class="text-xs text-slate-400">Harga: Rp22.000</span>
+                                            </div>
+                                            <span class="text-xs font-extrabold bg-navy-900 text-emerald-400 px-3 py-1.5 rounded-xl">Rp22 / ml</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div id="visLajuExplanation" class="mt-4 p-3.5 rounded-xl bg-navy-800 border border-slate-700 text-xs text-slate-200">
+                                    <strong class="text-orange-400">Analisis Paket A:</strong> Rp6.000 ÷ 200 ml = <strong>Rp30 per ml</strong>. Coba klik Paket B dan C untuk membandingkan!
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contoh Soal & Pembahasan Laju Perubahan -->
+                        <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center font-bold">
+                                    <i class="fa-solid fa-lightbulb"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-extrabold text-navy-900">Contoh Soal & Pembahasan Interaktif (Laju Perubahan Satuan)</h4>
+                                    <p class="text-xs text-slate-500">Penerapan konsep unit rate pada kecepatan dan konsumsi bahan bakar</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+                                    <div>
+                                        <span class="text-[11px] font-bold px-2.5 py-1 rounded-md bg-navy-900 text-orange-400">Contoh Soal 1 • Laju Konsumsi BBM</span>
+                                        <p class="text-sm font-semibold text-navy-900 mt-3 leading-relaxed">
+                                            Mobil Ayah memerlukan <strong>6 liter bensin</strong> untuk menempuh jarak <strong>72 km</strong>. Berapa jarak yang dapat ditempuh mobil tersebut jika diisi <strong>10 liter bensin</strong>?
+                                        </p>
+                                    </div>
+                                    <div class="mt-4">
+                                        <button onclick="toggleSolution('sol-laju-1')" class="w-full py-2.5 px-4 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs transition flex items-center justify-center gap-2">
+                                            <i class="fa-solid fa-eye"></i>
+                                            <span>Tampilkan / Sembunyikan Pembahasan</span>
+                                        </button>
+                                        <div id="sol-laju-1" class="hidden mt-3 p-4 rounded-xl bg-white border border-orange-200 text-xs space-y-2 text-slate-700">
+                                            <p><strong class="text-navy-900">Langkah 1 (Cari Laju per 1 Liter):</strong><br>Laju = 72 km ÷ 6 liter = <strong>12 km/liter</strong></p>
+                                            <p><strong class="text-navy-900">Langkah 2 (Kalikan untuk 10 Liter):</strong><br>Jarak = 12 km/liter × 10 liter = <strong class="text-orange-600 text-sm">120 km</strong></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+                                    <div>
+                                        <span class="text-[11px] font-bold px-2.5 py-1 rounded-md bg-navy-900 text-orange-400">Contoh Soal 2 • Membandingkan Dua Laju</span>
+                                        <p class="text-sm font-semibold text-navy-900 mt-3 leading-relaxed">
+                                            Mesin cetak A mampu mencetak <strong>240 lembar dalam 4 menit</strong>, sedangkan Mesin cetak B mampu mencetak <strong>350 lembar dalam 5 menit</strong>. Mesin manakah yang lebih cepat?
+                                        </p>
+                                    </div>
+                                    <div class="mt-4">
+                                        <button onclick="toggleSolution('sol-laju-2')" class="w-full py-2.5 px-4 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs transition flex items-center justify-center gap-2">
+                                            <i class="fa-solid fa-eye"></i>
+                                            <span>Tampilkan / Sembunyikan Pembahasan</span>
+                                        </button>
+                                        <div id="sol-laju-2" class="hidden mt-3 p-4 rounded-xl bg-white border border-orange-200 text-xs space-y-2 text-slate-700">
+                                            <p><strong class="text-navy-900">Laju Mesin A:</strong> 240 ÷ 4 = <strong>60 lembar/menit</strong></p>
+                                            <p><strong class="text-navy-900">Laju Mesin B:</strong> 350 ÷ 5 = <strong>70 lembar/menit</strong></p>
+                                            <p><strong class="text-navy-900">Kesimpulan:</strong> <strong class="text-orange-600">Mesin B lebih cepat</strong> karena mencetak 10 lembar lebih banyak setiap menitnya.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+
+
+                <!-- ==========================================
+                     3. HALAMAN SIMULASI (LABORATORIUM VIRTUAL)
+                =========================================== -->
+                <section id="section-simulasi" class="menu-section hidden space-y-6">
+                    
+                    <!-- Sub-Navigasi Pilihan Lab Simulasi -->
+                    <div class="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-xs flex flex-wrap gap-2">
+                        <button onclick="switchSimTab('rasio')" id="tab-sim-rasio" class="sim-tab-btn flex-1 min-w-[170px] py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 bg-navy-900 text-white">
+                            <i class="fa-solid fa-wine-glass-empty text-orange-400"></i>
+                            <span>Lab 1: Racik Sirup (Rasio)</span>
+                        </button>
+                        <button onclick="switchSimTab('skala')" id="tab-sim-skala" class="sim-tab-btn flex-1 min-w-[170px] py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-100">
+                            <i class="fa-solid fa-compass-drafting text-orange-500"></i>
+                            <span>Lab 2: Peta & Arsitek (Skala)</span>
+                        </button>
+                        <button onclick="switchSimTab('laju')" id="tab-sim-laju" class="sim-tab-btn flex-1 min-w-[170px] py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-100">
+                            <i class="fa-solid fa-flag-checkered text-orange-500"></i>
+                            <span>Lab 3: Arena Kecepatan (Laju)</span>
+                        </button>
+                    </div>
+
+                    <!-- -------- LAB 1: SIMULASI RACIK MINUMAN (RASIO) -------- -->
+                    <div id="sim-content-rasio" class="sim-panel bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                            <!-- Kontrol Slider Takaran -->
+                            <div class="lg:col-span-6 space-y-6">
+                                <div>
+                                    <span class="text-xs font-bold text-orange-600 bg-orange-50 px-3 py-1 rounded-full">Laboratorium Virtual 1 • Rasio</span>
+                                    <h3 class="text-2xl font-extrabold text-navy-900 mt-2">Eksperimen Meracik Es Sirup Jeruk</h3>
+                                    <p class="text-xs sm:text-sm text-slate-600 mt-1">Atur banyaknya gelas takar <strong>Sirup Jeruk</strong> dan <strong>Air Putih</strong>. Amati bagaimana rasio paling sederhana dan tingkat kemanisan berubah!</p>
+                                </div>
+
+                                <!-- Slider Sirup -->
+                                <div class="p-5 rounded-2xl bg-orange-50/70 border border-orange-200 space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <label class="font-extrabold text-sm text-navy-900 flex items-center gap-2">
+                                            <i class="fa-solid fa-Prescription-bottle text-orange-500"></i> Takaran Sirup Jeruk
+                                        </label>
+                                        <span id="simRasioSyrupVal" class="px-3 py-1 rounded-lg bg-orange-500 text-white font-extrabold text-sm">2 Gelas</span>
+                                    </div>
+                                    <input type="range" id="simRasioSyrupInput" min="1" max="10" value="2" oninput="updateSimRasio()" class="w-full">
+                                </div>
+
+                                <!-- Slider Air -->
+                                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <label class="font-extrabold text-sm text-navy-900 flex items-center gap-2">
+                                            <i class="fa-solid fa-droplet text-sky-500"></i> Takaran Air Putih
+                                        </label>
+                                        <span id="simRasioWaterVal" class="px-3 py-1 rounded-lg bg-navy-900 text-white font-extrabold text-sm">6 Gelas</span>
+                                    </div>
+                                    <input type="range" id="simRasioWaterInput" min="1" max="15" value="6" oninput="updateSimRasio()" class="w-full">
+                                </div>
+
+                                <!-- Tantangan Misi Kecil -->
+                                <div class="p-4 rounded-2xl bg-navy-900 text-white flex items-center justify-between gap-4">
+                                    <div class="text-xs">
+                                        <span class="text-orange-400 font-bold block"><i class="fa-solid fa-bullseye mr-1"></i>Misi Tantangan Resep Pas:</span>
+                                        <span id="simRasioMissionText" class="text-slate-300">Coba buat campuran dengan rasio paling sederhana <strong>1 : 3</strong> tetapi total campurannya <strong>12 gelas</strong>!</span>
+                                    </div>
+                                    <span id="simRasioMissionBadge" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs shrink-0">Belum Tercapai</span>
+                                </div>
+                            </div>
+
+                            <!-- Visualisasi Tabung Gelas & Hasil Rasio -->
+                            <div class="lg:col-span-6 bg-navy-900 text-white rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-between space-y-6">
+                                <div class="w-full flex flex-col sm:flex-row items-center gap-6 justify-around">
+                                    <!-- Visual Pitcher Gelas Ukur -->
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-36 h-56 rounded-b-3xl rounded-t-lg border-4 border-slate-300 bg-navy-800/80 relative overflow-hidden flex flex-col justify-end shadow-inner">
+                                            <!-- Lapisan Air -->
+                                            <div id="simWaterLayer" class="w-full bg-sky-400/75 smooth-transition flex items-center justify-center text-[11px] font-bold text-navy-900" style="height: 60%;">
+                                                Air
+                                            </div>
+                                            <!-- Lapisan Sirup -->
+                                            <div id="simSyrupLayer" class="w-full bg-orange-500 smooth-transition flex items-center justify-center text-[11px] font-bold text-white" style="height: 20%;">
+                                                Sirup
+                                            </div>
+                                        </div>
+                                        <span class="text-xs text-slate-400 mt-2 font-semibold">Tabung Campuran (<span id="simTotalCups">8</span> Gelas)</span>
+                                    </div>
+
+                                    <!-- Panel Data Hasil Perhitungan -->
+                                    <div class="flex-1 w-full space-y-3">
+                                        <div class="p-4 rounded-2xl bg-navy-800 border border-slate-700">
+                                            <span class="text-xs text-slate-400 block">Rasio Asli (Sirup : Air)</span>
+                                            <span id="simRawRatio" class="text-2xl font-extrabold text-white">2 : 6</span>
+                                        </div>
+                                        <div class="p-4 rounded-2xl bg-orange-500/20 border border-orange-500/40">
+                                            <span class="text-xs text-orange-300 font-semibold block">Rasio Paling Sederhana</span>
+                                            <span id="simSimpleRatio" class="text-3xl font-extrabold text-orange-400">1 : 3</span>
+                                            <span id="simFpbNote" class="text-[11px] text-slate-300 block mt-0.5">(Dibagi FPB = 2)</span>
+                                        </div>
+                                        <div class="p-4 rounded-2xl bg-navy-800 border border-slate-700">
+                                            <span class="text-xs text-slate-400 block">Kadar Kemanisan Sirup</span>
+                                            <div class="flex items-center justify-between mt-1">
+                                                <span id="simSweetPercent" class="text-lg font-extrabold text-orange-400">25%</span>
+                                                <span id="simSweetLabel" class="text-xs px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 font-bold">Pas & Segar!</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- -------- LAB 2: SIMULASI PETA & ARSITEK (SKALA) -------- -->
+                    <div id="sim-content-skala" class="sim-panel hidden bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-6 space-y-5">
+                                <div>
+                                    <span class="text-xs font-bold text-orange-600 bg-orange-50 px-3 py-1 rounded-full">Laboratorium Virtual 2 • Skala</span>
+                                    <h3 class="text-2xl font-extrabold text-navy-900 mt-2">Simulator Penggaris Peta Digital</h3>
+                                    <p class="text-xs sm:text-sm text-slate-600 mt-1">Pilih <strong>Skala Peta</strong> dan geser <strong>Jarak pada Peta (JP)</strong> untuk menghitung otomatis Jarak Sebenarnya (JS) antar bangunan!</p>
+                                </div>
+
+                                <!-- Pilihan Skala Peta -->
+                                <div class="space-y-2">
+                                    <label class="text-xs font-extrabold uppercase tracking-wider text-slate-500">Pilih Skala Peta (1 : n)</label>
+                                    <div class="grid grid-cols-3 gap-2.5">
+                                        <button onclick="setSimScale(10000)" id="scale-btn-10000" class="scale-opt-btn py-2.5 px-3 rounded-xl border border-slate-200 font-bold text-xs text-slate-700 hover:bg-slate-100 transition">1 : 10.000</button>
+                                        <button onclick="setSimScale(100000)" id="scale-btn-100000" class="scale-opt-btn py-2.5 px-3 rounded-xl bg-navy-900 text-white font-bold text-xs shadow-xs transition">1 : 100.000</button>
+                                        <button onclick="setSimScale(500000)" id="scale-btn-500000" class="scale-opt-btn py-2.5 px-3 rounded-xl border border-slate-200 font-bold text-xs text-slate-700 hover:bg-slate-100 transition">1 : 500.000</button>
+                                    </div>
+                                </div>
+
+                                <!-- Slider Jarak Peta -->
+                                <div class="p-5 rounded-2xl bg-orange-50/70 border border-orange-200 space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <label class="font-extrabold text-sm text-navy-900">Jarak pada Peta (JP)</label>
+                                        <span id="simSkalaJpVal" class="px-3 py-1 rounded-lg bg-orange-500 text-white font-extrabold text-sm">6 cm</span>
+                                    </div>
+                                    <input type="range" id="simSkalaJpInput" min="1" max="12" step="0.5" value="6" oninput="updateSimSkala()" class="w-full">
+                                </div>
+
+                                <!-- Langkah Perhitungan Otomatis -->
+                                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs space-y-1.5">
+                                    <span class="font-extrabold text-navy-900 block">Proses Perhitungan Matematis:</span>
+                                    <p id="simSkalaFormulaStep1" class="text-slate-600">1. JS (cm) = 6 cm × 100.000 = <strong>600.000 cm</strong></p>
+                                    <p id="simSkalaFormulaStep2" class="text-slate-600">2. JS (km) = 600.000 ÷ 100.000 = <strong class="text-orange-600">6 km</strong></p>
+                                </div>
+                            </div>
+
+                            <!-- Visualisasi Kanvas Peta & Penggaris -->
+                            <div class="lg:col-span-6 bg-navy-900 text-white rounded-3xl p-6 sm:p-8 space-y-6">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs font-bold text-orange-400"><i class="fa-solid fa-ruler-horizontal mr-1.5"></i>Penggaris Peta Interaktif</span>
+                                    <span id="simSkalaActiveBadge" class="text-xs bg-orange-500 text-white px-3 py-1 rounded-full font-bold">Skala 1 : 100.000</span>
+                                </div>
+
+                                <!-- Kanvas Visual Peta -->
+                                <div class="bg-navy-800 rounded-2xl p-6 border border-slate-700 relative overflow-hidden">
+                                    <div class="flex items-center justify-between mb-6 relative z-10">
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-11 h-11 rounded-xl bg-orange-500 flex items-center justify-center text-white shadow-md">
+                                                <i class="fa-solid fa-school"></i>
+                                            </div>
+                                            <span class="text-[11px] font-bold mt-1.5">Sekolah</span>
+                                        </div>
+
+                                        <!-- Garis Ukur Dinamis -->
+                                        <div class="flex-1 mx-3">
+                                            <div class="w-full bg-navy-900 h-4 rounded-full p-1 flex items-center">
+                                                <div id="simSkalaVisualRuler" class="h-2 bg-gradient-to-r from-orange-400 to-orange-500 rounded-full smooth-transition" style="width: 50%;"></div>
+                                            </div>
+                                            <p id="simSkalaRulerText" class="text-center text-xs font-bold text-orange-400 mt-1.5">6 cm di Peta</p>
+                                        </div>
+
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-11 h-11 rounded-xl bg-sky-500 flex items-center justify-center text-white shadow-md">
+                                                <i class="fa-solid fa-landmark-dome"></i>
+                                            </div>
+                                            <span class="text-[11px] font-bold mt-1.5">Museum</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Hasil Konversi -->
+                                    <div class="grid grid-cols-2 gap-3 pt-4 border-t border-slate-700">
+                                        <div class="p-3 rounded-xl bg-navy-900 text-center">
+                                            <span class="text-[11px] text-slate-400 block">Jarak Sebenarnya (Meter)</span>
+                                            <span id="simSkalaMeterResult" class="text-lg font-extrabold text-white">6.000 m</span>
+                                        </div>
+                                        <div class="p-3 rounded-xl bg-orange-500/20 border border-orange-500/40 text-center">
+                                            <span class="text-[11px] text-orange-300 block">Jarak Sebenarnya (Kilometer)</span>
+                                            <span id="simSkalaKmResult" class="text-xl font-extrabold text-orange-400">6 km</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- -------- LAB 3: SIMULASI ARENA KECEPATAN (LAJU PERUBAHAN SATUAN) -------- -->
+                    <div id="sim-content-laju" class="sim-panel hidden bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-5 space-y-5">
+                                <div>
+                                    <span class="text-xs font-bold text-orange-600 bg-orange-50 px-3 py-1 rounded-full">Laboratorium Virtual 3 • Laju Satuan</span>
+                                    <h3 class="text-2xl font-extrabold text-navy-900 mt-2">Uji Laju Kecepatan Kendaraan</h3>
+                                    <p class="text-xs sm:text-sm text-slate-600 mt-1">Atur total <strong>Jarak Tempuh (km)</strong> dan <strong>Waktu Tempuh (jam)</strong>, lalu jalankan simulasi untuk melihat laju perubahan satuannya!</p>
+                                </div>
+
+                                <div class="p-4 rounded-2xl bg-orange-50/70 border border-orange-200 space-y-3">
+                                    <div class="flex justify-between">
+                                        <label class="text-xs font-extrabold text-navy-900">Jarak Tempuh (km)</label>
+                                        <span id="simLajuDistVal" class="text-xs font-extrabold bg-orange-500 text-white px-2.5 py-1 rounded-md">150 km</span>
+                                    </div>
+                                    <input type="range" id="simLajuDistInput" min="30" max="300" step="10" value="150" oninput="updateSimLaju()" class="w-full">
+                                </div>
+
+                                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                                    <div class="flex justify-between">
+                                        <label class="text-xs font-extrabold text-navy-900">Waktu Tempuh (Jam)</label>
+                                        <span id="simLajuTimeVal" class="text-xs font-extrabold bg-navy-900 text-white px-2.5 py-1 rounded-md">3 Jam</span>
+                                    </div>
+                                    <input type="range" id="simLajuTimeInput" min="1" max="6" step="0.5" value="3" oninput="updateSimLaju()" class="w-full">
+                                </div>
+
+                                <button onclick="runCarAnimation()" class="w-full py-3.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm shadow-lg shadow-orange-500/25 transition flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-play"></i>
+                                    <span>Jalankan Animasi Mobil!</span>
+                                </button>
+                            </div>
+
+                            <!-- Lintasan Mobil & Speedometer Digital -->
+                            <div class="lg:col-span-7 bg-navy-900 text-white rounded-3xl p-6 sm:p-8 space-y-6">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs font-bold text-orange-400"><i class="fa-solid fa-road mr-1.5"></i>Lintasan Simulasi Laju Satuan</span>
+                                    <span id="simLajuCategory" class="text-xs px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-bold">Kecepatan Sedang</span>
+                                </div>
+
+                                <!-- Track Jalan Raya -->
+                                <div class="bg-navy-800 rounded-2xl p-5 border border-slate-700 space-y-3">
+                                    <div class="flex justify-between text-[11px] text-slate-400 font-semibold">
+                                        <span>GARIS MULAI (0 km)</span>
+                                        <span id="simTrackFinishLabel">GARIS AKHIR (150 km)</span>
+                                    </div>
+                                    <div class="relative h-14 bg-slate-900 rounded-xl border border-slate-700 flex items-center px-3 overflow-hidden">
+                                        <!-- Garis Putus-putus Jalan -->
+                                        <div class="w-full border-t-2 border-dashed border-slate-600 absolute left-0"></div>
+                                        <!-- Ikon Mobil Bergerak -->
+                                        <div id="simCarElement" class="relative z-10 w-12 h-9 rounded-xl bg-orange-500 text-white flex items-center justify-center shadow-lg transition-all duration-700" style="left: 0%;">
+                                            <i class="fa-solid fa-car-side text-lg"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Hasil Perhitungan Laju -->
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
+                                    <div class="p-4 rounded-2xl bg-orange-500/20 border border-orange-500/40">
+                                        <span class="text-[11px] text-orange-300 font-semibold block">Laju Kecepatan (Unit Rate)</span>
+                                        <span id="simLajuSpeedResult" class="text-2xl font-extrabold text-orange-400">50 km/jam</span>
+                                    </div>
+                                    <div class="p-4 rounded-2xl bg-navy-800 border border-slate-700">
+                                        <span class="text-[11px] text-slate-400 block">Jarak Tempuh per Menit</span>
+                                        <span id="simLajuMeterMin" class="text-lg font-extrabold text-white">833 m/menit</span>
+                                    </div>
+                                    <div class="p-4 rounded-2xl bg-navy-800 border border-slate-700">
+                                        <span class="text-[11px] text-slate-400 block">Rumus Laju</span>
+                                        <span id="simLajuEquation" class="text-sm font-extrabold text-sky-400">150 km ÷ 3 jam</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+
+
+                <!-- ==========================================
+                     4. HALAMAN LATIHAN SOAL (5 SOAL TIAP TOPIK = 15 SOAL)
+                =========================================== -->
+                <section id="section-latihan" class="menu-section hidden space-y-6">
+                    
+                    <!-- Header & Filter Topik Latihan -->
+                    <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <span class="text-xs font-bold text-orange-600 uppercase tracking-wider">Asah Pemahamanmu</span>
+                            <h3 class="text-xl font-extrabold text-navy-900">Latihan Soal Terbimbing (5 Soal per Topik)</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Pilih jawaban pada masing-masing soal untuk melihat umpan balik dan pembahasan langsung.</p>
+                        </div>
+
+                        <!-- Skor Latihan Real-time -->
+                        <div class="flex items-center gap-3 bg-navy-900 text-white px-4 py-3 rounded-2xl shrink-0">
+                            <i class="fa-solid fa-star text-orange-400 text-xl"></i>
+                            <div>
+                                <span class="text-[10px] text-slate-300 block uppercase">Skor Latihan Terkumpul</span>
+                                <span id="practiceScoreDisplay" class="text-sm font-extrabold text-orange-400">0 / 15 Soal Benar</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Pemilihan Topik Latihan (Rasio, Skala, Laju Perubahan) -->
+                    <div class="bg-white p-2 rounded-2xl border border-slate-200 flex flex-wrap gap-2">
+                        <button onclick="switchPracticeTopic('rasio')" id="prac-tab-rasio" class="prac-tab-btn flex-1 min-w-[150px] py-3 px-4 rounded-xl font-bold text-xs sm:text-sm bg-orange-500 text-white transition">
+                            Topik 1: Rasio (5 Soal)
+                        </button>
+                        <button onclick="switchPracticeTopic('skala')" id="prac-tab-skala" class="prac-tab-btn flex-1 min-w-[150px] py-3 px-4 rounded-xl font-bold text-xs sm:text-sm text-slate-600 hover:bg-slate-100 transition">
+                            Topik 2: Skala (5 Soal)
+                        </button>
+                        <button onclick="switchPracticeTopic('laju')" id="prac-tab-laju" class="prac-tab-btn flex-1 min-w-[150px] py-3 px-4 rounded-xl font-bold text-xs sm:text-sm text-slate-600 hover:bg-slate-100 transition">
+                            Topik 3: Laju Perubahan (5 Soal)
+                        </button>
+                    </div>
+
+                    <!-- Daftar Kartu Soal Latihan (Dirender via JavaScript) -->
+                    <div id="practiceQuestionsContainer" class="space-y-4"></div>
+
+                </section>
+
+
+                <!-- ==========================================
+                     5. HALAMAN POST-TEST (EVALUASI AKHIR)
+                =========================================== -->
+                <section id="section-postest" class="menu-section hidden space-y-6">
+
+                    <!-- Layar 1: Persiapan & Input Identitas Siswa -->
+                    <div id="postest-intro-card" class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 shadow-xs max-w-3xl mx-auto">
+                        <div class="text-center space-y-3 mb-8">
+                            <div class="w-16 h-16 rounded-2xl bg-navy-900 text-orange-400 flex items-center justify-center text-3xl mx-auto shadow-lg">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-orange-600 bg-orange-50 px-3 py-1 rounded-full">Evaluasi Akhir Pembelajaran</span>
+                            <h3 class="text-2xl sm:text-3xl font-extrabold text-navy-900">Post-Test Rasioku</h3>
+                            <p class="text-xs sm:text-sm text-slate-600 max-w-lg mx-auto">
+                                Uji penguasaan akhir materi <strong>Rasio, Skala, dan Laju Perubahan Satuan</strong>. Pastikan kamu sudah mempelajari materi dan mencoba simulasi sebelum memulai!
+                            </p>
+                        </div>
+
+                        <!-- Info Ketentuan Post-Test -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6 text-center">
+                            <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+                                <i class="fa-solid fa-list-check text-orange-500 mb-1"></i>
+                                <p class="text-xs text-slate-500">Jumlah Soal</p>
+                                <p class="text-sm font-extrabold text-navy-900">10 Soal Pilihan Ganda</p>
+                            </div>
+                            <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+                                <i class="fa-solid fa-stopwatch text-orange-500 mb-1"></i>
+                                <p class="text-xs text-slate-500">Durasi Waktu</p>
+                                <p class="text-sm font-extrabold text-navy-900">20 Menit</p>
+                            </div>
+                            <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+                                <i class="fa-solid fa-medal text-orange-500 mb-1"></i>
+                                <p class="text-xs text-slate-500">Batas Lulus (KKTP)</p>
+                                <p class="text-sm font-extrabold text-navy-900">Skor Minimal 70</p>
+                            </div>
+                        </div>
+
+                        <!-- Form Nama & Kelas -->
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-navy-900 uppercase mb-1.5">Nama Lengkap Siswa</label>
+                                <input type="text" id="postestStudentName" placeholder="Masukkan nama lengkapmu..." class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:border-orange-500 text-sm font-medium">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-navy-900 uppercase mb-1.5">Kelas / Absen</label>
+                                <input type="text" id="postestStudentClass" placeholder="Contoh: VII-A / No. 12" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:border-orange-500 text-sm font-medium">
+                            </div>
+                            <p id="postestFormError" class="hidden text-xs font-bold text-rose-600"><i class="fa-solid fa-circle-exclamation mr-1"></i>Harap isi nama lengkap dan kelas terlebih dahulu!</p>
+
+                            <button onclick="startPostTest()" class="w-full py-4 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-sm shadow-lg shadow-orange-500/30 transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-rocket"></i>
+                                <span>Mulai Kerjakan Post-Test Sekarang</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Layar 2: Lembar Pengerjaan Post-Test -->
+                    <div id="postest-quiz-card" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        
+                        <!-- Area Soal Aktif -->
+                        <div class="lg:col-span-8 bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs flex flex-col justify-between">
+                            <div>
+                                <!-- Header Nomor Soal & Timer -->
+                                <div class="flex items-center justify-between pb-4 mb-6 border-b border-slate-200">
+                                    <div class="flex items-center gap-2.5">
+                                        <span id="ptQuestionBadge" class="px-3.5 py-1.5 rounded-xl bg-navy-900 text-orange-400 font-extrabold text-xs">Soal 1 / 10</span>
+                                        <span id="ptTopicBadge" class="px-3 py-1 rounded-lg bg-orange-50 text-orange-600 font-bold text-xs">Topik: Rasio</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-rose-50 text-rose-600 font-extrabold text-xs border border-rose-200">
+                                        <i class="fa-regular fa-clock"></i>
+                                        <span id="ptTimerDisplay">20:00</span>
+                                    </div>
+                                </div>
+
+                                <!-- Teks Pertanyaan -->
+                                <p id="ptQuestionText" class="text-base sm:text-lg font-bold text-navy-900 leading-relaxed mb-6"></p>
+
+                                <!-- Pilihan Jawaban -->
+                                <div id="ptOptionsContainer" class="space-y-3"></div>
+                            </div>
+
+                            <!-- Navigasi Prev / Next -->
+                            <div class="flex items-center justify-between pt-6 mt-8 border-t border-slate-200">
+                                <button onclick="prevPostTestQuestion()" id="ptPrevBtn" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm transition flex items-center gap-2">
+                                    <i class="fa-solid fa-arrow-left"></i> Sebelumnya
+                                </button>
+                                <button onclick="nextPostTestQuestion()" id="ptNextBtn" class="px-5 py-2.5 rounded-xl bg-navy-900 hover:bg-navy-800 text-white font-bold text-xs sm:text-sm transition flex items-center gap-2">
+                                    Selanjutnya <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Navigasi Nomor Soal & Tombol Kumpulkan -->
+                        <div class="lg:col-span-4 bg-white rounded-3xl border border-slate-200 p-6 shadow-xs flex flex-col justify-between">
+                            <div>
+                                <h4 class="font-extrabold text-navy-900 text-sm mb-1">Navigasi Nomor Soal</h4>
+                                <p class="text-xs text-slate-500 mb-4">Klik angka untuk berpindah soal dengan cepat.</p>
+
+                                <div id="ptPaletteGrid" class="grid grid-cols-5 gap-2.5 mb-6"></div>
+
+                                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs space-y-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-3.5 h-3.5 rounded-md bg-orange-500 inline-block"></span>
+                                        <span class="text-slate-600">Sudah Dijawab</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-3.5 h-3.5 rounded-md bg-slate-200 inline-block"></span>
+                                        <span class="text-slate-600">Belum Dijawab</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button onclick="openSubmitConfirmation()" class="mt-6 w-full py-3.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-sm shadow-lg shadow-orange-500/25 transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                <span>Selesai & Kumpulkan</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Layar 3: Hasil Rapor Evaluasi Post-Test -->
+                    <div id="postest-result-card" class="hidden space-y-6">
+                        <div class="bg-gradient-to-br from-navy-900 to-navy-800 text-white rounded-3xl p-6 sm:p-10 shadow-xl text-center max-w-3xl mx-auto">
+                            <span class="text-xs font-bold uppercase tracking-wider text-orange-400">Rapor Evaluasi Akhir • Rasioku</span>
+                            <h3 id="ptResultStudentInfo" class="text-xl sm:text-2xl font-extrabold mt-1">Nama Siswa (Kelas VII)</h3>
+
+                            <div class="my-6 inline-flex flex-col items-center justify-center w-36 h-36 rounded-full bg-navy-900 border-4 border-orange-500 shadow-lg">
+                                <span class="text-xs text-slate-400">Nilai Akhir</span>
+                                <span id="ptFinalScoreText" class="text-4xl font-extrabold text-orange-400">90</span>
+                                <span class="text-[11px] text-slate-300">dari 100</span>
+                            </div>
+
+                            <p id="ptResultPredicate" class="text-sm sm:text-base font-semibold text-slate-200 max-w-md mx-auto mb-6"></p>
+
+                            <div class="flex flex-wrap justify-center gap-3">
+                                <button onclick="resetPostTest()" class="px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs sm:text-sm transition flex items-center gap-2">
+                                    <i class="fa-solid fa-rotate-right"></i> Ulangi Post-Test
+                                </button>
+                                <button onclick="switchMenu('beranda')" class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm transition">
+                                    Kembali ke Beranda
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Review Pembahasan Post-Test -->
+                        <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs max-w-4xl mx-auto">
+                            <h4 class="text-lg font-extrabold text-navy-900 mb-4"><i class="fa-solid fa-clipboard-check text-orange-500 mr-2"></i>Rekapitulasi & Pembahasan Jawaban</h4>
+                            <div id="ptReviewContainer" class="space-y-4"></div>
+                        </div>
+                    </div>
+
+                </section>
+
+            </main>
+
+            <!-- Footer -->
+            <footer class="bg-white border-t border-slate-200 px-6 py-4 text-center text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-2">
+                <p><strong>Rasioku</strong> — Media Pembelajaran Interaktif Matematika SMP Kelas VII (Rasio, Skala, Laju Perubahan Satuan)</p>
+                <p class="text-slate-400">Tugas Mata Kuliah Aplikasi Komputer • Pendidikan Matematika</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- ================= MODAL RANGKUMAN RUMUS CEPAT ================= -->
+    <div id="formulaModal" class="fixed inset-0 z-50 bg-navy-900/60 backdrop-blur-xs hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                <h3 class="text-lg font-extrabold text-navy-900 flex items-center gap-2">
+                    <i class="fa-solid fa-bolt text-orange-500"></i> Rangkuman Rumus Cepat Rasioku
+                </h3>
+                <button onclick="toggleFormulaModal()" class="text-slate-400 hover:text-navy-900">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-3 text-xs sm:text-sm">
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+                    <span class="font-extrabold text-orange-600 block">1. Rasio & Proporsi</span>
+                    <p class="text-slate-700 mt-1">Samakan satuan terlebih dahulu, lalu bagi kedua nilai dengan FPB. Untuk proporsi senilai: <strong>a₁ / b₁ = a₂ / b₂</strong>.</p>
+                </div>
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+                    <span class="font-extrabold text-orange-600 block">2. Skala Peta (Satuan cm)</span>
+                    <p class="text-slate-700 mt-1">• <strong>Skala (S)</strong> = JP : JS<br>• <strong>Jarak Sebenarnya (JS)</strong> = JP × Penyebut Skala<br>• <strong>Jarak Peta (JP)</strong> = JS ÷ Penyebut Skala</p>
+                </div>
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+                    <span class="font-extrabold text-orange-600 block">3. Laju Perubahan Satuan (Unit Rate)</span>
+                    <p class="text-slate-700 mt-1">• <strong>Kecepatan (v)</strong> = Jarak (s) ÷ Waktu (t)<br>• <strong>Harga per Satuan</strong> = Total Harga ÷ Jumlah Barang</p>
+                </div>
+            </div>
+            <button onclick="toggleFormulaModal()" class="w-full py-2.5 rounded-xl bg-navy-900 text-white font-bold text-xs">Tutup Rangkuman</button>
+        </div>
+    </div>
+
+    <!-- ================= MODAL KONFIRMASI KUMPULKAN POST-TEST ================= -->
+    <div id="submitConfirmModal" class="fixed inset-0 z-50 bg-navy-900/60 backdrop-blur-xs hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 text-center space-y-4">
+            <div class="w-14 h-14 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-2xl mx-auto">
+                <i class="fa-solid fa-circle-question"></i>
+            </div>
+            <h4 class="text-lg font-extrabold text-navy-900">Kumpulkan Jawaban Post-Test?</h4>
+            <p id="submitConfirmText" class="text-xs sm:text-sm text-slate-600"></p>
+            <div class="flex gap-3 pt-2">
+                <button onclick="closeSubmitConfirmation()" class="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs">Periksa Lagi</button>
+                <button onclick="finishPostTest()" class="flex-1 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs">Ya, Kumpulkan!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL INFO MEDIA PEMBELAJARAN ================= -->
+    <div id="infoModal" class="fixed inset-0 z-50 bg-navy-900/60 backdrop-blur-xs hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                <h3 class="text-base font-extrabold text-navy-900">Tentang Media Rasioku</h3>
+                <button onclick="toggleInfoModal()" class="text-slate-400 hover:text-navy-900">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="text-xs sm:text-sm text-slate-600 space-y-2">
+                <p><strong>Rasioku</strong> adalah media pembelajaran matematika interaktif berbasis web untuk siswa SMP/MTs Kelas VII pada materi <strong>Rasio, Skala, dan Laju Perubahan Satuan</strong>.</p>
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
+                    <p><strong class="text-navy-900">Program Studi:</strong> S1 Pendidikan Matematika (Semester 3)</p>
+                    <p><strong class="text-navy-900">Mata Kuliah:</strong> Aplikasi Komputer</p>
+                    <p><strong class="text-navy-900">Teknologi:</strong> HTML5, Tailwind CSS, JavaScript, Font Awesome & AOS</p>
+                </div>
+            </div>
+            <button onclick="toggleInfoModal()" class="w-full py-2.5 rounded-xl bg-orange-500 text-white font-bold text-xs">Mengerti</button>
+        </div>
+    </div>
+
+    <!-- AOS JS Script -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <!-- ================= SCRIPT LOGIKA INTERAKTIF APLIKASI ================= -->
+    <script>
+        // 1. Inisialisasi AOS & State Global
+        let visitedSections = new Set(['beranda']);
+        let currentSimScale = 100000;
+        let currentPracticeTopic = 'rasio';
+        let practiceUserAnswers = {}; // Menyimpan jawaban latihan soal
+
+        // Data 15 Soal Latihan (5 Rasio, 5 Skala, 5 Laju Perubahan Satuan)
+        const practiceQuestionsData = {
+            rasio: [
+                {
+                    id: 'r1',
+                    question: 'Di dalam keranjang terdapat 15 buah apel merah dan 25 buah apel hijau. Rasio banyak apel merah terhadap apel hijau dalam bentuk paling sederhana adalah...',
+                    options: ['15 : 25', '3 : 5', '5 : 3', '1 : 5'],
+                    correct: 1,
+                    explanation: 'FPB dari 15 dan 25 adalah 5. Maka (15 ÷ 5) : (25 ÷ 5) = 3 : 5.'
+                },
+                {
+                    id: 'r2',
+                    question: 'Bentuk paling sederhana dari rasio 600 gram terhadap 2 kilogram adalah...',
+                    options: ['600 : 2', '3 : 1', '3 : 10', '6 : 20'],
+                    correct: 2,
+                    explanation: 'Samakan satuan ke gram: 2 kg = 2.000 gram. Maka 600 : 2.000 dibagi 200 menghasilkan 3 : 10.'
+                },
+                {
+                    id: 'r3',
+                    question: 'Rasio uang saku Dinda dan Raka adalah 4 : 7. Jika uang saku Dinda adalah Rp16.000, maka uang saku Raka adalah...',
+                    options: ['Rp24.000', 'Rp28.000', 'Rp32.000', 'Rp44.000'],
+                    correct: 1,
+                    explanation: '1 bagian rasio = Rp16.000 ÷ 4 = Rp4.000. Uang Raka (7 bagian) = 7 × Rp4.000 = Rp28.000.'
+                },
+                {
+                    id: 'r4',
+                    question: 'Untuk membuat 15 potong kue diperlukan 3 butir telur. Jika Ibu ingin membuat 40 potong kue yang sama, berapa butir telur yang diperlukan?',
+                    options: ['6 butir', '8 butir', '9 butir', '10 butir'],
+                    correct: 1,
+                    explanation: 'Rasio kue : telur = 15 : 3 = 5 : 1 (setiap 5 kue butuh 1 telur). Untuk 40 kue diperlukan 40 ÷ 5 = 8 butir telur.'
+                },
+                {
+                    id: 'r5',
+                    question: 'Perbandingan umur Kakak dan Adik adalah 5 : 3. Jika selisih umur mereka adalah 6 tahun, berapakah umur Kakak sekarang?',
+                    options: ['9 tahun', '12 tahun', '15 tahun', '18 tahun'],
+                    correct: 2,
+                    explanation: 'Selisih bagian rasio = 5 - 3 = 2 bagian (setara 6 tahun). Maka 1 bagian = 3 tahun. Umur Kakak = 5 × 3 = 15 tahun.'
+                }
+            ],
+            skala: [
+                {
+                    id: 's1',
+                    question: 'Pada sebuah peta tertulis skala 1 : 500.000. Arti dari skala tersebut adalah...',
+                    options: [
+                        '1 cm pada peta mewakili 500 km jarak sebenarnya',
+                        '1 cm pada peta mewakili 5 km jarak sebenarnya',
+                        '5 cm pada peta mewakili 1 km jarak sebenarnya',
+                        '1 km pada peta mewakili 500.000 cm sebenarnya'
+                    ],
+                    correct: 1,
+                    explanation: '500.000 cm bila diubah ke kilometer dibagi 100.000, sehingga 500.000 ÷ 100.000 = 5 km.'
+                },
+                {
+                    id: 's2',
+                    question: 'Jarak dua kota pada peta adalah 6 cm. Jika skala peta tersebut 1 : 1.500.000, maka jarak sebenarnya kedua kota tersebut adalah...',
+                    options: ['9 km', '45 km', '90 km', '900 km'],
+                    correct: 2,
+                    explanation: 'JS = 6 × 1.500.000 cm = 9.000.000 cm = 90 km.'
+                },
+                {
+                    id: 's3',
+                    question: 'Jarak sebenarnya antara rumah Budi dan sekolah adalah 4 km. Jika digambar pada denah dengan skala 1 : 50.000, berapakah jarak pada denah?',
+                    options: ['2 cm', '4 cm', '8 cm', '20 cm'],
+                    correct: 2,
+                    explanation: 'JS = 4 km = 400.000 cm. Maka JP = 400.000 ÷ 50.000 = 8 cm.'
+                },
+                {
+                    id: 's4',
+                    question: 'Panjang sebuah taman pada gambar denah adalah 8 cm, sedangkan panjang taman sebenarnya adalah 24 meter. Skala denah taman tersebut adalah...',
+                    options: ['1 : 3', '1 : 30', '1 : 300', '1 : 3.000'],
+                    correct: 2,
+                    explanation: '24 meter = 2.400 cm. Skala = 8 : 2.400 = 1 : 300.'
+                },
+                {
+                    id: 's5',
+                    question: 'Sebuah miniatur gedung memiliki tinggi 15 cm dengan skala 1 : 200. Tinggi gedung sebenarnya adalah...',
+                    options: ['20 meter', '30 meter', '45 meter', '300 meter'],
+                    correct: 1,
+                    explanation: 'Tinggi sebenarnya = 15 × 200 cm = 3.000 cm = 30 meter.'
+                }
+            ],
+            laju: [
+                {
+                    id: 'l1',
+                    question: 'Sebuah kereta api menempuh jarak 240 km dalam waktu 3 jam. Laju kecepatan rata-rata kereta api tersebut adalah...',
+                    options: ['60 km/jam', '70 km/jam', '80 km/jam', '90 km/jam'],
+                    correct: 2,
+                    explanation: 'Laju kecepatan = 240 km ÷ 3 jam = 80 km/jam.'
+                },
+                {
+                    id: 'l2',
+                    question: 'Nadia mampu mengetik 360 kata dalam waktu 6 menit. Laju kecepatan mengetik Nadia per menit adalah...',
+                    options: ['45 kata/menit', '50 kata/menit', '60 kata/menit', '72 kata/menit'],
+                    correct: 2,
+                    explanation: 'Laju ketik = 360 kata ÷ 6 menit = 60 kata/menit.'
+                },
+                {
+                    id: 'l3',
+                    question: 'Ibu membeli 4 kg buah jeruk dengan harga Rp68.000. Berapakah laju harga buah jeruk tersebut per kilogramnya?',
+                    options: ['Rp15.000/kg', 'Rp16.000/kg', 'Rp17.000/kg', 'Rp18.000/kg'],
+                    correct: 2,
+                    explanation: 'Harga per kg = Rp68.000 ÷ 4 kg = Rp17.000/kg.'
+                },
+                {
+                    id: 'l4',
+                    question: 'Sebuah sepeda motor menghabiskan 3 liter bensin untuk menempuh jarak 135 km. Jika bensin diisi 5 liter, jarak yang dapat ditempuh adalah...',
+                    options: ['180 km', '200 km', '225 km', '250 km'],
+                    correct: 2,
+                    explanation: 'Laju konsumsi BBM = 135 km ÷ 3 liter = 45 km/liter. Untuk 5 liter = 45 × 5 = 225 km.'
+                },
+                {
+                    id: 'l5',
+                    question: 'Pompa air mengisi penuh tangki berkapasitas 120 liter dalam waktu 8 menit. Debit (laju aliran air) pompa tersebut adalah...',
+                    options: ['12 liter/menit', '15 liter/menit', '18 liter/menit', '20 liter/menit'],
+                    correct: 1,
+                    explanation: 'Debit air = 120 liter ÷ 8 menit = 15 liter/menit.'
+                }
+            ]
+        };
+
+        // Data 10 Soal Evaluasi Akhir (Post-Test)
+        const postTestQuestions = [
+            {
+                topic: 'Rasio',
+                question: 'Siswa kelas VII-B terdiri dari 16 siswa laki-laki dan 20 siswa perempuan. Rasio siswa laki-laki terhadap seluruh siswa di kelas adalah...',
+                options: ['4 : 5', '5 : 4', '4 : 9', '5 : 9'],
+                correct: 2,
+                explanation: 'Jumlah seluruh siswa = 16 + 20 = 36 siswa. Rasio laki-laki : seluruh siswa = 16 : 36. Dibagi FPB 4 menjadi 4 : 9.'
+            },
+            {
+                topic: 'Rasio',
+                question: 'Rasio waktu belajar Mandiri dan Bermain yang diterapkan Rian setiap sore adalah 3 : 2. Jika waktu belajar Mandiri Rian adalah 90 menit, maka waktu bermainnya adalah...',
+                options: ['45 menit', '60 menit', '75 menit', '120 menit'],
+                correct: 1,
+                explanation: '3 bagian = 90 menit, sehingga 1 bagian = 30 menit. Waktu bermain (2 bagian) = 2 × 30 = 60 menit.'
+            },
+            {
+                topic: 'Rasio',
+                question: 'Bentuk rasio paling sederhana dari 45 menit terhadap 1,5 jam adalah...',
+                options: ['1 : 2', '1 : 3', '3 : 1', '30 : 1'],
+                correct: 0,
+                explanation: '1,5 jam = 90 menit. Maka 45 menit : 90 menit disederhanakan (dibagi 45) menjadi 1 : 2.'
+            },
+            {
+                topic: 'Skala',
+                question: 'Jarak Kota P ke Kota Q pada peta berskala 1 : 1.200.000 adalah 5 cm. Jarak sebenarnya kedua kota tersebut adalah...',
+                options: ['6 km', '60 km', '120 km', '600 km'],
+                correct: 1,
+                explanation: 'JS = 5 × 1.200.000 cm = 6.000.000 cm = 60 km.'
+            },
+            {
+                topic: 'Skala',
+                question: 'Sebuah lapangan sepak bola memiliki panjang sebenarnya 100 meter. Jika digambar pada kertas dengan skala 1 : 1.000, berapakah panjang lapangan pada gambar?',
+                options: ['1 cm', '10 cm', '20 cm', '100 cm'],
+                correct: 1,
+                explanation: '100 meter = 10.000 cm. Panjang pada gambar (JP) = 10.000 ÷ 1.000 = 10 cm.'
+            },
+            {
+                topic: 'Skala',
+                question: 'Jarak dua gedung di denah adalah 15 cm, sedangkan jarak sebenarnya adalah 450 meter. Skala yang digunakan pada denah tersebut adalah...',
+                options: ['1 : 30', '1 : 300', '1 : 3.000', '1 : 30.000'],
+                correct: 2,
+                explanation: '450 meter = 45.000 cm. Skala = 15 : 45.000 = 1 : 3.000.'
+            },
+            {
+                topic: 'Laju Perubahan Satuan',
+                question: 'Ayah mengendarai mobil sejauh 150 km dalam waktu 2,5 jam. Laju kecepatan rata-rata mobil Ayah adalah...',
+                options: ['50 km/jam', '60 km/jam', '65 km/jam', '75 km/jam'],
+                correct: 1,
+                explanation: 'Kecepatan = 150 km ÷ 2,5 jam = 60 km/jam.'
+            },
+            {
+                topic: 'Laju Perubahan Satuan',
+                question: 'Toko Alat Tulis menjual Paket A berisi 5 buku tulis seharga Rp22.500, dan Paket B berisi 8 buku tulis seharga Rp32.000. Pernyataan yang benar adalah...',
+                options: [
+                    'Paket A lebih murah karena total harganya Rp22.500',
+                    'Paket B lebih hemat karena laju harganya Rp4.000/buku',
+                    'Harga satuan per buku pada Paket A dan Paket B sama',
+                    'Paket A memiliki laju harga Rp4.000/buku'
+                ],
+                correct: 1,
+                explanation: 'Harga per buku Paket A = Rp22.500 ÷ 5 = Rp4.500/buku. Paket B = Rp32.000 ÷ 8 = Rp4.000/buku. Jadi Paket B lebih hemat.'
+            },
+            {
+                topic: 'Laju Perubahan Satuan',
+                question: 'Detak jantung normal seorang atlet saat berolahraga tercatat 280 kali dalam 2 menit. Laju detak jantung atlet tersebut per menit adalah...',
+                options: ['120 detak/menit', '130 detak/menit', '140 detak/menit', '160 detak/menit'],
+                correct: 2,
+                explanation: 'Laju detak jantung = 280 detak ÷ 2 menit = 140 detak/menit.'
+            },
+            {
+                topic: 'Proporsi & Laju',
+                question: 'Seorang penjahit mampu menyelesaikan 12 seragam sekolah dalam waktu 4 hari. Berapa hari yang dibutuhkan untuk menyelesaikan 30 seragam sekolah dengan laju kerja yang sama?',
+                options: ['8 hari', '10 hari', '12 hari', '15 hari'],
+                correct: 1,
+                explanation: 'Laju kerja penjahit = 12 ÷ 4 = 3 seragam/hari. Untuk 30 seragam dibutuhkan waktu 30 ÷ 3 = 10 hari.'
+            }
+        ];
+
+        // State Post-Test
+        let ptCurrentIndex = 0;
+        let ptUserAnswers = new Array(postTestQuestions.length).fill(null);
+        let ptTimerSeconds = 20 * 60;
+        let ptTimerInterval = null;
+
+        // Fungsi Helper FPB (GCD)
+        function getGCD(a, b) {
+            return b === 0 ? a : getGCD(b, a % b);
+        }
+
+        // 2. Navigasi Sidebar & Menu Utama
+        function switchMenu(menuId) {
+            // Sembunyikan semua section
+            document.querySelectorAll('.menu-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(`section-${menuId}`).classList.remove('hidden');
+
+            // Reset gaya tombol sidebar
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = 'nav-btn w-full flex items-center justify-between px-4 py-3.5 rounded-xl font-semibold text-sm text-slate-300 hover:bg-navy-800 hover:text-white transition-all';
+            });
+
+            // Aktifkan tombol yang dipilih
+            const activeBtn = document.getElementById(`nav-${menuId}`);
+            if (activeBtn) {
+                activeBtn.className = 'nav-btn w-full flex items-center justify-between px-4 py-3.5 rounded-xl font-semibold text-sm transition-all bg-orange-500 text-white shadow-lg shadow-orange-500/25';
+            }
+
+            // Update Judul Header
+            const titles = {
+                beranda: ['Dashboard Pembelajaran', 'Beranda Utama'],
+                materi: ['Eksplorasi Konsep & Visualisasi', 'Materi Pembelajaran'],
+                simulasi: ['Laboratorium Matematika Interaktif', 'Simulasi Konsep'],
+                latihan: ['Evaluasi Formatif Terbimbing', 'Latihan Soal (15 Soal)'],
+                postest: ['Evaluasi Sumatif Akhir', 'Post-Test Rasioku']
+            };
+            document.getElementById('headerBreadcrumb').textContent = titles[menuId][0];
+            document.getElementById('headerTitle').textContent = titles[menuId][1];
+
+            // Update Progres Belajar di Sidebar
+            visitedSections.add(menuId);
+            const progressPct = Math.min(100, visitedSections.size * 20);
+            document.getElementById('sidebarProgressBar').style.width = `${progressPct}%`;
+            document.getElementById('sidebarProgressText').textContent = `${progressPct}%`;
+            if (progressPct === 100) {
+                document.getElementById('sidebarStatusDesc').textContent = 'Hebat! Semua menu telah dijelajahi!';
+            }
+
+            // Tutup sidebar otomatis pada layar HP
+            const sidebar = document.getElementById('sidebar');
+            if (!sidebar.classList.contains('-translate-x-full') && window.innerWidth < 1024) {
+                toggleMobileSidebar();
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            AOS.refresh();
+        }
+
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        // 3. Logika Halaman Materi & Animasi Visualisasi
+        function switchMateriTab(topic) {
+            document.querySelectorAll('.materi-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`materi-content-${topic}`).classList.remove('hidden');
+
+            document.querySelectorAll('.materi-tab-btn').forEach(btn => {
+                btn.className = 'materi-tab-btn flex-1 min-w-[160px] py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2.5 text-slate-600 hover:bg-slate-100';
+            });
+            document.getElementById(`tab-materi-${topic}`).className = 'materi-tab-btn flex-1 min-w-[160px] py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2.5 bg-navy-900 text-white shadow-sm';
+        }
+
+        function toggleSolution(id) {
+            const el = document.getElementById(id);
+            el.classList.toggle('hidden');
+        }
+
+        // Animasi Visualisasi Materi 1: Rasio
+        function animateMateriRasio(multiplier) {
+            const orangeCount = 2 * multiplier;
+            const blueCount = 3 * multiplier;
+
+            [1, 2, 3].forEach(m => {
+                const btn = document.getElementById(`btn-rasio-mult-${m}`);
+                btn.className = (m === multiplier)
+                    ? 'flex-1 py-2 rounded-xl bg-orange-500 text-white font-bold text-xs transition'
+                    : 'flex-1 py-2 rounded-xl bg-navy-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition';
+            });
+
+            document.getElementById('visRasioOrangeCount').textContent = `${orangeCount} Butir`;
+            document.getElementById('visRasioBlueCount').textContent = `${blueCount} Butir`;
+
+            const orangeContainer = document.getElementById('visRasioOrangeBoxes');
+            const blueContainer = document.getElementById('visRasioBlueBoxes');
+            orangeContainer.innerHTML = '';
+            blueContainer.innerHTML = '';
+
+            for (let i = 0; i < orangeCount; i++) {
+                const ball = document.createElement('div');
+                ball.className = 'w-7 h-7 rounded-full bg-orange-500 shadow-md flex items-center justify-center text-[10px] font-bold text-white animate-bounce';
+                ball.style.animationDuration = '1.4s';
+                ball.textContent = i + 1;
+                orangeContainer.appendChild(ball);
+            }
+
+            for (let i = 0; i < blueCount; i++) {
+                const ball = document.createElement('div');
+                ball.className = 'w-7 h-7 rounded-full bg-sky-400 shadow-md flex items-center justify-center text-[10px] font-bold text-navy-900 animate-bounce';
+                ball.style.animationDuration = '1.6s';
+                ball.textContent = i + 1;
+                blueContainer.appendChild(ball);
+            }
+
+            document.getElementById('visRasioSummary').textContent =
+                `Rasio ${orangeCount} : ${blueCount} senilai dengan 2 : 3 (FPB = ${multiplier})`;
+        }
+
+        // Animasi Visualisasi Materi 2: Skala
+        function animateMateriSkala(jpCm) {
+            [2, 5, 8].forEach(val => {
+                const btn = document.getElementById(`btn-skala-${val}`);
+                btn.className = (val === jpCm)
+                    ? 'flex-1 py-2 rounded-xl bg-orange-500 text-white font-bold text-xs transition'
+                    : 'flex-1 py-2 rounded-xl bg-navy-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition';
+            });
+
+            const jsCm = jpCm * 100000;
+            const jsKm = jsCm / 100000;
+            const widthPct = Math.min(100, jpCm * 12);
+
+            document.getElementById('visSkalaLabel').textContent = `Jarak Peta: ${jpCm} cm`;
+            document.getElementById('visSkalaBar').style.width = `${widthPct}%`;
+            document.getElementById('visSkalaCm').textContent = `${jsCm.toLocaleString('id-ID')} cm`;
+            document.getElementById('visSkalaKm').textContent = `${jsKm} km`;
+        }
+
+        // Animasi Visualisasi Materi 3: Laju Perubahan Satuan
+        function animateMateriLaju(paket) {
+            ['A', 'B', 'C'].forEach(p => {
+                const btn = document.getElementById(`btn-laju-${p}`);
+                if (p === paket) {
+                    btn.className = 'w-full p-3.5 rounded-2xl bg-orange-500 text-white text-left transition flex items-center justify-between shadow-md';
+                } else {
+                    btn.className = 'w-full p-3.5 rounded-2xl bg-navy-800 hover:bg-slate-800 text-slate-200 text-left transition flex items-center justify-between border border-slate-700';
+                }
+            });
+
+            const info = {
+                A: '<strong class="text-orange-400">Analisis Paket A:</strong> Rp6.000 ÷ 200 ml = <strong>Rp30 per ml</strong>. Ukuran kecil praktis, namun harga per mililiternya paling tinggi.',
+                B: '<strong class="text-orange-400">Analisis Paket B:</strong> Rp12.500 ÷ 500 ml = <strong>Rp25 per ml</strong>. Lebih hemat Rp5/ml dibandingkan Paket A!',
+                C: '<strong class="text-emerald-400">Analisis Paket C (Paling Hemat!):</strong> Rp22.000 ÷ 1.000 ml = <strong>Rp22 per ml</strong>. Memiliki laju harga satuan paling murah!'
+            };
+            document.getElementById('visLajuExplanation').innerHTML = info[paket];
+        }
+
+        // 4. Logika Halaman Simulasi (Laboratorium Virtual)
+        function switchSimTab(tab) {
+            document.querySelectorAll('.sim-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`sim-content-${tab}`).classList.remove('hidden');
+
+            document.querySelectorAll('.sim-tab-btn').forEach(btn => {
+                btn.className = 'sim-tab-btn flex-1 min-w-[170px] py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-100';
+            });
+            document.getElementById(`tab-sim-${tab}`).className = 'sim-tab-btn flex-1 min-w-[170px] py-3 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 bg-navy-900 text-white';
+        }
+
+        // Lab 1: Simulasi Rasio Sirup
+        function updateSimRasio() {
+            const syrup = parseInt(document.getElementById('simRasioSyrupInput').value);
+            const water = parseInt(document.getElementById('simRasioWaterInput').value);
+            const total = syrup + water;
+            const gcd = getGCD(syrup, water);
+            const simpleS = syrup / gcd;
+            const simpleW = water / gcd;
+            const sweetPct = Math.round((syrup / total) * 100);
+
+            document.getElementById('simRasioSyrupVal').textContent = `${syrup} Gelas`;
+            document.getElementById('simRasioWaterVal').textContent = `${water} Gelas`;
+            document.getElementById('simTotalCups').textContent = total;
+            document.getElementById('simRawRatio').textContent = `${syrup} : ${water}`;
+            document.getElementById('simSimpleRatio').textContent = `${simpleS} : ${simpleW}`;
+            document.getElementById('simFpbNote').textContent = `(Dibagi FPB = ${gcd})`;
+            document.getElementById('simSweetPercent').textContent = `${sweetPct}%`;
+
+            // Tinggi visual cairan dalam tabung (maks 25 gelas)
+            const syrupHeight = Math.max(8, Math.round((syrup / 25) * 100));
+            const waterHeight = Math.max(8, Math.round((water / 25) * 100));
+            document.getElementById('simSyrupLayer').style.height = `${syrupHeight}%`;
+            document.getElementById('simWaterLayer').style.height = `${waterHeight}%`;
+
+            const sweetLabel = document.getElementById('simSweetLabel');
+            if (sweetPct < 20) {
+                sweetLabel.textContent = 'Kurang Manis (Hambar)';
+                sweetLabel.className = 'text-xs px-2.5 py-1 rounded-lg bg-sky-500/20 text-sky-300 font-bold';
+            } else if (sweetPct <= 35) {
+                sweetLabel.textContent = 'Pas & Segar!';
+                sweetLabel.className = 'text-xs px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 font-bold';
+            } else {
+                sweetLabel.textContent = 'Terlalu Manis (Pekat)';
+                sweetLabel.className = 'text-xs px-2.5 py-1 rounded-lg bg-orange-500/30 text-orange-300 font-bold';
+            }
+
+            // Cek Misi Tantangan (3 Sirup : 9 Air = 12 Gelas, Rasio 1:3)
+            const missionBadge = document.getElementById('simRasioMissionBadge');
+            if (syrup === 3 && water === 9) {
+                missionBadge.textContent = 'Misi Berhasil! 🎉';
+                missionBadge.className = 'px-3 py-1.5 rounded-xl bg-emerald-500 text-white font-bold text-xs shrink-0';
+            } else {
+                missionBadge.textContent = 'Belum Tercapai';
+                missionBadge.className = 'px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs shrink-0';
+            }
+        }
+
+        // Lab 2: Simulasi Skala Peta
+        function setSimScale(scaleVal) {
+            currentSimScale = scaleVal;
+            [10000, 100000, 500000].forEach(s => {
+                const btn = document.getElementById(`scale-btn-${s}`);
+                btn.className = (s === scaleVal)
+                    ? 'scale-opt-btn py-2.5 px-3 rounded-xl bg-navy-900 text-white font-bold text-xs shadow-xs transition'
+                    : 'scale-opt-btn py-2.5 px-3 rounded-xl border border-slate-200 font-bold text-xs text-slate-700 hover:bg-slate-100 transition';
+            });
+            document.getElementById('simSkalaActiveBadge').textContent = `Skala 1 : ${scaleVal.toLocaleString('id-ID')}`;
+            updateSimSkala();
+        }
+
+        function updateSimSkala() {
+            const jp = parseFloat(document.getElementById('simSkalaJpInput').value);
+            const jsCm = jp * currentSimScale;
+            const jsMeter = jsCm / 100;
+            const jsKm = jsCm / 100000;
+
+            document.getElementById('simSkalaJpVal').textContent = `${jp} cm`;
+            document.getElementById('simSkalaRulerText').textContent = `${jp} cm di Peta`;
+            document.getElementById('simSkalaVisualRuler').style.width = `${(jp / 12) * 100}%`;
+
+            document.getElementById('simSkalaFormulaStep1').innerHTML =
+                `1. JS (cm) = ${jp} cm × ${currentSimScale.toLocaleString('id-ID')} = <strong>${jsCm.toLocaleString('id-ID')} cm</strong>`;
+            document.getElementById('simSkalaFormulaStep2').innerHTML =
+                `2. JS (km) = ${jsCm.toLocaleString('id-ID')} ÷ 100.000 = <strong class="text-orange-600">${jsKm.toLocaleString('id-ID')} km</strong>`;
+
+            document.getElementById('simSkalaMeterResult').textContent = `${jsMeter.toLocaleString('id-ID')} m`;
+            document.getElementById('simSkalaKmResult').textContent = `${jsKm.toLocaleString('id-ID')} km`;
+        }
+
+        // Lab 3: Simulasi Laju Kecepatan
+        function updateSimLaju() {
+            const dist = parseFloat(document.getElementById('simLajuDistInput').value);
+            const time = parseFloat(document.getElementById('simLajuTimeInput').value);
+            const speed = Math.round((dist / time) * 10) / 10;
+            const meterPerMin = Math.round((speed * 1000) / 60);
+
+            document.getElementById('simLajuDistVal').textContent = `${dist} km`;
+            document.getElementById('simLajuTimeVal').textContent = `${time} Jam`;
+            document.getElementById('simTrackFinishLabel').textContent = `GARIS AKHIR (${dist} km)`;
+            document.getElementById('simLajuSpeedResult').textContent = `${speed} km/jam`;
+            document.getElementById('simLajuMeterMin').textContent = `${meterPerMin.toLocaleString('id-ID')} m/menit`;
+            document.getElementById('simLajuEquation').textContent = `${dist} km ÷ ${time} jam`;
+
+            const catBadge = document.getElementById('simLajuCategory');
+            if (speed < 40) {
+                catBadge.textContent = 'Laju Santai';
+                catBadge.className = 'text-xs px-3 py-1 rounded-full bg-sky-500/20 text-sky-300 font-bold';
+            } else if (speed <= 80) {
+                catBadge.textContent = 'Kecepatan Ideal';
+                catBadge.className = 'text-xs px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-bold';
+            } else {
+                catBadge.textContent = 'Kecepatan Tinggi!';
+                catBadge.className = 'text-xs px-3 py-1 rounded-full bg-orange-500/30 text-orange-300 font-bold';
+            }
+        }
+
+        function runCarAnimation() {
+            const car = document.getElementById('simCarElement');
+            const dist = parseFloat(document.getElementById('simLajuDistInput').value);
+            const time = parseFloat(document.getElementById('simLajuTimeInput').value);
+            const speed = dist / time;
+
+            // Reset ke kiri
+            car.style.transition = 'none';
+            car.style.left = '0%';
+
+            setTimeout(() => {
+                // Semakin tinggi kecepatan, semakin singkat durasi animasi
+                const durationMs = Math.max(400, Math.min(2200, Math.round(80000 / speed)));
+                car.style.transition = `left ${durationMs}ms cubic-bezier(0.25, 0.8, 0.25, 1)`;
+                car.style.left = 'calc(100% - 3rem)';
+            }, 60);
+        }
+
+        // 5. Logika Halaman Latihan Soal (5 Soal per Topik)
+        function switchPracticeTopic(topic) {
+            currentPracticeTopic = topic;
+            ['rasio', 'skala', 'laju'].forEach(t => {
+                const btn = document.getElementById(`prac-tab-${t}`);
+                btn.className = (t === topic)
+                    ? 'prac-tab-btn flex-1 min-w-[150px] py-3 px-4 rounded-xl font-bold text-xs sm:text-sm bg-orange-500 text-white transition shadow-sm'
+                    : 'prac-tab-btn flex-1 min-w-[150px] py-3 px-4 rounded-xl font-bold text-xs sm:text-sm text-slate-600 hover:bg-slate-100 transition';
+            });
+            renderPracticeQuestions();
+        }
+
+        function renderPracticeQuestions() {
+            const container = document.getElementById('practiceQuestionsContainer');
+            const questions = practiceQuestionsData[currentPracticeTopic];
+            container.innerHTML = '';
+
+            questions.forEach((q, idx) => {
+                const userAns = practiceUserAnswers[q.id];
+                const isAnswered = userAns !== undefined;
+                const isCorrect = userAns === q.correct;
+
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-3xl border border-slate-200 p-6 shadow-xs space-y-4';
+
+                let optionsHtml = '';
+                const letters = ['A', 'B', 'C', 'D'];
+                q.options.forEach((optText, optIdx) => {
+                    let btnStyle = 'border-slate-200 bg-slate-50 hover:bg-orange-50/60 hover:border-orange-300 text-slate-700';
+                    if (isAnswered) {
+                        if (optIdx === q.correct) {
+                            btnStyle = 'border-emerald-500 bg-emerald-50 text-emerald-900 font-bold';
+                        } else if (optIdx === userAns && userAns !== q.correct) {
+                            btnStyle = 'border-rose-400 bg-rose-50 text-rose-900';
+                        }
+                    }
+
+                    optionsHtml += `
+                        <button onclick="answerPractice('${q.id}', ${optIdx})" class="w-full text-left p-3.5 rounded-2xl border ${btnStyle} transition flex items-center gap-3 text-xs sm:text-sm">
+                            <span class="w-7 h-7 rounded-lg bg-navy-900 text-orange-400 font-extrabold text-xs flex items-center justify-center shrink-0">${letters[optIdx]}</span>
+                            <span>${optText}</span>
+                        </button>
+                    `;
+                });
+
+                let feedbackHtml = '';
+                if (isAnswered) {
+                    feedbackHtml = `
+                        <div class="p-4 rounded-2xl ${isCorrect ? 'bg-emerald-50 border border-emerald-200 text-emerald-900' : 'bg-rose-50 border border-rose-200 text-rose-900'} text-xs space-y-1">
+                            <p class="font-extrabold text-sm flex items-center gap-1.5">
+                                <i class="fa-solid ${isCorrect ? 'fa-circle-check text-emerald-600' : 'fa-circle-xmark text-rose-600'}"></i>
+                                ${isCorrect ? 'Jawabanmu Tepat Sekali!' : 'Kurang Tepat, Yuk Pelajari Pembahasannya!'}
+                            </p>
+                            <p class="text-slate-700 leading-relaxed"><strong>Pembahasan:</strong> ${q.explanation}</p>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="px-3 py-1 rounded-lg bg-navy-900 text-orange-400 font-extrabold text-xs">Soal Nomor ${idx + 1}</span>
+                        ${isAnswered ? `<span class="text-xs font-bold ${isCorrect ? 'text-emerald-600' : 'text-rose-600'}">${isCorrect ? '✓ Benar' : '✗ Belum Tepat'}</span>` : '<span class="text-xs text-slate-400">Belum dijawab</span>'}
+                    </div>
+                    <p class="text-sm sm:text-base font-bold text-navy-900 leading-relaxed">${q.question}</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">${optionsHtml}</div>
+                    ${feedbackHtml}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function answerPractice(qId, selectedIndex) {
+            practiceUserAnswers[qId] = selectedIndex;
+            updatePracticeScore();
+            renderPracticeQuestions();
+        }
+
+        function updatePracticeScore() {
+            let correctCount = 0;
+            ['rasio', 'skala', 'laju'].forEach(topic => {
+                practiceQuestionsData[topic].forEach(q => {
+                    if (practiceUserAnswers[q.id] === q.correct) {
+                        correctCount++;
+                    }
+                });
+            });
+            document.getElementById('practiceScoreDisplay').textContent = `${correctCount} / 15 Soal Benar`;
+        }
+
+        // 6. Logika Halaman Post-Test (Evaluasi Akhir)
+        function startPostTest() {
+            const nameInput = document.getElementById('postestStudentName').value.trim();
+            const classInput = document.getElementById('postestStudentClass').value.trim();
+            const errorEl = document.getElementById('postestFormError');
+
+            if (!nameInput || !classInput) {
+                errorEl.classList.remove('hidden');
+                return;
+            }
+            errorEl.classList.add('hidden');
+
+            // Update badge nama siswa di header
+            document.getElementById('studentNameBadge').textContent = nameInput;
+
+            document.getElementById('postest-intro-card').classList.add('hidden');
+            document.getElementById('postest-result-card').classList.add('hidden');
+            document.getElementById('postest-quiz-card').classList.remove('hidden');
+
+            ptCurrentIndex = 0;
+            ptUserAnswers = new Array(postTestQuestions.length).fill(null);
+            ptTimerSeconds = 20 * 60;
+
+            renderPostTestQuestion();
+            startPostTestTimer();
+        }
+
+        function startPostTestTimer() {
+            if (ptTimerInterval) clearInterval(ptTimerInterval);
+            ptTimerInterval = setInterval(() => {
+                ptTimerSeconds--;
+                const mins = String(Math.floor(ptTimerSeconds / 60)).padStart(2, '0');
+                const secs = String(ptTimerSeconds % 60).padStart(2, '0');
+                document.getElementById('ptTimerDisplay').textContent = `${mins}:${secs}`;
+
+                if (ptTimerSeconds <= 0) {
+                    clearInterval(ptTimerInterval);
+                    finishPostTest();
+                }
+            }, 1000);
+        }
+
+        function renderPostTestQuestion() {
+            const q = postTestQuestions[ptCurrentIndex];
+            document.getElementById('ptQuestionBadge').textContent = `Soal ${ptCurrentIndex + 1} / ${postTestQuestions.length}`;
+            document.getElementById('ptTopicBadge').textContent = `Topik: ${q.topic}`;
+            document.getElementById('ptQuestionText').textContent = q.question;
+
+            const optionsContainer = document.getElementById('ptOptionsContainer');
+            optionsContainer.innerHTML = '';
+            const letters = ['A', 'B', 'C', 'D'];
+
+            q.options.forEach((opt, idx) => {
+                const isSelected = ptUserAnswers[ptCurrentIndex] === idx;
+                const btn = document.createElement('button');
+                btn.onclick = () => selectPostTestOption(idx);
+                btn.className = isSelected
+                    ? 'w-full text-left p-4 rounded-2xl border-2 border-orange-500 bg-orange-50 text-navy-900 font-bold transition flex items-center gap-3.5 text-xs sm:text-sm'
+                    : 'w-full text-left p-4 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium transition flex items-center gap-3.5 text-xs sm:text-sm';
+
+                btn.innerHTML = `
+                    <span class="w-8 h-8 rounded-xl ${isSelected ? 'bg-orange-500 text-white' : 'bg-navy-900 text-orange-400'} font-extrabold text-xs flex items-center justify-center shrink-0">${letters[idx]}</span>
+                    <span>${opt}</span>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+
+            // Atur visibilitas tombol Prev/Next
+            document.getElementById('ptPrevBtn').disabled = ptCurrentIndex === 0;
+            document.getElementById('ptPrevBtn').classList.toggle('opacity-40', ptCurrentIndex === 0);
+
+            renderPostTestPalette();
+        }
+
+        function selectPostTestOption(optIdx) {
+            ptUserAnswers[ptCurrentIndex] = optIdx;
+            renderPostTestQuestion();
+        }
+
+        function prevPostTestQuestion() {
+            if (ptCurrentIndex > 0) {
+                ptCurrentIndex--;
+                renderPostTestQuestion();
+            }
+        }
+
+        function nextPostTestQuestion() {
+            if (ptCurrentIndex < postTestQuestions.length - 1) {
+                ptCurrentIndex++;
+                renderPostTestQuestion();
+            }
+        }
+
+        function renderPostTestPalette() {
+            const palette = document.getElementById('ptPaletteGrid');
+            palette.innerHTML = '';
+
+            postTestQuestions.forEach((_, idx) => {
+                const isAnswered = ptUserAnswers[idx] !== null;
+                const isCurrent = idx === ptCurrentIndex;
+                const btn = document.createElement('button');
+                btn.onclick = () => {
+                    ptCurrentIndex = idx;
+                    renderPostTestQuestion();
+                };
+
+                let style = isAnswered
+                    ? 'bg-orange-500 text-white font-extrabold'
+                    : 'bg-slate-100 text-slate-700 font-bold hover:bg-slate-200';
+                if (isCurrent) {
+                    style += ' ring-2 ring-navy-900 ring-offset-2';
+                }
+
+                btn.className = `h-10 rounded-xl text-xs transition ${style}`;
+                btn.textContent = idx + 1;
+                palette.appendChild(btn);
+            });
+        }
+
+        function openSubmitConfirmation() {
+            const answeredCount = ptUserAnswers.filter(a => a !== null).length;
+            const modal = document.getElementById('submitConfirmModal');
+            document.getElementById('submitConfirmText').textContent =
+                `Kamu telah menjawab ${answeredCount} dari ${postTestQuestions.length} soal. Apakah kamu yakin ingin mengakhiri Post-Test dan melihat nilaimu?`;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeSubmitConfirmation() {
+            const modal = document.getElementById('submitConfirmModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function finishPostTest() {
+            closeSubmitConfirmation();
+            if (ptTimerInterval) clearInterval(ptTimerInterval);
+
+            const nameInput = document.getElementById('postestStudentName').value.trim();
+            const classInput = document.getElementById('postestStudentClass').value.trim();
+
+            let correctTotal = 0;
+            postTestQuestions.forEach((q, idx) => {
+                if (ptUserAnswers[idx] === q.correct) correctTotal++;
+            });
+
+            const finalScore = correctTotal * 10;
+
+            document.getElementById('postest-quiz-card').classList.add('hidden');
+            document.getElementById('postest-result-card').classList.remove('hidden');
+
+            document.getElementById('ptResultStudentInfo').textContent = `${nameInput} • ${classInput}`;
+            document.getElementById('ptFinalScoreText').textContent = finalScore;
+
+            const predicateEl = document.getElementById('ptResultPredicate');
+            if (finalScore >= 85) {
+                predicateEl.textContent = 'Luar Biasa! Kamu telah menguasai konsep Rasio, Skala, dan Laju Perubahan Satuan dengan sangat baik!';
+            } else if (finalScore >= 70) {
+                predicateEl.textContent = 'Bagus Sekali! Kamu telah melampaui batas ketuntasan minimal (KKTP). Terus tingkatkan latihanmu!';
+            } else {
+                predicateEl.textContent = 'Tetap Semangat! Yuk, pelajari kembali pembahasan di bawah ini dan coba lagi agar nilaimu semakin optimal.';
+            }
+
+            // Render Review Pembahasan
+            const reviewContainer = document.getElementById('ptReviewContainer');
+            reviewContainer.innerHTML = '';
+
+            postTestQuestions.forEach((q, idx) => {
+                const userAns = ptUserAnswers[idx];
+                const isCorrect = userAns === q.correct;
+                const userAnsText = userAns !== null ? q.options[userAns] : 'Tidak dijawab';
+
+                const item = document.createElement('div');
+                item.className = `p-4 rounded-2xl border ${isCorrect ? 'bg-emerald-50/60 border-emerald-200' : 'bg-rose-50/60 border-rose-200'} text-xs space-y-1.5`;
+                item.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="font-extrabold text-navy-900">Soal ${idx + 1} (${q.topic})</span>
+                        <span class="font-extrabold ${isCorrect ? 'text-emerald-600' : 'text-rose-600'}">${isCorrect ? '✓ Benar (+10)' : '✗ Kurang Tepat (0)'}</span>
+                    </div>
+                    <p class="font-semibold text-slate-800">${q.question}</p>
+                    <p class="text-slate-600">Jawabanmu: <strong>${userAnsText}</strong> | Kunci Jawaban: <strong class="text-emerald-700">${q.options[q.correct]}</strong></p>
+                    <p class="text-slate-700 pt-1 border-t border-slate-200/80"><strong>Pembahasan:</strong> ${q.explanation}</p>
+                `;
+                reviewContainer.appendChild(item);
+            });
+        }
+
+        function resetPostTest() {
+            document.getElementById('postest-result-card').classList.add('hidden');
+            document.getElementById('postest-intro-card').classList.remove('hidden');
+        }
+
+        // 7. Kontrol Modal Tambahan
+        function toggleFormulaModal() {
+            const modal = document.getElementById('formulaModal');
+            modal.classList.toggle('hidden');
+            modal.classList.toggle('flex');
+        }
+
+        function toggleInfoModal() {
+            const modal = document.getElementById('infoModal');
+            modal.classList.toggle('hidden');
+            modal.classList.toggle('flex');
+        }
+
+        // 8. Inisialisasi Saat Halaman Dimuat
+        window.onload = function () {
+            AOS.init({
+                duration: 600,
+                once: true
+            });
+
+            // Sapaan Waktu Otomatis
+            const hour = new Date().getHours();
+            let greet = 'Selamat Pagi';
+            if (hour >= 11 && hour < 15) greet = 'Selamat Siang';
+            else if (hour >= 15 && hour < 18) greet = 'Selamat Sore';
+            else if (hour >= 18 || hour < 4) greet = 'Selamat Malam';
+            document.getElementById('dynamicGreeting').textContent = `${greet}, Sobat Matematika Kelas VII!`;
+
+            // Render awal visualisasi & soal
+            animateMateriRasio(1);
+            animateMateriSkala(2);
+            updateSimRasio();
+            updateSimSkala();
+            updateSimLaju();
+            renderPracticeQuestions();
+        };
+    </script>
+</body>
+</html>
